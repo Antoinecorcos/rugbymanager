@@ -13,9 +13,21 @@ const byId = new Map(db.map((d) => [d.club.id, d]));
 const allPlayers = db.flatMap((d) => d.squad.map((e) => ({ club: d.club, ...e })));
 
 describe("real database: content", () => {
-  it("contains the 14 Top 14 and 16 Pro D2 clubs of 2026-2027", () => {
+  it("contains the 2026-2027 clubs of the Top 14, Pro D2, PREM and URC", () => {
     expect(db.filter((d) => d.club.league === "TOP14")).toHaveLength(14);
     expect(db.filter((d) => d.club.league === "PROD2")).toHaveLength(16);
+    expect(db.filter((d) => d.club.league === "PREM")).toHaveLength(10);
+    expect(db.filter((d) => d.club.league === "URC")).toHaveLength(16);
+    expect(db.filter((d) => d.club.league === "NATIONALE")).toHaveLength(14);
+  });
+
+  it("uses generated players only to complete thin squads", () => {
+    const generated = allPlayers.filter((p) => p.info?.generated);
+    expect(generated.every((p) => p.player.id.startsWith("gen-"))).toBe(true);
+    // Professional French squads are complete: at most a couple of fillers per club.
+    for (const d of db.filter((x) => x.club.league === "TOP14" || x.club.league === "PROD2")) {
+      expect(d.squad.filter((e) => e.info?.generated).length, d.club.id).toBeLessThanOrEqual(2);
+    }
   });
 
   it("validates against the schemas, with unique player ids", () => {
@@ -30,10 +42,14 @@ describe("real database: content", () => {
       const frontRow = d.squad.filter((e) => isFrontRow(naturalPosition(e.player))).length;
       expect(frontRow, d.club.id).toBeGreaterThanOrEqual(8);
     }
-    // Academy players (≤ 20) often have no published measurements; senior players almost always do.
-    const seniors = allPlayers.filter((p) => p.player.birthDate < "2006-01-01");
-    const measured = seniors.filter((p) => !p.info?.estimated.includes("weightKg")).length;
-    expect(measured / seniors.length).toBeGreaterThan(0.9);
+    // Academy players (≤ 20) often have no published measurements; senior players almost always do
+    // in France (official LNR profiles), less often in PREM/URC (Wikipedia infoboxes only).
+    const share = (leagues: string[]) => {
+      const seniors = allPlayers.filter((p) => leagues.includes(p.club.league) && !p.info?.generated && p.player.birthDate < "2006-01-01");
+      return seniors.filter((p) => !p.info?.estimated.includes("weightKg")).length / seniors.length;
+    };
+    expect(share(["TOP14", "PROD2"])).toBeGreaterThan(0.9);
+    expect(share(["PREM", "URC"])).toBeGreaterThan(0.75);
   });
 
   it("knows a few well-documented facts", () => {

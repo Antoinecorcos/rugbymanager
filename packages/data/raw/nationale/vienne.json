@@ -1,0 +1,7 @@
+{
+ "club": {"id":"vienne","name":"CS Vienne","shortName":"CSV","league":"NATIONALE","country":"FRA","stadium":{"name":"Stade Jean-Etcheberry"},"headCoach":"Lionel Grand","budgetEur":2200000,"sources":{"wikipedia":"Club sportif de Vienne rugby"}},
+ "importedAt": "2026-11-21",
+ "players": [
+
+ ]
+}

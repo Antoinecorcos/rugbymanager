@@ -1,0 +1,67 @@
+
+=== TOP14 — une saison régulière simulée ===
+
+    Club                          J   G  N   P  Pour Contre   B  Pts
+ 1. Stade toulousain             26  22  0   4   926    438  14  102
+ 2. Lyon OU                      26  21  0   5   755    615   2   86
+ 3. Union Bordeaux Bègles        26  16  0  10   723    628   9   73
+ 4. Racing 92                    26  15  1  10   715    571   9   71
+ 5. Stade rochelais              26  14  2  10   754    596   9   69
+ 6. Section paloise              26  13  1  12   674    688   7   61
+ 7. RC Toulon                    26  12  1  13   672    621   9   59
+ 8. Stade français Paris         26  13  0  13   655    712   6   58
+ 9. ASM Clermont Auvergne        26  13  0  13   678    720   5   57
+10. Aviron bayonnais             26  10  2  14   645    742   7   51
+11. Montpellier Hérault Rugby    26  10  0  16   630    746   8   48
+12. Castres olympique            26   8  0  18   522    739   5   37
+13. USA Perpignan                26   7  0  19   478    737   2   30
+14. RC Vannes                    26   4  1  21   441    715   4   22
+
+=== Classement moyen sur 5 saisons ===
+  1.0  Stade toulousain
+  3.0  Stade rochelais
+  3.6  RC Toulon
+  4.0  Union Bordeaux Bègles
+  5.4  Racing 92
+  6.6  Montpellier Hérault Rugby
+  6.6  Section paloise
+  8.0  Aviron bayonnais
+  9.6  ASM Clermont Auvergne
+ 10.2  Stade français Paris
+ 10.6  Lyon OU
+ 11.2  USA Perpignan
+ 12.4  Castres olympique
+ 12.8  RC Vannes
+
+=== Indicateurs (910 matchs) ===
+✓ Points                                 50.53   [45 – 60]
+✓ Essais                                  5.70   [4.8 – 7]
+✓ Pénalités concédées                    19.80   [17 – 25]
+✓ Tentatives de pénalité                  5.63   [4 – 8]
+✓ % réussite pénalités                   74.69   [72 – 86]
+✓ % réussite transformations             76.33   [66 – 80]
+✓ Drops réussis                           0.22   [0.05 – 0.45]
+✓ Touches                                28.02   [20 – 32]
+✓ % touches conservées                   89.37   [83 – 92]
+✓ Mêlées                                 10.47   [10 – 18]
+✓ Pénalités en mêlée                      2.65   [2 – 5]
+✓ Rucks                                 161.32   [140 – 210]
+✓ % rucks rapides (<3 s)                 55.08   [40 – 65]
+✓ Plaquages réussis                     260.53   [220 – 340]
+✓ Plaquages manqués                      34.59   [25 – 50]
+✓ Franchissements                         7.19   [6 – 14]
+✓ Offloads                               12.94   [10 – 26]
+✓ Turnovers gagnés                       12.62   [9 – 20]
+✓ Coups de pied dans le jeu              46.12   [38 – 66]
+✓ Cartons jaunes                          0.62   [0.45 – 1.2]
+✓ Cartons rouges                          0.05   [0.02 – 0.15]
+✓ Temps de jeu effectif (min)            34.41   [31 – 40]
+✓ Durée totale (min)                     81.85   [80 – 86]
+✓ Sorties sur blessure                    0.87   [0.7 – 2.5]
+✓ Protocoles commotion                    0.43   [0.3 – 1.2]
+✓ % victoires à domicile                 61.87   [60 – 77]
+✓ % matchs nuls                           2.86   [0.5 – 5]
+✓ Bonus offensifs / match                 0.29   [0.22 – 0.45]
+✓ Bonus défensifs / match                 0.23   [0.2 – 0.4]
+
+29/29 indicateurs dans la cible.

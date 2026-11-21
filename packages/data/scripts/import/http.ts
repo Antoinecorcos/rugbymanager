@@ -11,7 +11,7 @@ const CACHE_DIR = join(dirname(fileURLToPath(import.meta.url)), "../../.cache/ht
 const USER_AGENT = "OvalieManagerDataImport/0.2 (non-commercial hobby rugby management game)";
 
 const lastHit = new Map<string, number>();
-const MIN_GAP_MS: Record<string, number> = { default: 150, "fr.wikipedia.org": 1200, "en.wikipedia.org": 1200, "www.wikidata.org": 1200 };
+const MIN_GAP_MS: Record<string, number> = { default: 150, "fr.wikipedia.org": 2500, "en.wikipedia.org": 2500, "www.wikidata.org": 2500 };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -71,7 +71,13 @@ async function download(url: string, host: string): Promise<string> {
         continue;
       }
       if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-      return await res.text();
+      const body = await res.text();
+      // Wikimedia sometimes answers a rate-limit notice with a 200 status: never cache it.
+      if (body.startsWith("You are making too many requests")) {
+        await sleep(15000 * (attempt + 1));
+        continue;
+      }
+      return body;
     } catch (e) {
       if (e instanceof NotFoundError) throw e;
       if (attempt === 5) throw e;

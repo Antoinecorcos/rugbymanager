@@ -95,6 +95,8 @@ export const playerInfoSchema = z.object({
   arrivalYear: z.number().int().optional(),
   /** Position group as published by the league. */
   positionGroup: z.string(),
+  /** Fictional player generated to complete a squad whose real roster is unknown (Nationale). */
+  generated: z.boolean().optional(),
   /** Fields that were estimated rather than read from a source (birthDate, heightCm, weightKg, jiff). */
   estimated: z.array(z.string()).default([]),
   rating: ratingBreakdownSchema,

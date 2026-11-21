@@ -60,6 +60,7 @@ export interface SeasonParticipant {
   previousRank?: { league: "TOP14" | "PROD2" | "NATIONALE"; rank: number };
   headCoach?: string;
   stadium?: string;
+  city?: string;
   capacity?: number;
 }
 
@@ -89,13 +90,18 @@ export function parseParticipants(text: string): SeasonParticipant[] {
     }
     if (cRank >= 0) {
       const tri = /\{\{Tri\|(\d)(\d\d)/.exec(r.cells[cRank] ?? "");
-      if (tri) p.previousRank = { league: tri[1] === "1" ? "TOP14" : tri[1] === "2" ? "PROD2" : "NATIONALE", rank: Number(tri[2]) };
+      const league = ({ "1": "TOP14", "2": "PROD2", "3": "NATIONALE" } as const)[tri?.[1] as "1" | "2" | "3"];
+      if (tri && league) p.previousRank = { league, rank: Number(tri[2]) };
     }
     if (cCoach >= 0) {
       const l = firstLink(r.cells[cCoach] ?? "");
       if (l) p.headCoach = l.label;
     }
-    if (cStadium >= 0) p.stadium = firstLink(r.cells[cStadium] ?? "")?.label;
+    if (cStadium >= 0) {
+      const links = [...(r.cells[cStadium] ?? "").matchAll(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g)].map((m) => m[1]!.trim());
+      p.stadium = links[0];
+      if (links.length > 1) p.city = links[links.length - 1];
+    }
     if (cCap >= 0) {
       const c = stripRefs(r.cells[cCap] ?? "").replace(/\{\{(formatnum|unité)\|(\d+)[^}]*\}\}/g, "$2").replace(/[^\d]/g, "");
       if (c) p.capacity = Number(c);

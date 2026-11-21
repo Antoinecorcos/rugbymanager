@@ -15,7 +15,11 @@
     "import:fr": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/import/import-fr.ts",
     "build-db": "tsx scripts/build-db.ts",
     "season": "tsx scripts/season.ts",
-    "real-stats": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/real-stats.ts"
+    "real-stats": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/real-stats.ts",
+    "import:en": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/import/import-en.ts",
+    "import:nationale": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/import/import-nationale.ts",
+    "cross-league": "tsx scripts/cross-league.ts",
+    "match": "tsx scripts/match.ts"
   },
   "dependencies": {
     "@ovalie/engine": "workspace:*",

@@ -2,7 +2,7 @@
  * Rating pipeline: raw facts (packages/data/raw) + manual overrides → game database entries.
  * Pure and deterministic: the same inputs always give the same players.
  */
-import type { Player, Position } from "@ovalie/engine";
+import { generatePlayer, naturalPosition, Rng, type Player, type Position } from "@ovalie/engine";
 import type { RawPlayer, RawSquad } from "../raw.js";
 import type { Club, ClubDatabase, ClubOverride, League, PlayerOverride, SquadEntry } from "../schemas.js";
 import { buildAttributes } from "./attributes.js";
@@ -34,7 +34,7 @@ export function buildDatabase(squads: RawSquad[], opts: BuildOptions): ClubDatab
       for (const c of p.career)
         if (c.season === opts.season) roundsSoFar[c.competition] = Math.max(roundsSoFar[c.competition] ?? 0, c.matches);
 
-  // Budget z-score per league.
+  // Club strength z-score per league: budget when known, else last season's rank.
   const budgetZ = new Map<string, number>();
   const byLeague = new Map<League, RawSquad[]>();
   for (const s of squads) byLeague.set(s.club.league, [...(byLeague.get(s.club.league) ?? []), s]);
@@ -42,7 +42,12 @@ export function buildDatabase(squads: RawSquad[], opts: BuildOptions): ClubDatab
     const vals = list.map((s) => s.club.budgetEur).filter((b): b is number => b !== undefined);
     const mean = vals.reduce((a, b) => a + b, 0) / Math.max(1, vals.length);
     const sd = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / Math.max(1, vals.length)) || 1;
-    for (const s of list) budgetZ.set(s.club.id, s.club.budgetEur !== undefined ? (s.club.budgetEur - mean) / sd : 0);
+    const n = list.length;
+    for (const s of list) {
+      const rank = s.club.previousRank?.league === s.club.league ? s.club.previousRank.rank : undefined;
+      const z = s.club.budgetEur !== undefined ? (s.club.budgetEur - mean) / sd : rank !== undefined ? ((n + 1) / 2 - rank) / (n / 4) : 0;
+      budgetZ.set(s.club.id, z);
+    }
   }
 
   return squads.map((s) => {
@@ -55,6 +60,7 @@ export function buildDatabase(squads: RawSquad[], opts: BuildOptions): ClubDatab
     };
     const club = buildClub(s, budgetZ.get(s.club.id) ?? 0, opts.clubOverrides?.[s.club.id]);
     const squad = s.players.map((p) => buildPlayer(p, s, ctx, opts));
+    completeSquad(squad, s, ctx, opts);
     return { club, squad };
   });
 }
@@ -155,4 +161,49 @@ function buildPlayer(p: RawPlayer, s: RawSquad, ctx: LevelContext, opts: BuildOp
   if (p.previousClub) info.previousClub = p.previousClub;
   if (p.arrivalYear) info.arrivalYear = p.arrivalYear;
   return { player, contract, info };
+}
+
+/** Typical 36-man squad, used when a club's real roster is unknown. */
+export const SQUAD_TEMPLATE: Readonly<Record<Position, number>> = {
+  LH: 3, HK: 3, TH: 3, LO: 5, BF: 3, OF: 2, N8: 2, SH: 3, FH: 2, IC: 2, OC: 2, WG: 4, FB: 2,
+};
+/** Players able to play each position (familiarity ≥ 14) that a real squad must have. */
+export const SQUAD_MINIMUM: Readonly<Record<Position, number>> = {
+  LH: 2, HK: 2, TH: 2, LO: 4, BF: 2, OF: 2, N8: 1, SH: 2, FH: 2, IC: 2, OC: 2, WG: 3, FB: 2,
+};
+
+/**
+ * Completes a squad with generated (fictional) players where the real roster is unknown or too
+ * thin at a position, so that every club can field a legal 23 all season. Deterministic (seeded by club id).
+ */
+function completeSquad(squad: SquadEntry[], s: RawSquad, ctx: LevelContext, opts: BuildOptions): void {
+  const unknownRoster = squad.length < 25;
+  const target = unknownRoster ? SQUAD_TEMPLATE : SQUAD_MINIMUM;
+  const count = new Map<Position, number>();
+  for (const e of squad) {
+    if (unknownRoster) count.set(naturalPosition(e.player), (count.get(naturalPosition(e.player)) ?? 0) + 1);
+    else for (const [pos, fam] of Object.entries(e.player.positions) as [Position, number][]) if (fam >= 14) count.set(pos, (count.get(pos) ?? 0) + 1);
+  }
+  const rng = new Rng(`complete:${s.club.id}`);
+  const base = estimateLevel({ id: "", firstName: "", lastName: "", nationality: "FRA", positionGroup: "", positionHints: [], career: [], sources: {} }, "FH", ctx).level;
+  let n = 0;
+  for (const [pos, min] of Object.entries(target) as [Position, number][]) {
+    for (let k = count.get(pos) ?? 0; k < min; k++) {
+      const level = Math.round((base - 0.3 + rng.normal(0, 0.6)) * 100) / 100;
+      const nationality = s.club.country === "FRA" ? rng.weighted([["FRA", 85], ["GEO", 4], ["FIJ", 4], ["TGA", 2], ["ARG", 3], ["RSA", 2]] as const) : s.club.country;
+      const player = generatePlayer(rng, { position: pos, level, nationality, id: `gen-${s.club.id}-${++n}`, referenceDate: opts.referenceDate });
+      player.potentialAbility = Math.round(Math.min(200, (level + growthPotential(ageAt(player.birthDate, undefined, opts.referenceDate))) * 10));
+      squad.push({
+        player,
+        contract: { clubId: s.club.id, jiff: nationality === "FRA" },
+        info: {
+          positionGroup: pos,
+          generated: true,
+          estimated: ["birthDate", "heightCm", "weightKg", "jiff"],
+          rating: { club: level, international: 0, age: 0, clubStrength: 0, estimate: level, level, evidence: 0 },
+          sources: {},
+        },
+      });
+    }
+  }
 }

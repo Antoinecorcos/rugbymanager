@@ -27,7 +27,12 @@ faute → pénalité → décision (points / touche / mêlée / jouer vite) → 
 ## Calibrage
 `pnpm calibrate 1000` lance 1000 matchs entre 14 équipes de niveau Top 14 et compare 29 indicateurs à des fourchettes réalistes. Les mêmes contrôles tournent dans les tests (CI).
 Résultat actuel : **29/29** (voir `docs/exemples/calibrage.txt`).
-⚠️ Les fourchettes sont des **estimations** à affiner avec les vraies statistiques en M2, notamment les bonus offensifs, en limite haute.
+
+**M2** : les fourchettes des points, essais, nuls et bonus ont été vérifiées sur les vraies saisons régulières du Top 14 2021-2026 (910 matchs, `pnpm --filter @ovalie/data real-stats`). Le bonus offensif réel est de 0,34 par match : la cible passe de 0,08-0,32 à **0,22-0,45** (bonus défensif : 0,20-0,40, réel 0,32). Les autres indicateurs (rucks, plaquages, touches…) restent des estimations.
+Avec les **vrais effectifs** (`pnpm --filter @ovalie/data season TOP14 5`), le moteur reste à **29/29** (voir `docs/exemples/saison-top14.txt` et `docs/05-donnees-reelles.md`).
+
+## Sélection automatique
+`selectMatchTeam(effectif, options)` (`packages/engine/src/squad/selection.ts`) choisit les 23 d'un club : postes les plus rares d'abord (piliers, talonneur, 9, 10…), forte pénalité hors poste, **spécialiste obligatoire en 1re ligne**, banc 5-3 / 6-2 / 7-1, capitaine (leadership + niveau) et buteur (meilleur buteur des titulaires).
 
 ## Commandes
 ```bash

@@ -25,7 +25,7 @@ docs/             → recherche, GDD, roadmap
 |---|---|---|
 | **M0** ✅ | Fondations | Monorepo, schémas de données (joueur, club, staff, compétition), RNG, CI de tests |
 | **M1** ✅ | Moteur de match v1 (headless) | Simulation complète d'un match, stats de match, **calibrage sur les moyennes du Top 14** |
-| **M2** | Base de données réelle | Effectifs Top 14 + Pro D2 réels avec notes, puis PREM, URC et Nationale |
+| **M2** ✅ | Base de données réelle | Effectifs Top 14 + Pro D2 réels avec notes, puis PREM, URC et Nationale (voir `docs/05-donnees-reelles.md`) |
 | **M3** | Monde et saison | Calendrier réel, Top 14, Pro D2, Nationale et coupes d'Europe, phases finales, internationaux simulés, doublons |
 | **M4** | Interface manager | Design system, accueil, effectif, fiche joueur, tactique, préparation de match, calendrier, classements |
 | **M5** | Match en 2D en direct | Vue PixiJS, consignes, remplacements, **décisions de pénalité + désobéissance** |
@@ -42,4 +42,4 @@ Le **moteur de match passe avant les données** : on le calibre sur des équipes
 - Chaque étape se termine par un commit et un récapitulatif de ce qui a été vérifié.
 
 ## Point technique : la collecte des données réelles
-L'environnement cloud n'a accès qu'aux registres de paquets. Pour M2, il faudra soit **autoriser quelques domaines** (Wikipédia, site de la LNR…), soit passer par l'outil de lecture web page par page, plus lent.
+L'environnement cloud « rugbymanager » autorise `top14.lnr.fr`, `prod2.lnr.fr`, `www.lnr.fr`, `fr.wikipedia.org`, `en.wikipedia.org`, `www.wikidata.org` et `itsrugby.fr`. Les scripts d'import mettent les pages en cache (`packages/data/.cache/`) ; le build de la base, les tests et les simulations fonctionnent hors ligne. Wikipédia limite le débit (réponses « too many requests ») : les imports espacent leurs requêtes et peuvent prendre plusieurs minutes.

@@ -1,0 +1,7 @@
+{
+ "club": {"id":"rennes","name":"Rennes EC","shortName":"REC","league":"NATIONALE","country":"FRA","stadium":{"name":"Stade du Commandant Bougouin"},"headCoach":"Kévin Courties","budgetEur":2100000,"previousRank":{"league":"NATIONALE","rank":11},"sources":{"wikipedia":"Rennes Étudiants Club rugby"}},
+ "importedAt": "2026-11-21",
+ "players": [
+
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "club": {"id":"orleans","name":"RC Orléans","shortName":"RCO","league":"NATIONALE","country":"FRA","city":"Stade de la Source","stadium":{"name":"Stade Marcel-Garcin","city":"Stade de la Source"},"headCoach":"Romain Cabannes","budgetEur":4200000,"sources":{"wikipedia":"Rugby Club Orléans"}},
+ "importedAt": "2026-11-21",
+ "players": [
+
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "club": {"id":"perigueux","name":"CA Périgueux","shortName":"CAP","league":"NATIONALE","country":"FRA","stadium":{"name":"Stade Francis-Rongiéras"},"headCoach":"Didier Casadeï","budgetEur":3000000,"previousRank":{"league":"NATIONALE","rank":6},"sources":{"wikipedia":"Club athlétique Périgueux Dordogne"}},
+ "importedAt": "2026-11-21",
+ "players": [
+
+ ]
+}

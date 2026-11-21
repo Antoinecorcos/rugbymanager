@@ -86,11 +86,6 @@ export function nationFromWikiCode(code: string): string | undefined {
   return NATION_BY_WIKI_CODE[c];
 }
 
-/** Tier-one rugby nations (international caps weigh more). */
-export const TIER_ONE = new Set(["FRA", "ENG", "IRL", "SCO", "WAL", "ITA", "RSA", "NZL", "AUS", "ARG"]);
-/** Strong tier-two nations. */
-export const TIER_TWO = new Set(["FIJ", "SAM", "TGA", "GEO", "JPN", "URU", "USA", "CAN", "ESP", "POR", "ROU", "CHI", "NAM"]);
-
 // ---------- wikitext ----------
 
 /** Removes <ref>…</ref>, comments, and {{efn}}/{{note}} footnotes. */

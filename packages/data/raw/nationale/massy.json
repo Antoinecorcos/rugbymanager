@@ -1,0 +1,7 @@
+{
+ "club": {"id":"massy","name":"RC Massy Essonne","shortName":"RCME","league":"NATIONALE","country":"FRA","stadium":{"name":"Stade Jules-Ladoumègue"},"headCoach":"Julien Maréchal","budgetEur":2600000,"previousRank":{"league":"NATIONALE","rank":4},"sources":{"wikipedia":"Rugby Club Massy Essonne"}},
+ "importedAt": "2026-11-21",
+ "players": [
+
+ ]
+}

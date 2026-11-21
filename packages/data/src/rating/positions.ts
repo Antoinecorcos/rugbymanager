@@ -6,14 +6,18 @@ const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerC
 
 /** Positions allowed by each LNR position group (and generic English/French labels). */
 const GROUPS: [RegExp, Position[]][] = [
-  [/1(ere|re)? ?ligne|front row|prop|hooker/, ["LH", "HK", "TH"]],
-  [/2(eme|e)? ?ligne|lock|second row/, ["LO"]],
-  [/3(eme|e)? ?ligne|back row|flanker|number (8|eight)/, ["BF", "OF", "N8"]],
-  [/demi de melee|scrum-?half/, ["SH"]],
-  [/demi d.ouverture|fly-?half|first five/, ["FH"]],
-  [/centre|center/, ["IC", "OC"]],
-  [/ailier|wing/, ["WG"]],
-  [/arriere|full-?back/, ["FB"]],
+  [/^hookers?$|^talonneurs?$/, ["HK"]],
+  [/^props?$|^piliers?$/, ["LH", "TH"]],
+  [/1(ere|re)? ?ligne|front row|props?|hookers?/, ["LH", "HK", "TH"]],
+  [/2(eme|e)? ?ligne|locks?\b|second row/, ["LO"]],
+  [/3(eme|e)? ?ligne|back row|flankers?|number (8|eight)/, ["BF", "OF", "N8"]],
+  [/demis? de melee|scrum-?hal(f|ves)/, ["SH"]],
+  [/demis? d.ouverture|fly-?hal(f|ves)|first five/, ["FH"]],
+  [/centres?|centers?/, ["IC", "OC"]],
+  [/ailiers?|wings?\b|wingers?/, ["WG"]],
+  [/arrieres?|full-?backs?/, ["FB"]],
+  [/back three/, ["WG", "FB"]],
+  [/utility backs?|backs?$/, ["FH", "IC", "OC", "WG", "FB"]],
 ];
 
 /** Hint phrases, most specific first. Each phrase maps to candidate positions. */
@@ -26,12 +30,12 @@ const HINTS: [RegExp, Position[]][] = [
   [/troisiemes? lignes? centres?|3e lignes? centres?|number (8|eight)|numero 8/, ["N8"]],
   [/troisiemes? lignes? ailes?|3e lignes? ailes?|flankers?|openside|blindside/, ["BF", "OF"]],
   [/troisiemes? lignes?|3e lignes?|back row/, ["BF", "OF", "N8"]],
-  [/demis? de melee|scrum-?half/, ["SH"]],
-  [/demis? d.ouverture|ouvreur|fly-?half/, ["FH"]],
+  [/demis? de melee|scrum-?hal(f|ves)/, ["SH"]],
+  [/demis? d.ouverture|ouvreur|fly-?hal(f|ves)/, ["FH"]],
   [/premiers? centres?|inside centre/, ["IC"]],
   [/seconds? centres?|deuxiemes? centres?|outside centre/, ["OC"]],
   [/centres?|centers?/, ["IC", "OC"]],
-  [/ailiers?|wings?\b/, ["WG"]],
+  [/ailiers?|wings?\b|wingers?/, ["WG"]],
   [/arrieres?|full-?backs?/, ["FB"]],
 ];
 
@@ -51,7 +55,9 @@ export interface PositionResult {
 }
 
 export function resolvePositions(p: Pick<RawPlayer, "positionGroup" | "positionHints" | "weightKg" | "heightCm">): PositionResult {
-  const group = GROUPS.find(([re]) => re.test(strip(p.positionGroup)))?.[1];
+  // League group label ("1ère ligne", "Props") or a full position label ("Deuxièmes lignes").
+  const fromLabel = hintPositions(p.positionGroup).flat();
+  const group = GROUPS.find(([re]) => re.test(strip(p.positionGroup)))?.[1] ?? (fromLabel.length ? [...new Set(fromLabel)] : undefined);
   const hinted = p.positionHints.flatMap(hintPositions);
   const allowed = group ?? [...new Set(hinted.flat())];
   if (!allowed.length) throw new Error(`Unknown position group "${p.positionGroup}"`);

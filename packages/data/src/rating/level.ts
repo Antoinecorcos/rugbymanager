@@ -7,11 +7,11 @@
 import type { Position } from "@ovalie/engine";
 import type { CareerSeason, RawPlayer } from "../raw.js";
 import type { League } from "../schemas.js";
-import { TIER_ONE, TIER_TWO } from "./nations.js";
+import { DEFAULT_CAP_WEIGHT, NATION_CAP_WEIGHT } from "./nations.js";
 
 export interface LevelContext {
   league: League;
-  /** Club budget z-score inside its league (0 if unknown). */
+  /** Club strength z-score inside its league (budget, or last season's rank when no budget is known). */
   clubBudgetZ: number;
   /** Current season label, e.g. "2026-2027". */
   season: string;
@@ -40,23 +40,26 @@ export interface LevelBreakdown {
 /** Strength of each domestic competition on the level scale (regular-season starter ≈ base + 1). */
 export const COMPETITION_BASE: Record<string, number> = {
   "TOP 14": 11.6,
-  "PRO D2": 9.9,
-  NATIONALE: 9.0,
-  PREM: 12.1,
-  URC: 11.9,
+  "PRO D2": 10.1,
+  NATIONALE: 9.4,
+  PREM: 11.3,
+  URC: 11.1,
 };
 
 export const LEAGUE_BASE: Record<League, number> = {
   TOP14: 11.6,
-  PROD2: 9.9,
-  NATIONALE: 9.0,
-  PREM: 12.1,
-  URC: 11.9,
-  OTHER: 9.5,
+  PROD2: 10.1,
+  NATIONALE: 9.4,
+  PREM: 11.3,
+  URC: 11.1,
+  OTHER: 9.0,
 };
 
-/** Regular-season rounds of each competition. */
-const ROUNDS: Record<string, number> = { "TOP 14": 26, "PRO D2": 30, NATIONALE: 26, PREM: 18, URC: 18 };
+/**
+ * Rounds used to measure usage. PREM / URC lines are estimated from club appearances in all
+ * competitions (Wikipedia infobox), hence a larger denominator than their 18 league rounds.
+ */
+const ROUNDS: Record<string, number> = { "TOP 14": 26, "PRO D2": 30, NATIONALE: 26, PREM: 24, URC: 24 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
@@ -115,7 +118,7 @@ export function clubLevel(career: CareerSeason[], ctx: LevelContext): { level: n
       const base = COMPETITION_BASE[comp];
       if (base === undefined) continue;
       const fullRounds = ROUNDS[comp] ?? 26;
-      const rounds = season === ctx.season ? Math.max(1, ctx.roundsSoFar[comp] ?? fullRounds) : fullRounds;
+      const rounds = season === ctx.season ? Math.min(fullRounds, Math.max(1, ctx.roundsSoFar[comp] ?? fullRounds)) : fullRounds;
       const progress = rounds / fullRounds;
       const w = baseW * (season === ctx.season ? progress : 1);
       if (w <= 0) continue;
@@ -133,7 +136,7 @@ export function internationalBonus(p: Pick<RawPlayer, "caps" | "capped" | "seven
   const caps = p.caps ?? (p.capped ? 5 : 0);
   let bonus = 0;
   if (caps > 0) {
-    const nationFactor = TIER_ONE.has(p.nationality) ? 1 : TIER_TWO.has(p.nationality) ? (["GEO", "FIJ", "SAM", "TGA", "JPN"].includes(p.nationality) ? 0.7 : 0.5) : 0.35;
+    const nationFactor = NATION_CAP_WEIGHT[p.nationality] ?? DEFAULT_CAP_WEIGHT;
     bonus = nationFactor * Math.min(1.8, 0.5 + 0.35 * Math.log(1 + caps / 2));
   }
   if (p.sevens) bonus = Math.max(bonus, 0.25);
