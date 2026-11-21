@@ -23,8 +23,8 @@ docs/             → recherche, GDD, roadmap
 ## Étapes
 | # | Étape | Livrable vérifiable |
 |---|---|---|
-| **M0** | Fondations | Monorepo, schémas de données (joueur, club, staff, compétition), RNG, CI de tests |
-| **M1** | Moteur de match v1 (headless) | Simulation complète d'un match, stats de match, **calibrage sur les moyennes du Top 14** |
+| **M0** ✅ | Fondations | Monorepo, schémas de données (joueur, club, staff, compétition), RNG, CI de tests |
+| **M1** ✅ | Moteur de match v1 (headless) | Simulation complète d'un match, stats de match, **calibrage sur les moyennes du Top 14** |
 | **M2** | Base de données réelle | Effectifs Top 14 + Pro D2 réels avec notes, puis PREM, URC et Nationale |
 | **M3** | Monde et saison | Calendrier réel, Top 14, Pro D2, Nationale et coupes d'Europe, phases finales, internationaux simulés, doublons |
 | **M4** | Interface manager | Design system, accueil, effectif, fiche joueur, tactique, préparation de match, calendrier, classements |

@@ -1,0 +1,35 @@
+
+Calibrage sur 1000 matchs (3.6 ms/match)
+
+Indicateur (total par match)           Moyenne   Cible
+✓ Points                                 51.80   [45 – 60]
+✓ Essais                                  6.06   [4.8 – 7]
+✓ Pénalités concédées                    19.48   [17 – 25]
+✓ Tentatives de pénalité                  5.31   [4 – 8]
+✓ % réussite pénalités                   75.19   [72 – 86]
+✓ % réussite transformations             73.34   [66 – 80]
+✓ Drops réussis                           0.20   [0.05 – 0.45]
+✓ Touches                                27.95   [20 – 32]
+✓ % touches conservées                   89.42   [83 – 92]
+✓ Mêlées                                 10.79   [10 – 18]
+✓ Pénalités en mêlée                      2.63   [2 – 5]
+✓ Rucks                                 158.76   [140 – 210]
+✓ % rucks rapides (<3 s)                 51.81   [40 – 65]
+✓ Plaquages réussis                     255.36   [220 – 340]
+✓ Plaquages manqués                      35.18   [25 – 50]
+✓ Franchissements                         7.31   [6 – 14]
+✓ Offloads                               12.15   [10 – 26]
+✓ Turnovers gagnés                       12.17   [9 – 20]
+✓ Coups de pied dans le jeu              45.76   [38 – 66]
+✓ Cartons jaunes                          0.64   [0.45 – 1.2]
+✓ Cartons rouges                          0.04   [0.02 – 0.15]
+✓ Temps de jeu effectif (min)            34.09   [31 – 40]
+✓ Durée totale (min)                     81.86   [80 – 86]
+✓ Sorties sur blessure                    0.87   [0.7 – 2.5]
+✓ Protocoles commotion                    0.45   [0.3 – 1.2]
+✓ % victoires à domicile                 65.10   [60 – 77]
+✓ % matchs nuls                           2.90   [0.5 – 5]
+✓ Bonus offensifs / match                 0.32   [0.08 – 0.32]
+✓ Bonus défensifs / match                 0.21   [0.15 – 0.38]
+
+29/29 indicateurs dans la cible.

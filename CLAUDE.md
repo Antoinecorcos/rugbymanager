@@ -6,8 +6,11 @@ Avant toute tâche, lire :
 - `docs/01-recherche-rugby.md` — le monde du rugby (règles, compétitions, économie)
 - `docs/02-game-design.md` — le GDD validé (décisions marquées ✅ = ne pas remettre en cause sans le porteur du projet)
 - `docs/03-roadmap.md` — stack et étapes (M0 → M8)
+- `docs/04-moteur-de-match.md` — fonctionnement du moteur de match
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.
 - Le moteur (`packages/engine`) reste du TypeScript pur, déterministe (RNG à graine), sans dépendance UI.
 - Toute modification du moteur de match doit garder les tests de calibrage au vert.
+
+Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`.
