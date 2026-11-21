@@ -2,11 +2,15 @@ import { DEFAULT_REFEREE } from "../domain/match-setup.js";
 import { generateMatchTeam } from "../gen/team-gen.js";
 import { Rng } from "../rng.js";
 import { simulateMatch } from "./engine.js";
+import type { MatchResult } from "./types.js";
 
 /**
  * Real-world targets (Top 14, per match, both teams combined unless stated).
  * Ranges are deliberately a bit wide: they encode "plausible professional rugby",
  * not one specific season.
+ * Points, tries, draws and bonus points were checked in M2 against the real Top 14 regular
+ * seasons 2021-22 → 2025-26 (910 matches, `pnpm --filter @ovalie/data real-stats`):
+ * 49.7 points, 5.66 tries, 2.3 % draws, 0.34 offensive and 0.32 defensive bonus points per match.
  */
 export const TARGETS = {
   points: { label: "Points", min: 45, max: 60 },
@@ -36,9 +40,10 @@ export const TARGETS = {
   hias: { label: "Protocoles commotion", min: 0.3, max: 1.2 },
   homeWinPct: { label: "% victoires à domicile", min: 60, max: 77 },
   drawPct: { label: "% matchs nuls", min: 0.5, max: 5 },
-  // ≈0.2 per match estimated for the Top 14 (+3 tries rule) — to be checked against real data in M2.
-  offensiveBonusPerMatch: { label: "Bonus offensifs / match", min: 0.08, max: 0.32 },
-  defensiveBonusPerMatch: { label: "Bonus défensifs / match", min: 0.15, max: 0.38 },
+  // Real Top 14 (+3 tries rule): 0.30–0.48 per season, 0.34 on average (2021-2026).
+  offensiveBonusPerMatch: { label: "Bonus offensifs / match", min: 0.22, max: 0.45 },
+  // Real Top 14: 0.29–0.34 per season. The engine sits in the lower part of the range (close games are a bit rare).
+  defensiveBonusPerMatch: { label: "Bonus défensifs / match", min: 0.2, max: 0.4 },
 } as const;
 
 export type CalibrationReport = Record<keyof typeof TARGETS, number>;
@@ -49,15 +54,24 @@ export function runCalibration(matches: number, seed = "calibration"): Calibrati
   const teams = levels.map((level, i) =>
     generateMatchTeam(rng, { id: `t${i}`, name: `Équipe ${i}`, level, bench: rng.weighted([["5-3", 6], ["6-2", 3], ["7-1", 1]] as const) }),
   );
-  const acc: Record<string, number> = {};
-  const add = (k: string, v: number) => (acc[k] = (acc[k] ?? 0) + v);
-  let homeWins = 0;
-  let draws = 0;
+  const results: MatchResult[] = [];
   for (let m = 0; m < matches; m++) {
     const h = rng.int(0, 13);
     let a = rng.int(0, 12);
     if (a >= h) a += 1;
-    const res = simulateMatch({ home: teams[h]!, away: teams[a]!, referee: DEFAULT_REFEREE, weather: rng.weighted([["dry", 7], ["wet", 2], ["windy", 1]] as const), seed: `${seed}-${m}` });
+    results.push(simulateMatch({ home: teams[h]!, away: teams[a]!, referee: DEFAULT_REFEREE, weather: rng.weighted([["dry", 7], ["wet", 2], ["windy", 1]] as const), seed: `${seed}-${m}` }));
+  }
+  return aggregateCalibration(results);
+}
+
+/** Averages the calibration indicators over a set of simulated matches. */
+export function aggregateCalibration(list: readonly MatchResult[]): CalibrationReport {
+  const matches = Math.max(1, list.length);
+  const acc: Record<string, number> = {};
+  const add = (k: string, v: number) => (acc[k] = (acc[k] ?? 0) + v);
+  let homeWins = 0;
+  let draws = 0;
+  for (const res of list) {
     const [s0, s1] = res.teamStats;
     const both = (f: (s: typeof s0) => number) => f(s0) + f(s1);
     add("points", both((s) => s.points));

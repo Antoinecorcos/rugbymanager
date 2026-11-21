@@ -8,7 +8,8 @@ import { NAME_POOLS, NATIONALITY_WEIGHTS_TOP14 } from "./names.js";
  * Per-position attribute offsets relative to the player's overall level.
  * Positive = key attribute for the role, negative = rarely needed.
  */
-type Profile = Partial<Record<AttributeKey, number>>;
+export type AttributeProfile = Partial<Record<AttributeKey, number>>;
+type Profile = AttributeProfile;
 
 const FORWARD_BASE: Profile = {
   kicking: -7, tacticalKicking: -7, goalKicking: -9, passing: -3, footwork: -3, flair: -2,
@@ -20,7 +21,7 @@ const BACK_BASE: Profile = {
   strength: -2, pace: 2, acceleration: 1, agility: 1, footwork: 1, handling: 1, passing: 1,
 };
 
-const PROFILES: Record<Position, Profile> = {
+export const POSITION_PROFILES: Readonly<Record<Position, AttributeProfile>> = {
   LH: { ...FORWARD_BASE, scrummaging: 4, strength: 3, pace: -6, acceleration: -5, agility: -5, jumping: -4, lineoutJumping: -6, jackal: -1, offloading: -2 },
   TH: { ...FORWARD_BASE, scrummaging: 5, strength: 4, pace: -7, acceleration: -5, agility: -6, jumping: -5, lineoutJumping: -6, jackal: -2, offloading: -2 },
   HK: { ...FORWARD_BASE, scrummaging: 2, lineoutThrowing: 4, jackal: 1, maul: 2, pace: -3, lineoutJumping: -6 },
@@ -37,13 +38,13 @@ const PROFILES: Record<Position, Profile> = {
 };
 
 /** Mean height (cm) and weight (kg) per position for professional players. */
-const BODY: Record<Position, [number, number]> = {
+export const POSITION_BODY: Readonly<Record<Position, readonly [number, number]>> = {
   LH: [183, 118], HK: [180, 106], TH: [185, 124], LO: [200, 117], BF: [192, 110], OF: [188, 106],
   N8: [192, 114], SH: [176, 82], FH: [182, 88], IC: [185, 98], OC: [185, 95], WG: [183, 91], FB: [185, 91],
 };
 
 /** Secondary positions commonly covered. */
-const COVER: Record<Position, Position[]> = {
+export const POSITION_COVER: Readonly<Record<Position, readonly Position[]>> = {
   LH: ["TH"], TH: ["LH"], HK: [], LO: ["BF"], BF: ["LO", "N8", "OF"], OF: ["BF"], N8: ["BF"],
   SH: ["WG"], FH: ["FB", "IC"], IC: ["OC", "FH"], OC: ["IC", "WG"], WG: ["FB", "OC"], FB: ["WG", "FH"],
 };
@@ -61,25 +62,19 @@ export interface GenPlayerOptions {
 
 export function generatePlayer(rng: Rng, opts: GenPlayerOptions): Player {
   const { position, level } = opts;
-  const profile = PROFILES[position];
   const nationality = opts.nationality ?? rng.weighted(NATIONALITY_WEIGHTS_TOP14);
   const pool = NAME_POOLS[nationality] ?? NAME_POOLS.FRA!;
 
-  const attributes = {} as Attributes;
-  for (const key of ALL_ATTRIBUTES) {
-    const offset = profile[key] ?? 0;
-    attributes[key] = Math.round(clamp(rng.normal(level + offset, 1.6), 1, 20));
-  }
-  const hidden = {} as HiddenAttributes;
-  for (const key of HIDDEN_ATTRIBUTES) hidden[key] = Math.round(clamp(rng.normal(11, 3.2), 1, 20));
+  const attributes = rollAttributes(rng, position, level);
+  const hidden = rollHiddenAttributes(rng);
 
-  const [h, w] = BODY[position];
+  const [h, w] = POSITION_BODY[position];
   const heightCm = Math.round(rng.normal(h, 4));
   // Heavier players for stronger forwards.
   const weightKg = Math.round(rng.normal(w + (attributes.strength - level) * 0.8, 5));
 
   const positions: Partial<Record<Position, number>> = { [position]: Math.round(clamp(rng.normal(18.5, 1), 15, 20)) };
-  for (const cover of COVER[position]) {
+  for (const cover of POSITION_COVER[position]) {
     if (rng.chance(0.35)) positions[cover] = Math.round(clamp(rng.normal(13, 2.5), 6, 17));
   }
 
@@ -100,4 +95,25 @@ export function generatePlayer(rng: Rng, opts: GenPlayerOptions): Player {
     hidden,
     currentAbility: Math.round(clamp(level * 10, 1, 200)),
   };
+}
+
+/**
+ * Rolls the 37 visible attributes of a player of the given position and overall level:
+ * position profile offset + gaussian noise (sd = `spread`), rounded and clamped to 1–20.
+ */
+export function rollAttributes(rng: Rng, position: Position, level: number, spread = 1.6): Attributes {
+  const profile = POSITION_PROFILES[position];
+  const attributes = {} as Attributes;
+  for (const key of ALL_ATTRIBUTES) {
+    const offset = profile[key] ?? 0;
+    attributes[key] = Math.round(clamp(rng.normal(level + offset, spread), 1, 20));
+  }
+  return attributes;
+}
+
+/** Hidden attributes (personality, injury proneness…): centred on 11. */
+export function rollHiddenAttributes(rng: Rng): HiddenAttributes {
+  const hidden = {} as HiddenAttributes;
+  for (const key of HIDDEN_ATTRIBUTES) hidden[key] = Math.round(clamp(rng.normal(11, 3.2), 1, 20));
+  return hidden;
 }

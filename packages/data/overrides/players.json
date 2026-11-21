@@ -1,0 +1,159 @@
+{
+ "$comment": "Ajustements manuels du niveau (échelle 1-20) pour les joueurs majeurs. Voir docs/05-donnees-reelles.md.",
+ "antoine-dupont": {
+  "level": 16.6,
+  "note": "Meilleur joueur du monde 2021, capitaine du XV de France"
+ },
+ "romain-ntamack": {
+  "level": 15.7,
+  "note": "Ouvreur titulaire du XV de France"
+ },
+ "thomas-ramos": {
+  "level": 15.5,
+  "note": "Arrière/buteur du XV de France, record de points"
+ },
+ "louis-bielle-biarrey": {
+  "level": 16.0,
+  "note": "Ailier du XV de France, record d'essais au Tournoi"
+ },
+ "damian-penaud": {
+  "level": 15.7,
+  "note": "Ailier du XV de France, meilleur marqueur de l'histoire des Bleus"
+ },
+ "matthieu-jalibert": {
+  "level": 15.5,
+  "note": "Ouvreur de l'UBB double championne d'Europe"
+ },
+ "gregory-alldritt": {
+  "level": 15.5,
+  "note": "Numéro 8 du XV de France"
+ },
+ "peato-mauvaka": {
+  "level": 15.4,
+  "note": "Talonneur du XV de France"
+ },
+ "julien-marchand": {
+  "level": 15.2,
+  "note": "Talonneur du XV de France"
+ },
+ "emmanuel-meafou": {
+  "level": 15.3,
+  "note": "Deuxième ligne du XV de France"
+ },
+ "thibaud-flament": {
+  "level": 15.2,
+  "note": "Deuxième ligne du XV de France"
+ },
+ "tommaso-menoncello": {
+  "level": 15.5,
+  "note": "Centre de l'Italie, meilleur joueur du Tournoi 2024"
+ },
+ "cyril-baille": {
+  "level": 14.9,
+  "note": "Pilier gauche du XV de France"
+ },
+ "francois-cros": {
+  "level": 14.9,
+  "note": "3e ligne du XV de France"
+ },
+ "jack-willis": {
+  "level": 15.1,
+  "note": "3e ligne international anglais"
+ },
+ "blair-kinghorn": {
+  "level": 15.1,
+  "note": "Arrière international écossais"
+ },
+ "ange-capuozzo": {
+  "level": 14.9,
+  "note": "Arrière/ailier international italien"
+ },
+ "anthony-jelonch": {
+  "level": 14.8,
+  "note": "3e ligne du XV de France"
+ },
+ "santiago-chocobares": {
+  "level": 14.9,
+  "note": "Centre international argentin"
+ },
+ "yoram-moefana": {
+  "level": 15.1,
+  "note": "Centre du XV de France"
+ },
+ "nicolas-depoortere": {
+  "level": 14.9,
+  "note": "Centre du XV de France"
+ },
+ "cameron-woki": {
+  "level": 14.9,
+  "note": "3e ligne du XV de France"
+ },
+ "maxime-lucu": {
+  "level": 14.8,
+  "note": "Demi de mêlée de l'UBB"
+ },
+ "paul-boudehent": {
+  "level": 14.9,
+  "note": "3e ligne du XV de France"
+ },
+ "oscar-jegou": {
+  "level": 14.9,
+  "note": "3e ligne du XV de France"
+ },
+ "nolann-le-garrec": {
+  "level": 14.9,
+  "note": "Demi de mêlée du XV de France"
+ },
+ "davit-niniashvili": {
+  "level": 14.8,
+  "note": "Arrière international géorgien"
+ },
+ "charles-ollivon": {
+  "level": 15.1,
+  "note": "3e ligne du XV de France"
+ },
+ "gael-fickou": {
+  "level": 14.9,
+  "note": "Centre du XV de France, plus de 90 sélections"
+ },
+ "huw-jones": {
+  "level": 14.9,
+  "note": "Centre international écossais"
+ },
+ "kyle-sinckler": {
+  "level": 14.8,
+  "note": "Pilier droit international anglais"
+ },
+ "baptiste-serin": {
+  "level": 14.7,
+  "note": "Demi de mêlée international"
+ },
+ "marcos-kremer": {
+  "level": 14.9,
+  "note": "3e ligne international argentin"
+ },
+ "julian-montoya": {
+  "level": 14.9,
+  "note": "Talonneur, capitaine de l'Argentine"
+ },
+ "theo-attissogbe": {
+  "level": 14.9,
+  "note": "Ailier du XV de France"
+ },
+ "emilien-gailleton": {
+  "level": 14.8,
+  "note": "Centre du XV de France"
+ },
+ "leo-barre": {
+  "level": 14.8,
+  "note": "Arrière du XV de France"
+ },
+ "paolo-garbisi": {
+  "level": 14.7,
+  "note": "Ouvreur international italien"
+ },
+ "mickael-guillard": {
+  "level": 14.7,
+  "note": "Deuxième ligne du XV de France"
+ }
+}

@@ -37,8 +37,8 @@ export const playerSchema = z
 /** Contract information (M6 will extend this). */
 export const contractSchema = z.object({
   clubId: z.string(),
-  /** ISO date. */
-  expires: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** ISO date; unknown for most real players (M6 will estimate it). */
+  expires: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   /** Gross yearly salary in euros, if known/estimated. */
   salaryEur: z.number().nonnegative().optional(),
   /** French JIFF status (homegrown). */
@@ -51,12 +51,15 @@ export const stadiumSchema = z.object({
   capacity: z.number().int().positive(),
 });
 
+export const leagueSchema = z.enum(["TOP14", "PROD2", "NATIONALE", "PREM", "URC", "OTHER"]);
+
 export const clubSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   shortName: z.string().min(2).max(4),
   country: z.string().length(3),
-  league: z.enum(["TOP14", "PROD2", "NATIONALE", "PREM", "URC", "OTHER"]),
+  league: leagueSchema,
+  city: z.string().optional(),
   colors: z.tuple([z.string(), z.string()]),
   stadium: stadiumSchema,
   /** Annual budget in euros (estimate). */
@@ -65,15 +68,80 @@ export const clubSchema = z.object({
   reputation: z.number().int().min(1).max(200),
   founded: z.number().int().optional(),
   honours: z.array(z.object({ competition: z.string(), seasons: z.array(z.string()) })).default([]),
+  president: z.string().optional(),
+  headCoach: z.string().optional(),
+  /** Final position last season. */
+  previousRank: z.object({ league: leagueSchema, rank: z.number().int().positive() }).optional(),
+  sources: z.record(z.string(), z.string()).optional(),
+});
+
+/** How a player's level was obtained (see docs/05-donnees-reelles.md). */
+export const ratingBreakdownSchema = z.object({
+  club: z.number(),
+  international: z.number(),
+  age: z.number(),
+  clubStrength: z.number(),
+  estimate: z.number(),
+  override: z.number().optional(),
+  level: z.number(),
+  evidence: z.number().min(0).max(1),
+});
+
+/** Real-world facts kept next to the game player (caps, origin, data quality). */
+export const playerInfoSchema = z.object({
+  caps: z.number().int().nonnegative().optional(),
+  homegrown: z.boolean().optional(),
+  previousClub: z.string().optional(),
+  arrivalYear: z.number().int().optional(),
+  /** Position group as published by the league. */
+  positionGroup: z.string(),
+  /** Fields that were estimated rather than read from a source (birthDate, heightCm, weightKg, jiff). */
+  estimated: z.array(z.string()).default([]),
+  rating: ratingBreakdownSchema,
+  sources: z.record(z.string(), z.string()).default({}),
 });
 
 export const squadEntrySchema = z.object({
   player: playerSchema,
   contract: contractSchema,
   shirtNumber: z.number().int().positive().optional(),
+  info: playerInfoSchema.optional(),
 });
 
+/** One club of the game database with its senior squad. */
+export const clubDatabaseSchema = z.object({
+  club: clubSchema,
+  squad: z.array(squadEntrySchema),
+});
+
+/** Manual corrections applied on top of the rating pipeline (packages/data/overrides/). */
+export const playerOverrideSchema = z
+  .object({
+    level: z.number().min(1).max(20).optional(),
+    potential: z.number().min(1).max(20).optional(),
+    primary: positionSchema.optional(),
+    positions: z.record(positionSchema, rating).optional(),
+    attributes: z.object(attributesShape).partial().strict().optional(),
+    heightCm: z.number().int().optional(),
+    weightKg: z.number().int().optional(),
+    note: z.string().optional(),
+  })
+  .strict();
+export const clubOverrideSchema = z
+  .object({
+    colors: z.tuple([z.string(), z.string()]).optional(),
+    reputation: z.number().int().min(1).max(200).optional(),
+    note: z.string().optional(),
+  })
+  .strict();
+
 export type Club = z.infer<typeof clubSchema>;
+export type League = z.infer<typeof leagueSchema>;
+export type PlayerInfo = z.infer<typeof playerInfoSchema>;
+export type RatingBreakdown = z.infer<typeof ratingBreakdownSchema>;
+export type ClubDatabase = z.infer<typeof clubDatabaseSchema>;
+export type PlayerOverride = z.infer<typeof playerOverrideSchema>;
+export type ClubOverride = z.infer<typeof clubOverrideSchema>;
 export type Contract = z.infer<typeof contractSchema>;
 export type SquadEntry = z.infer<typeof squadEntrySchema>;
 export type PositionCode = Position;

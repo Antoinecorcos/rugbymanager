@@ -1,0 +1,32 @@
+Import 2026-11-21
+
+toulouse         LNR 57 | wiki 47 | appariés 45 | taille 49 poids 49 naissance 45 | wiki seuls: Lomig Jouanny, Sialevailea Tolofua
+montpellier      LNR 59 | wiki 41 | appariés 40 | taille 43 poids 42 naissance 40 | wiki seuls: Karl Martin
+paris            LNR 64 | wiki 48 | appariés 48 | taille 48 poids 47 naissance 48
+pau              LNR 65 | wiki 50 | appariés 48 | taille 52 poids 52 naissance 48 | wiki seuls: Hayam El Bibouji, Paulo Pelesasa
+racing-92        LNR 52 | wiki 41 | appariés 40 | taille 45 poids 45 naissance 40 | wiki seuls: Noa Zinzen
+la-rochelle      LNR 56 | wiki 63 | appariés 53 | taille 45 poids 43 naissance 53 | wiki seuls: Nikolozi Sutidze, Gael Galván, Oscar Boutez, Watisoni Waqanisaravi, Lucas Andjisseramatchi, Christophe Loustalot, Arthur Vendé, Pierre Berthelot, Martin Betsen, Ugo Pacome
+clermont         LNR 52 | wiki 47 | appariés 47 | taille 45 poids 43 naissance 46
+bordeaux-begles  LNR 59 | wiki 50 | appariés 50 | taille 48 poids 48 naissance 48
+toulon           LNR 53 | wiki 39 | appariés 39 | taille 45 poids 45 naissance 39
+castres          LNR 56 | wiki 40 | appariés 38 | taille 43 poids 41 naissance 38 | wiki seuls: Stefan Buruiana, Gauthier Doubrère
+lyon             LNR 61 | wiki 42 | appariés 41 | taille 49 poids 49 naissance 41 | wiki seuls: Beka Saghinadze
+bayonne          LNR 56 | wiki 41 | appariés 39 | taille 43 poids 43 naissance 39 | wiki seuls: Quentin Béthune, Rob Leota
+perpignan        LNR 51 | wiki 53 | appariés 47 | taille 49 poids 48 naissance 47 | wiki seuls: Thomas Serezat, Jovan Sreckovic, Gabin Kretchmann, Job Poulet, Simon Sol, Setareki Toganiydrava
+vannes           LNR 61 | wiki 47 | appariés 47 | taille 48 poids 48 naissance 47
+montauban        LNR 49 | wiki 37 | appariés 35 | taille 45 poids 45 naissance 35 | wiki seuls: Nugzar Somkhishvili, Jack Maunder
+colomiers        LNR 46 | wiki 39 | appariés 37 | taille 45 poids 45 naissance 37 | wiki seuls: Mamuka Mstoiani, Maxime Granouillet
+provence-rugby   LNR 59 | wiki 44 | appariés 43 | taille 44 poids 44 naissance 43 | wiki seuls: Nadir Bouhedjeur
+oyonnax          LNR 56 | wiki 39 | appariés 38 | taille 46 poids 46 naissance 38 | wiki seuls: Maxime Salles
+valence-romans   LNR 40 | wiki 33 | appariés 30 | taille 39 poids 39 naissance 30 | wiki seuls: Tom Nublat, Xavier Mignot, Francesco Imberti
+brive            LNR 53 | wiki 40 | appariés 39 | taille 47 poids 47 naissance 39 | wiki seuls: Timilai Rokoduru
+agen             LNR 46 | wiki 35 | appariés 33 | taille 40 poids 41 naissance 33 | wiki seuls: Javier Eissmann, Paula Walisoliso
+grenoble         LNR 51 | wiki 47 | appariés 46 | taille 45 poids 44 naissance 46 | wiki seuls: Nathan Coutin
+angouleme        LNR 51 | wiki 39 | appariés 36 | taille 46 poids 45 naissance 36 | wiki seuls: Adrien Bau, Alexis Levron, Arthur Proult
+biarritz         LNR 51 | wiki 45 | appariés 43 | taille 44 poids 44 naissance 43 | wiki seuls: Álvaro García Iandolino, Ekain Imaz Agirre
+dax              LNR 36 | wiki 39 | appariés 35 | taille 32 poids 32 naissance 33 | wiki seuls: Mathys Vigeon, Julien Laveran, Martin Bonhoure, Mathys Pardies
+beziers          LNR 48 | wiki 39 | appariés 35 | taille 43 poids 43 naissance 35 | wiki seuls: Antoine Payrastre, Joseph Laharrague, Maxime Vacquier, Théo Vassallo
+nevers           LNR 62 | wiki 46 | appariés 46 | taille 50 poids 50 naissance 46
+aurillac         LNR 45 | wiki 39 | appariés 37 | taille 42 poids 40 naissance 37 | wiki seuls: Irakli Mchedlidze, Martim Souto
+nice             LNR 52 | wiki 47 | appariés 43 | taille 48 poids 48 naissance 43 | wiki seuls: Clément Chartier, Bilel Taieb, Jordan Taufua, Inoke Nalaga
+narbonne         LNR 48 | wiki 50 | appariés 46 | taille 41 poids 41 naissance 46 | wiki seuls: Thomas Barrientos, Loïc Varennes, Titoan Rouvelet, Gabin Pipy
