@@ -50,7 +50,7 @@ export function commentaryFr(e: MatchEvent, ctx: CommentaryContext): string | nu
     }
     case "penaltyDecision":
       if (e.importance === 0) return null;
-      return `Le staff de ${team} choisit : ${choiceFr(String(d.choice))}.`;
+      return `Décision du banc de ${team} : ${choiceFr(String(d.choice))}.`;
     case "captainOverride":
       return `Le capitaine ${p} ignore la consigne (${choiceFr(String(d.coachChoice))}) et choisit ${choiceFr(String(d.captainChoice))} !`;
     case "penaltyGoal":
@@ -59,7 +59,7 @@ export function commentaryFr(e: MatchEvent, ctx: CommentaryContext): string | nu
       return d.made ? `DROP de ${p} ! +3 pour ${team} !` : `Tentative de drop de ${p}... à côté.`;
     case "kickToTouch":
       if (d.endOfHalf) return `${p} envoie le ballon en touche, c'est terminé pour cette période.`;
-      if (d.penalty) return `${p} trouve la touche (${e.value} m gagnés).`;
+      if (d.penalty) return e.value && e.value > 0 ? `${p} trouve la touche (${e.value} m gagnés).` : `${p} trouve la touche près de la ligne adverse.`;
       if (d.onTheFull) return `${p} trouve la touche directement hors des 22 — retour au point de frappe.`;
       return e.value ? `Dégagement de ${p} en touche (${e.value} m).` : null;
     case "fiftyTwentyTwo":

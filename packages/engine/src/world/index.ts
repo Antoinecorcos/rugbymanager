@@ -9,3 +9,5 @@ export * from "./simulate.js";
 export * from "./summary.js";
 export * from "./manager.js";
 export * from "./scouting.js";
+export * from "./referees.js";
+export * from "./live.js";

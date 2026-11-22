@@ -19,6 +19,23 @@ export interface MatchTeam {
   controller: "ai" | "human";
   /** Team morale 0..1 (0.5 = neutral). */
   morale?: number;
+  /** Targeted instructions (GDD §5): aim at a weakness of the opponent. */
+  targets?: TargetedInstructions;
+}
+
+/**
+ * Targeted instructions. Each one shifts a real engine mechanism and can backfire when the
+ * target is badly chosen (e.g. running at a defender who actually tackles well).
+ */
+export interface TargetedInstructions {
+  /** Opposing player our ball carriers run at (he becomes the tackler far more often). */
+  carryAt?: string;
+  /** Opposing back-three player our kicks are aimed at (he has to field them). */
+  kickAt?: string;
+  /** Opposing prop our scrum attacks: our opposite prop's duel weighs on the scrum. */
+  scrumAt?: "LH" | "TH";
+  /** Contest their lineouts at the back: more steals, but their maul is harder to stop. */
+  lineoutPressure?: boolean;
 }
 
 export interface RefereeProfile {

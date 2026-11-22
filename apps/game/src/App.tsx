@@ -37,6 +37,7 @@ import { CalendarScreen } from "./screens/Calendar";
 import { CompetitionsScreen } from "./screens/Competitions";
 import { ClubScreen } from "./screens/Club";
 import { SeasonEndScreen } from "./screens/SeasonEnd";
+import { LiveMatchScreen } from "./screens/LiveMatch";
 
 export function App() {
   const { world, busy, progressDate } = useGame();
@@ -48,6 +49,13 @@ export function App() {
   }, [accent?.[0], accent?.[1]]);
 
   if (!world?.manager) return <TitleScreen />;
+  return <Shell world={world} busy={busy} progressDate={progressDate} />;
+}
+
+function Shell({ world, busy, progressDate }: { world: World; busy: boolean; progressDate?: string }) {
+  const { screen } = useRoute();
+  // The live match takes the whole screen (no sidebar), like a TV broadcast.
+  if (screen === "direct") return <LiveMatchScreen />;
   return (
     <div className="shell">
       <Sidebar world={world} />

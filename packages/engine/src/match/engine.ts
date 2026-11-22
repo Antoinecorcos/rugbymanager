@@ -1,6 +1,7 @@
 import type { AttributeKey } from "../domain/attributes.js";
-import { TOP14_BONUS, type MatchSetup, type MatchTeam } from "../domain/match-setup.js";
+import { TOP14_BONUS, type MatchSetup, type MatchTeam, type TargetedInstructions } from "../domain/match-setup.js";
 import type { Player } from "../domain/player.js";
+import type { Tactics } from "../domain/tactics.js";
 import { isBackRow, isForward, isFrontRow, SHIRT_POSITION, type Position } from "../domain/positions.js";
 import { clamp, Rng } from "../rng.js";
 import { computeRatings } from "./ratings.js";
@@ -8,7 +9,12 @@ import {
   emptyTeamStats,
   other,
   type EventType,
+  type LivePlayerState,
+  type LiveSnapshot,
+  type LiveTeamSnapshot,
   type MatchEvent,
+  type PlayKind,
+  type PlayStep,
   type MatchInjury,
   type MatchResult,
   type PenaltyDecisionRequest,
@@ -109,6 +115,8 @@ export interface MatchOptions {
    * while `run()` falls back to the staff recommendation.
    */
   decisionHandler?: (req: PenaltyDecisionRequest) => PenaltyOption;
+  /** Records the play-by-play trace used by the live view (no effect on the simulation). */
+  trace?: boolean;
 }
 
 export class MatchSimulation {
@@ -141,6 +149,14 @@ export class MatchSimulation {
 
   pendingDecision: PenaltyDecisionRequest | null = null;
   private options: MatchOptions;
+
+  /* Live view / coach controls. */
+  private traceSteps: PlayStep[] = [];
+  private cur: { step: PlayStep; ballInPlay: number } | null = null;
+  private evCursor = 0;
+  private lineupSig = "";
+  private pendingSubs: { side: Side; offId: string; onId: string }[] = [];
+  private autoSubs: [boolean, boolean] = [true, true];
 
   constructor(setup: MatchSetup, options: MatchOptions = {}) {
     this.setup = setup;
@@ -231,6 +247,8 @@ export class MatchSimulation {
     if (this.finished || this.pendingDecision) return [];
     const before = this.events.length;
     this.processRestart(this.next);
+    // The last action of a restart is complete: close it so that the trace matches the state.
+    this.flushStep();
     return this.events.slice(before);
   }
 
@@ -241,6 +259,7 @@ export class MatchSimulation {
     this.pendingDecision = null;
     const before = this.events.length;
     this.executePenalty(req, choice, true);
+    this.flushStep();
     return this.events.slice(before);
   }
 
@@ -250,6 +269,148 @@ export class MatchSimulation {
 
   getScore(): [number, number] {
     return [...this.score] as [number, number];
+  }
+
+  /* ------------------------------ Live control ---------------------- */
+
+  /** Play-by-play steps recorded so far (with `options.trace`). */
+  getTrace(): readonly PlayStep[] {
+    return this.traceSteps;
+  }
+
+  getClock(): number {
+    return this.clock;
+  }
+
+  /** Changes a team's tactics from the next action on. */
+  setTactics(side: Side, tactics: Tactics): void {
+    const ts = this.teams[side];
+    ts.team = { ...ts.team, tactics: { ...tactics } };
+  }
+
+  /** Changes a team's targeted instructions from the next action on. */
+  setTargets(side: Side, targets: TargetedInstructions | undefined): void {
+    const ts = this.teams[side];
+    const team: MatchTeam = { ...ts.team };
+    if (targets && Object.values(targets).some((v) => v !== undefined && v !== false)) team.targets = { ...targets };
+    else delete team.targets;
+    ts.team = team;
+  }
+
+  /** Staff-planned substitutions on (default) or off (manual changes only; injuries are still covered). */
+  setAutoSubstitutions(side: Side, on: boolean): void {
+    this.autoSubs[side] = on;
+  }
+
+  /**
+   * Asks for a substitution, made at the next stoppage. Returns an error message (French) when the
+   * change is not allowed, null otherwise.
+   */
+  requestSubstitution(side: Side, offId: string, onId: string): string | null {
+    const ts = this.teams[side];
+    const on = ts.bench.find((b) => b.p.id === onId);
+    if (!on || ts.replacedIds.has(onId)) return "Ce joueur n'est pas disponible sur le banc.";
+    const off = this.onField(ts).find((fp) => fp.p.id === offId);
+    if (!off) return "Ce joueur n'est pas sur le terrain.";
+    const slot = ts.slots.indexOf(off);
+    const pos = SHIRT_POSITION[slot + 1]!;
+    if (isFrontRow(pos) && (on.p.positions[pos] ?? 1) < 10) return "Un poste de première ligne doit être tenu par un spécialiste.";
+    if (this.pendingSubs.some((s) => s.side === side && (s.onId === onId || s.offId === offId))) return "Ce changement est déjà demandé.";
+    this.pendingSubs.push({ side, offId, onId });
+    return null;
+  }
+
+  cancelSubstitution(side: Side, onId: string): void {
+    this.pendingSubs = this.pendingSubs.filter((s) => !(s.side === side && s.onId === onId));
+  }
+
+  /** State of the match for the live view: score, stats, players' condition and whereabouts. */
+  snapshot(): LiveSnapshot {
+    const team = (ts: TeamState): LiveTeamSnapshot => {
+      const players: Record<string, LivePlayerState> = {};
+      for (const fp of ts.all.values()) {
+        const secs = fp.secs + (fp.onAt !== null ? this.clock - fp.onAt : 0);
+        const slot = ts.slots.indexOf(fp);
+        const bin = ts.binned.find((b) => b.fp === fp);
+        let state: LivePlayerState["state"];
+        if (slot >= 0) state = "field";
+        else if (bin) state = "binned";
+        else if (ts.bench.includes(fp) && !ts.replacedIds.has(fp.p.id)) state = "bench";
+        else state = "off";
+        const lp: LivePlayerState = { state, condition: Math.round(fp.condition), minutes: Math.floor(secs / 60), yellows: fp.yellows };
+        if (slot >= 0) lp.slot = slot + 1;
+        if (bin) {
+          lp.returnAt = bin.returnAt;
+          lp.binKind = bin.kind;
+        }
+        players[fp.p.id] = lp;
+      }
+      const snap: LiveTeamSnapshot = {
+        stats: { ...ts.stats },
+        tactics: { ...ts.team.tactics },
+        autoSubs: this.autoSubs[ts.side],
+        pendingSubs: this.pendingSubs.filter((p) => p.side === ts.side).map(({ offId, onId }) => ({ offId, onId })),
+        players,
+      };
+      if (ts.team.targets) snap.targets = { ...ts.team.targets };
+      return snap;
+    };
+    return { clock: Math.round(this.clock), period: this.period, score: [this.score[0], this.score[1]], finished: this.finished, teams: [team(this.teams[0]), team(this.teams[1])] };
+  }
+
+  private targets(side: Side): TargetedInstructions | undefined {
+    return this.teams[side].team.targets;
+  }
+
+  /* ------------------------------ Trace ----------------------------- */
+
+  /** Starts a new play-by-play action (closing the previous one). Never draws random numbers. */
+  private begin(kind: PlayKind, side: Side, playerId?: string, detail?: string): void {
+    if (!this.options.trace) return;
+    this.flushStep();
+    // Time spent between two actions (e.g. an infringement before the next action) goes to the previous one.
+    const last = this.traceSteps[this.traceSteps.length - 1];
+    if (last && this.clock > last.t + last.dur) last.dur = Math.round((this.clock - last.t) * 10) / 10;
+    const step: PlayStep = {
+      kind,
+      t: Math.round(this.clock * 10) / 10,
+      dur: 0,
+      live: 0,
+      side,
+      from: [round1(this.x), round1(this.y)],
+      to: [round1(this.x), round1(this.y)],
+      defOrg: Math.round(this.defOrg * 100) / 100,
+      ev: [this.evCursor, this.evCursor],
+      score: [this.score[0], this.score[1]],
+      period: this.period,
+    };
+    if (playerId) step.playerId = playerId;
+    if (detail) step.detail = detail;
+    const lineup = this.teams.map((ts) => ts.slots.map((fp) => fp?.p.id ?? null)) as [(string | null)[], (string | null)[]];
+    const sig = lineup.map((l) => l.join(",")).join("|");
+    if (sig !== this.lineupSig) {
+      this.lineupSig = sig;
+      step.lineup = lineup;
+    }
+    this.cur = { step, ballInPlay: this.ballInPlay };
+  }
+
+  /** Adds information to the current action (outcome known later). */
+  private annotate(patch: Partial<Pick<PlayStep, "playerId" | "detail" | "side">>): void {
+    if (this.cur) Object.assign(this.cur.step, patch);
+  }
+
+  private flushStep(): void {
+    if (!this.cur) return;
+    const s = this.cur.step;
+    s.dur = Math.round((this.clock - s.t) * 10) / 10;
+    s.live = Math.round((this.ballInPlay - this.cur.ballInPlay) * 10) / 10;
+    s.to = [round1(this.x), round1(this.y)];
+    s.ev = [this.evCursor, this.events.length];
+    this.evCursor = this.events.length;
+    s.score = [this.score[0], this.score[1]];
+    this.traceSteps.push(s);
+    this.cur = null;
   }
 
   /* ------------------------------ Core loop ------------------------- */
@@ -290,6 +451,7 @@ export class MatchSimulation {
     const [h, a] = this.score;
     if (this.period === 1 || this.period === 3) {
       this.emit(this.period === 1 ? "halfTime" : "extraTime", { importance: 2 });
+      this.begin("break", 0);
       this.period += 1;
       this.clock = Math.max(this.clock, this.periodEnd);
       this.periodEnd = this.clock + (this.period === 2 ? HALF : ET_HALF);
@@ -325,6 +487,8 @@ export class MatchSimulation {
     }
     this.finished = true;
     this.emit("fullTime", { importance: 2 });
+    this.begin("break", 0);
+    this.flushStep();
   }
 
   private kickCompWinner: Side | null = null;
@@ -519,7 +683,8 @@ export class MatchSimulation {
           }
         }
       }
-      this.aiSubstitutions(ts);
+      this.manualSubstitutions(ts);
+      if (this.autoSubs[ts.side]) this.aiSubstitutions(ts);
       this.checkFrontRow(ts);
     }
   }
@@ -569,6 +734,18 @@ export class MatchSimulation {
       ts.replacedIds.add(replaced.p.id);
     }
     this.emit("substitution", { side: ts.side, playerId: fp.p.id, otherPlayerId: replaced?.p.id, importance: 1 });
+  }
+
+  private manualSubstitutions(ts: TeamState): void {
+    const mine = this.pendingSubs.filter((s) => s.side === ts.side);
+    if (!mine.length) return;
+    this.pendingSubs = this.pendingSubs.filter((s) => s.side !== ts.side);
+    for (const req of mine) {
+      const on = ts.bench.find((b) => b.p.id === req.onId);
+      const off = this.onField(ts).find((fp) => fp.p.id === req.offId);
+      if (!on || !off || ts.replacedIds.has(on.p.id)) continue;
+      this.bringOn(ts, on, ts.slots.indexOf(off), off);
+    }
   }
 
   private aiSubstitutions(ts: TeamState): void {
@@ -762,6 +939,7 @@ export class MatchSimulation {
   }
 
   private tryScored(att: Side, scorer: FieldPlayer | null, how: string): void {
+    this.begin("try", att, scorer?.p.id, how);
     // TMO review on some tries.
     if (this.rng.chance(0.07)) {
       this.tick(70, false);
@@ -795,6 +973,7 @@ export class MatchSimulation {
   private conversion(att: Side, y: number, _scorerId: string): void {
     const ts = this.teams[att];
     const kicker = this.goalKicker(ts);
+    this.begin("conversion", att, kicker?.p.id);
     const angle = Math.abs(y - 35) / 35;
     const gk = kicker ? this.attr(kicker, "goalKicking") : 8;
     const wind = this.setup.weather === "windy" ? 0.08 : this.setup.weather === "wet" ? 0.03 : 0;
@@ -845,6 +1024,7 @@ export class MatchSimulation {
     const kts = this.teams[kicking];
     const rts = this.teams[other(kicking)];
     const kicker = this.flyHalf(kts);
+    this.begin("kickoff", kicking, kicker?.p.id);
     this.emit("kickoff", { side: kicking, playerId: kicker?.p.id, importance: 1 });
     this.tick(4, true, kicking);
     if (this.rng.chance(0.035)) {
@@ -868,6 +1048,7 @@ export class MatchSimulation {
     const kicker = this.flyHalf(ts);
     this.x = this.abs(side, from);
     this.y = 35;
+    this.begin("dropout", side, kicker?.p.id);
     this.emit("dropout", { side, playerId: kicker?.p.id, importance: 1, detail: { from } });
     this.tick(3, true, side);
     if (this.rng.chance(0.2)) {
@@ -889,7 +1070,9 @@ export class MatchSimulation {
     const kts = this.teams[kicking];
     const rts = this.teams[other(kicking)];
     const chaser = this.pickWeighted(kts, fromPlay ? { WG: 3, FB: 1, OC: 1, BF: 0.5 } : { LO: 3, BF: 2, N8: 1, WG: 1 });
-    const receiver = this.pickWeighted(rts, fromPlay ? { FB: 3, WG: 2, SH: 0.4 } : { LO: 3, BF: 2, N8: 1.5, FB: 0.5 });
+    const kickAt = this.targets(kicking)?.kickAt;
+    const receiver = this.pickWeighted(rts, fromPlay ? { FB: 3, WG: 2, SH: 0.4 } : { LO: 3, BF: 2, N8: 1.5, FB: 0.5 }, fromPlay && kickAt ? (fp) => (fp.p.id === kickAt ? 6 : 1) : undefined);
+    this.begin("contest", other(kicking), receiver?.p.id);
     const air = (fp: FieldPlayer | null) =>
       fp ? this.attr(fp, "highBall") * 0.5 + this.attr(fp, "jumping") * 0.2 + heightScore(fp.p.heightCm) * 0.15 + this.attr(fp, "bravery") * 0.15 : 5;
     const accuracy = kicker ? (this.attr(kicker, "tacticalKicking") - 12) * 0.015 : 0;
@@ -898,6 +1081,7 @@ export class MatchSimulation {
     this.tick(this.rng.range(3, 5), true, kicking);
     if (this.rng.chance(pRegain)) {
       this.emit("kickRegathered", { side: kicking, playerId: chaser?.p.id, importance: 1 });
+      this.annotate({ side: kicking, playerId: chaser?.p.id, detail: "regathered" });
       this.exert(chaser, 1);
       this.defOrg = 0.5;
       this.changePossession();
@@ -926,7 +1110,9 @@ export class MatchSimulation {
   private receiveKick(kicking: Side, kicker: FieldPlayer | null): void {
     const recv = other(kicking);
     const rts = this.teams[recv];
-    const receiver = this.pickWeighted(rts, { FB: 4, WG: 2, FH: 0.5 });
+    const kickAt = this.targets(kicking)?.kickAt;
+    const receiver = this.pickWeighted(rts, { FB: 4, WG: 2, FH: 0.5 }, kickAt ? (fp) => (fp.p.id === kickAt ? 6 : 1) : undefined);
+    this.begin("receive", recv, receiver?.p.id);
     this.tick(this.rng.range(4, 6), true, kicking);
     const pKnock = clamp(0.02 + (12 - (receiver ? this.attr(receiver, "highBall") : 8)) * 0.005 + (this.setup.weather === "wet" ? 0.025 : 0), 0.005, 0.1);
     if (this.rng.chance(pKnock)) {
@@ -962,6 +1148,8 @@ export class MatchSimulation {
     // End of half: team ahead kicks the ball dead.
     if (timeUp && (diff > 0 || this.period === 1) && adv < 75 && !(this.period === 1 && adv > 60)) {
       const kicker = this.flyHalf(ts) ?? this.scrumHalf(ts);
+      this.begin("kick", att, kicker?.p.id, "touch");
+      this.y = this.y < 35 ? 0 : 70;
       this.emit("kickToTouch", { side: att, playerId: kicker?.p.id, importance: 1, detail: { endOfHalf: true } });
       this.ballDead({ kind: "lineout", side: other(att), x: this.x }, "touch");
       return;
@@ -1030,6 +1218,7 @@ export class MatchSimulation {
 
     const carrier = this.pickWeighted(ats, mode === "close" ? CLOSE_CARRY_WEIGHTS : WIDE_CARRY_WEIGHTS);
     if (!carrier) return;
+    this.begin("carry", att, carrier.p.id, mode);
     const cps = this.pstat(carrier);
     let passes = 1;
     if (mode === "wide") {
@@ -1057,9 +1246,11 @@ export class MatchSimulation {
     if (shps) shps.passes += 1;
 
     // Contest: carrier vs tackler.
+    const carryAt = this.targets(att)?.carryAt;
     const tackler = this.pickWeighted(
       dts,
       mode === "close" ? { BF: 2, OF: 2, N8: 1.5, LO: 1.8, LH: 1.2, TH: 1.2, HK: 1.4, FH: 0.6, SH: 0.4, IC: 0.8 } : { OC: 2, IC: 1.8, WG: 2, FB: 1, FH: 1, OF: 0.8, BF: 0.6 },
+      carryAt ? (fp) => (fp.p.id === carryAt ? 5 : 1) : undefined,
     );
     if (!tackler) return;
     const tps = this.pstat(tackler);
@@ -1090,6 +1281,7 @@ export class MatchSimulation {
     else if (r < pBreak + pBeat) outcome = "beat";
     else if (r < pBreak + pBeat + pDom) outcome = "dominant";
     else outcome = "tackle";
+    this.annotate({ detail: `${mode}:${outcome}` });
     void pDom;
     void pBeat;
 
@@ -1302,6 +1494,7 @@ export class MatchSimulation {
   private interception(by: Side): void {
     const ts = this.teams[by];
     const fp = this.pickWeighted(ts, { OC: 2, IC: 1.5, WG: 2, FB: 0.5 });
+    this.begin("interception", by, fp?.p.id);
     ts.stats.turnoversWon += 1;
     const ps = this.pstat(fp);
     if (ps) ps.turnoversWon += 1;
@@ -1324,6 +1517,7 @@ export class MatchSimulation {
   /* ------------------------------ Breakdown ------------------------- */
 
   private ruck(att: Side, carrier: FieldPlayer | null, ctx: { dominant: boolean; isolated: boolean }): void {
+    this.begin("ruck", att, carrier?.p.id);
     const ats = this.teams[att];
     const dside = other(att);
     const dts = this.teams[dside];
@@ -1411,6 +1605,7 @@ export class MatchSimulation {
     void quality;
 
     const kicker = type === "box" ? this.scrumHalf(ats) : this.rng.weighted<FieldPlayer | null>([[this.flyHalf(ats), 0.7], [this.fullback(ats), 0.2], [this.scrumHalf(ats), 0.1]]);
+    this.begin("kick", att, kicker?.p.id, type);
     const kps = this.pstat(kicker);
     if (kps) kps.kicks += 1;
     ats.stats.kicksInPlay += 1;
@@ -1533,6 +1728,7 @@ export class MatchSimulation {
     const dist = 100 - this.adv(att) + 8;
     const p = clamp(0.7 - Math.max(0, dist - 22) * 0.022 + (this.attr(kicker, "kicking") - 14) * 0.03 - this.pressure(att, kicker), 0.05, 0.85);
     ts.stats.dropGoalsAttempted += 1;
+    this.begin("dropGoal", att, kicker.p.id);
     this.tick(3, true, att);
     const made = this.rng.chance(p);
     const ps = this.pstat(kicker);
@@ -1556,6 +1752,7 @@ export class MatchSimulation {
     // Law: a penalty awarded within 5 m of the goal line is taken on the 5 m line.
     this.x = this.abs(side, clamp(this.adv(side, x), 5, 95));
     this.y = clamp(y, 5, 65);
+    this.begin("penalty", side);
     this.changePossession();
     const ts = this.teams[side];
     const adv = this.adv(side);
@@ -1642,6 +1839,7 @@ export class MatchSimulation {
     switch (final) {
       case "goal": {
         const kicker = this.goalKicker(ts);
+        this.begin("penaltyKick", side, kicker?.p.id, "goal");
         const p = this.goalProbability(side, kicker);
         ts.stats.penaltyGoalsAttempted += 1;
         this.tick(this.rng.range(45, 70), false);
@@ -1665,6 +1863,7 @@ export class MatchSimulation {
       }
       case "touch": {
         const kicker = this.flyHalf(ts) ?? this.goalKicker(ts);
+        this.begin("penaltyKick", side, kicker?.p.id, "touch");
         if (this.clock >= this.periodEnd && this.score[side] > this.score[other(side)] && this.period >= 2) {
           this.emit("kickToTouch", { side, playerId: kicker?.p.id, importance: 1, detail: { endOfHalf: true } });
           this.endPeriod();
@@ -1685,6 +1884,7 @@ export class MatchSimulation {
         this.next = { kind: "scrum", side, x: this.x };
         return;
       case "tap":
+        this.begin("tap", side, this.scrumHalf(ts)?.p.id);
         this.defOrg = 0.55;
         this.tick(3, false);
         this.next = { kind: "openPlay", side, quality: "fast" };
@@ -1719,10 +1919,22 @@ export class MatchSimulation {
     return total / 7.05;
   }
 
+  /** Bonus of a team that targets one opposing prop at scrum time (positive = advantage). */
+  private propDuel(us: TeamState, them: TeamState): number {
+    const target = us.team.targets?.scrumAt;
+    if (!target || this.uncontested) return 0;
+    const mine = us.slots[target === "TH" ? 0 : 2];
+    const theirs = them.slots[target === "TH" ? 2 : 0];
+    if (!mine || !theirs) return 0;
+    const q = (fp: FieldPlayer) => this.attr(fp, "scrummaging") * 0.55 + this.attr(fp, "strength") * 0.3 + weightScore(fp.p.weightKg) * 0.15;
+    return (q(mine) - q(theirs)) * 0.18;
+  }
+
   private scrum(feed: Side, x: number): void {
     this.changePossession();
     this.x = clamp(x, 5, 95);
     this.y = clamp(this.y, 15, 55);
+    this.begin("scrum", feed);
     const fts = this.teams[feed];
     const dside = other(feed);
     const dts = this.teams[dside];
@@ -1743,7 +1955,8 @@ export class MatchSimulation {
 
     const pa = this.scrumPower(fts) * (fts.team.tactics.scrumIntent === "penalty" ? 1.02 : 1);
     const pd = this.scrumPower(dts);
-    const d = pa - pd;
+    // Targeted scrum: one prop duel weighs on the whole scrum (can backfire).
+    const d = pa - pd + this.propDuel(fts, dts) - this.propDuel(dts, fts);
     const ref = this.setup.referee;
     // Resets.
     let resets = 0;
@@ -1796,6 +2009,7 @@ export class MatchSimulation {
     this.x = this.abs(throwing, adv);
     this.y = this.y < 35 ? 0 : 70;
     const tts = this.teams[throwing];
+    this.begin("lineout", throwing, this.hooker(tts)?.p.id);
     const dside = other(throwing);
     const dts = this.teams[dside];
     tts.stats.lineoutsThrown += 1;
@@ -1816,7 +2030,8 @@ export class MatchSimulation {
     const caller = aj[0] ? this.attr(aj[0], "decisions") : 10;
 
     const pNotStraight = clamp(0.022 + (13 - thr) * 0.005 + (this.setup.weather === "windy" ? 0.015 : 0), 0.005, 0.1);
-    const pSteal = contest ? clamp(0.065 + (jd - ja) * 0.015 + (13 - thr) * 0.007 - (caller - 12) * 0.004, 0.015, 0.3) : 0.018;
+    const pressure = contest && !!dts.team.targets?.lineoutPressure;
+    const pSteal = contest ? clamp(0.065 + (jd - ja) * 0.015 + (13 - thr) * 0.007 - (caller - 12) * 0.004 + (pressure ? (jd >= ja ? 0.04 : 0.015) : 0), 0.015, 0.34) : 0.018;
     const pPenAtt = 0.03; // defence infringes (obstruction on jumper, early contact)
     const pPenDef = 0.025; // attack infringes (obstruction in maul set-up etc.)
     const r = this.rng.next();
@@ -1857,7 +2072,7 @@ export class MatchSimulation {
     if (adv >= 78) pMaul += pref === "offTheTop" ? 0.35 : 0.55;
     else if (adv >= 60) pMaul += 0.1;
     else if (adv < 30) pMaul *= 0.4;
-    if (this.rng.chance(clamp(pMaul, 0, 0.9))) return this.maul(throwing, hooker);
+    if (this.rng.chance(clamp(pMaul, 0, 0.9))) return this.maul(throwing, hooker, pressure);
     this.defOrg = 0.78;
     this.next = { kind: "openPlay", side: throwing, quality: "fast" };
   }
@@ -1874,13 +2089,15 @@ export class MatchSimulation {
     return n ? (s / n) * (0.75 + n / 32) : 5;
   }
 
-  private maul(att: Side, hooker: FieldPlayer | null): void {
+  private maul(att: Side, hooker: FieldPlayer | null, defenceJumped = false): void {
+    this.begin("maul", att, hooker?.p.id);
     const ats = this.teams[att];
     const dside = other(att);
     const dts = this.teams[dside];
     ats.stats.mauls += 1;
     const pa = this.maulPower(ats);
-    const pd = this.maulPower(dts) + (dts.team.tactics.lineoutDefence === "sack" ? 1.2 : 0);
+    // Defenders who went up to contest the throw are late to set against the maul.
+    const pd = this.maulPower(dts) + (dts.team.tactics.lineoutDefence === "sack" ? 1.2 : 0) - (defenceJumped ? 0.9 : 0);
     const d = pa - pd;
     let metres = 0;
     for (let step = 0; step < 3; step++) {
@@ -1989,6 +2206,8 @@ export class MatchSimulation {
     };
   }
 }
+
+const round1 = (v: number): number => Math.round(v * 10) / 10;
 
 function bestPosition(p: Player): Position {
   let best: Position = "LO";

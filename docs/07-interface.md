@@ -53,7 +53,7 @@ pnpm --filter @ovalie/game smoke      # parcours complet dans Chromium + capture
 
 **Neutralité** : une carrière où le staff compose l'équipe produit exactement les mêmes résultats qu'une simulation sans manager (test `manager.test.ts`). Le calibrage reste donc valable (29/29).
 
-Les décisions sur pénalité suivent pour l'instant la recommandation du staff (`controller: "ai"`) : elles se prendront en direct avec le match 2D (M5).
+Avec « Résultat immédiat », les décisions sur pénalité suivent la recommandation du staff (`controller: "ai"`). En direct (M5), le manager les prend lui-même : voir `docs/08-match-en-direct.md`.
 
 ## Le système de design
 
@@ -84,7 +84,7 @@ Barre latérale fixe (GDD §8) et bouton **Continuer** toujours visible ; il dev
 | **Fiche joueur** | 37 attributs par famille, radar par famille (valeurs listées à côté), familiarité sur un terrain, santé et forme, morphologie comparée à la moyenne du poste (valeurs estimées signalées), personnalité décrite par le staff (attributs cachés jamais chiffrés), statistiques par compétition, parcours et statut JIFF, et **« D'où vient sa note ? »** : la note décomposée (temps de jeu, sélections, âge, force du club, ajustement manuel) avec sa fiabilité. |
 | **Tactique** | Plans A et B renommables, plan par défaut, les 9 consignes du moteur avec, pour chaque choix, **son effet réel** dans la simulation (chiffres tirés du code du moteur). |
 | **Composition** | XV sur un terrain et banc de 8 (5-3, 6-2 ou 7-1) ; clic sur un numéro puis sur un joueur (liste triée par adéquation au poste), ou glisser-déposer, avec échange automatique ; capitaine et buteur ; contrôles en direct ; « Le staff choisit » ou « Je choisis » ; proposition du staff. |
-| **Préparation de match** | Rapport de force par secteur (nous contre eux), conseils de l'analyste à appliquer au plan du match, rapport sur l'adversaire, choix du plan A ou B pour ce match, résumé de la composition, encart arbitre, bouton « Jouer le match ». |
+| **Préparation de match** | Rapport de force par secteur (nous contre eux), conseils de l'analyste à appliquer au plan du match, rapport sur l'adversaire, choix du plan A ou B pour ce match, résumé de la composition, arbitre désigné (M5), consignes ciblées et règles de pénalité (M5), boutons « Résultat immédiat » et « Match en direct » (M5). |
 | **Compte rendu** | Tableau d'affichage (marqueurs, bonus, météo, plan, homme du match), temps forts ou tous les faits commentés en français, statistiques comparées, notes des joueurs, blessures, changements du staff, autres résultats de la journée. |
 | **Calendrier** | Matchs du club mois par mois, filtre par compétition, fenêtres internationales (doublons) signalées. |
 | **Compétitions** | Top 14, Pro D2, Nationale, Champions Cup, Challenge Cup, PREM, URC, Nations Championship, Six Nations : classement (zones de qualification, access match, relégation), poules, résultats par journée, phases finales, meilleurs marqueurs. |
@@ -100,8 +100,7 @@ Barre latérale fixe (GDD §8) et bouton **Continuer** toujours visible ; il dev
 
 ## Limites et suites
 
-- **Décisions de pénalité, remplacements et consignes en direct** : M5 (match 2D). Les « consignes ciblées » du GDD §5 (« cibler leur pilier droit ») attendent ce moteur interactif.
-- **Arbitres** : profil moyen pour tous ; les vrais profils arrivent en M5.
+- ~~Décisions de pénalité, remplacements et consignes en direct ; consignes ciblées ; arbitres réels~~ : faits en M5 (`docs/08-match-en-direct.md`).
 - **Départ « Sans diplôme »** simplifié : on choisit directement son club de Pro D2 ou de Nationale (les candidatures et la réputation du manager viendront en M6). La confiance capitaine ↔ coach est fixe (0,7) jusqu'à M6.
 - L'**objectif** affiché est indicatif (rang de force de l'effectif dans le championnat) : président, confiance et finances en M6.
 - Une **composition manuelle** est conservée de match en match, sans rotation automatique : les absents sont remplacés par le staff, la fatigue est signalée mais c'est au manager de faire tourner.

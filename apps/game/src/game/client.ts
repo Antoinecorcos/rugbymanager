@@ -1,6 +1,6 @@
 /** Interface side of the game: talks to the worker, keeps the latest world snapshot. */
 import { useSyncExternalStore } from "react";
-import type { ContinueResult, ManagerProfile, World } from "@ovalie/engine";
+import type { ContinueResult, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 import type { CatalogueClub, Envelope, ManagerPatch, Progress, Request, Response, SaveInfo } from "./protocol";
 
 export interface GameState {
@@ -81,6 +81,33 @@ class GameClient {
   continue = () => this.worldCall({ kind: "continue" });
   playMatch = () => this.worldCall({ kind: "playMatch" });
   updateManager = (patch: ManagerPatch) => this.worldCall({ kind: "updateManager", patch }, false);
+  // ---- live match (no busy overlay: the match screen shows its own state)
+  async liveStart(): Promise<{ info: LiveInfo; snapshot: LiveSnapshot }> {
+    const r = (await this.call({ kind: "liveStart" })) as Extract<Response, { kind: "liveStart" }>;
+    return { info: r.info, snapshot: r.snapshot };
+  }
+  private async chunk(body: Request): Promise<LiveChunk> {
+    return ((await this.call(body)) as Extract<Response, { kind: "liveChunk" }>).chunk;
+  }
+  liveNext = (seconds?: number) => this.chunk(seconds === undefined ? { kind: "liveNext" } : { kind: "liveNext", seconds });
+  liveDecide = (choice: PenaltyOption) => this.chunk({ kind: "liveDecide", choice });
+  private async snap(body: Request): Promise<{ snapshot: LiveSnapshot; error?: string | null }> {
+    const r = (await this.call(body)) as Extract<Response, { kind: "liveSnapshot" }>;
+    return { snapshot: r.snapshot, error: r.error ?? null };
+  }
+  liveTactics = (tactics: Tactics) => this.snap({ kind: "liveTactics", tactics });
+  liveTargets = (targets: TargetedInstructions | undefined) => this.snap({ kind: "liveTargets", targets });
+  liveAutoSubs = (on: boolean) => this.snap({ kind: "liveAutoSubs", on });
+  async liveRules(rules: PenaltyRule[]): Promise<void> {
+    await this.call({ kind: "liveRules", rules });
+  }
+  liveSub = (offId: string, onId: string) => this.snap({ kind: "liveSub", offId, onId });
+  liveCancelSub = (onId: string) => this.snap({ kind: "liveCancelSub", onId });
+  liveFinish = () => this.worldCall({ kind: "liveFinish" }, false);
+  async liveAbort(): Promise<void> {
+    await this.call({ kind: "liveAbort" });
+  }
+
   async deleteSave(): Promise<void> {
     await this.call({ kind: "deleteSave" });
   }

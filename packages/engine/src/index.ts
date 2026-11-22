@@ -13,4 +13,5 @@ export * from "./match/types.js";
 export * from "./match/engine.js";
 export * from "./match/commentary-fr.js";
 export * from "./match/ratings.js";
+export * from "./match/spatial.js";
 export * from "./match/calibration.js";

@@ -48,7 +48,7 @@ try {
     await idle();
   }
   await page.locator(".topbar .btn--primary").click();
-  await page.getByRole("button", { name: "Jouer le match" }).waitFor();
+  await page.getByRole("button", { name: "Résultat immédiat" }).waitFor();
   await shot("03-preparation");
   step("préparation");
   const apply = page.getByRole("button", { name: "Appliquer" }).first();
@@ -66,7 +66,7 @@ try {
   step("composition");
 
   await page.goto(`${url}#/preparation`);
-  await page.getByRole("button", { name: "Jouer le match" }).click();
+  await page.getByRole("button", { name: "Résultat immédiat" }).click();
   await page.locator(".scoreboard").waitFor({ timeout: 60000 });
   await shot("06-compte-rendu");
   await page.getByRole("tab", { name: "Statistiques" }).click();

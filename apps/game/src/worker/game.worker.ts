@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 /** The game worker owns the world: every change happens here, the interface receives snapshots. */
-import type { World } from "@ovalie/engine";
+import { LiveSession, type World } from "@ovalie/engine";
 import type { Envelope, Progress, Request, Response } from "../game/protocol";
 import { applyPatch, buildCatalogue, continueWithProgress, newCareer, playToday, saveInfoOf } from "../game/session";
 import { CALENDAR, DATABASE } from "./database";
@@ -9,6 +9,13 @@ import { deleteSave, readSave, readSaveInfo, writeSave } from "./save";
 declare const self: DedicatedWorkerGlobalScope;
 
 let world: World | null = null;
+/** Live match in progress (not saved: a match left half-way is replayed from the kick-off). */
+let live: LiveSession | null = null;
+
+const liveSession = (): LiveSession => {
+  if (!live) throw new Error("Aucun match en direct");
+  return live;
+};
 
 async function autosave(): Promise<void> {
   const info = world && saveInfoOf(world);
@@ -51,6 +58,41 @@ async function handle(req: Request, id: number): Promise<Response> {
       await autosave();
       return playedFixtureId ? { kind: "world", world, playedFixtureId } : { kind: "world", world };
     }
+    case "liveStart": {
+      if (!world) throw new Error("Aucune partie en cours");
+      live = new LiveSession(world);
+      return { kind: "liveStart", info: live.info(world), snapshot: live.snapshot() };
+    }
+    case "liveNext":
+      return { kind: "liveChunk", chunk: liveSession().next(req.seconds) };
+    case "liveDecide":
+      return { kind: "liveChunk", chunk: liveSession().decide(req.choice) };
+    case "liveTactics":
+      return { kind: "liveSnapshot", snapshot: liveSession().setTactics(req.tactics) };
+    case "liveTargets":
+      return { kind: "liveSnapshot", snapshot: liveSession().setTargets(req.targets) };
+    case "liveRules":
+      liveSession().setRules(req.rules);
+      if (world?.manager) world.manager.penaltyRules = structuredClone(req.rules);
+      return { kind: "ok" };
+    case "liveAutoSubs":
+      return { kind: "liveSnapshot", snapshot: liveSession().setAutoSubs(req.on) };
+    case "liveSub": {
+      const error = liveSession().substitute(req.offId, req.onId);
+      return { kind: "liveSnapshot", snapshot: liveSession().snapshot(), error };
+    }
+    case "liveCancelSub":
+      return { kind: "liveSnapshot", snapshot: liveSession().cancelSubstitution(req.onId) };
+    case "liveFinish": {
+      if (!world) throw new Error("Aucune partie en cours");
+      const played = liveSession().finish(world);
+      live = null;
+      await autosave();
+      return { kind: "world", world, playedFixtureId: played.id };
+    }
+    case "liveAbort":
+      live = null;
+      return { kind: "ok" };
     case "updateManager":
       if (!world) throw new Error("Aucune partie en cours");
       applyPatch(world, req.patch);

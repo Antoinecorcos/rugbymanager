@@ -1,4 +1,6 @@
+import type { TargetedInstructions } from "../domain/match-setup.js";
 import type { Position } from "../domain/positions.js";
+import type { Tactics } from "../domain/tactics.js";
 
 export type Side = 0 | 1;
 export const other = (s: Side): Side => (s === 0 ? 1 : 0);
@@ -186,3 +188,89 @@ export const emptyTeamStats = (): TeamStats => ({
   kicksInPlay: 0, kickMetres: 0, fiftyTwentyTwos: 0, handlingErrors: 0, entries22: 0,
   pointsFrom22: 0, possessionSeconds: 0, territorySeconds: 0, injuries: 0, hias: 0,
 });
+
+/* ------------------------------------------------------------------ */
+/* Play-by-play trace (live view)                                      */
+/* ------------------------------------------------------------------ */
+
+export type PlayKind =
+  | "kickoff"
+  | "dropout"
+  | "kick"
+  | "contest"
+  | "receive"
+  | "carry"
+  | "ruck"
+  | "maul"
+  | "scrum"
+  | "lineout"
+  | "penalty"
+  | "penaltyKick"
+  | "tap"
+  | "dropGoal"
+  | "interception"
+  | "try"
+  | "conversion"
+  | "break";
+
+/**
+ * One action of the match as the live view shows it. The trace is recorded without drawing any
+ * random number: turning it on never changes a match.
+ */
+export interface PlayStep {
+  kind: PlayKind;
+  /** Clock at the start of the action (seconds). */
+  t: number;
+  /** Clock seconds spent until the next action (stoppages included). */
+  dur: number;
+  /** Ball-in-play seconds within `dur`. */
+  live: number;
+  /** Team in possession / acting. */
+  side: Side;
+  /** Ball position at the start and end (x 0..100 from the home try line, y 0..70). */
+  from: [number, number];
+  to: [number, number];
+  /** Ball carrier, kicker, thrower, scorer… */
+  playerId?: string;
+  /** Carry: close or wide; kick: kick type; scrum/lineout: result; penaltyKick: choice. */
+  detail?: string;
+  /** Defensive organisation (0..1) when the action starts. */
+  defOrg: number;
+  /** Events produced during the action: indexes [start, end) in the events array. */
+  ev: [number, number];
+  score: [number, number];
+  period: number;
+  /** Players on the field per shirt slot 1..15 (null = empty), present when it changed. */
+  lineup?: [(string | null)[], (string | null)[]];
+}
+
+export interface LivePlayerState {
+  /** Where the player is. */
+  state: "field" | "bench" | "binned" | "off";
+  /** Match condition 0..100. */
+  condition: number;
+  minutes: number;
+  yellows: number;
+  /** Shirt slot 1..15 when on the field. */
+  slot?: number;
+  /** Sin-bin / HIA: clock time of return. */
+  returnAt?: number;
+  binKind?: "yellow" | "red20" | "hia";
+}
+
+export interface LiveTeamSnapshot {
+  stats: TeamStats;
+  tactics: Tactics;
+  targets?: TargetedInstructions;
+  autoSubs: boolean;
+  pendingSubs: { offId: string; onId: string }[];
+  players: Record<string, LivePlayerState>;
+}
+
+export interface LiveSnapshot {
+  clock: number;
+  period: number;
+  score: [number, number];
+  finished: boolean;
+  teams: [LiveTeamSnapshot, LiveTeamSnapshot];
+}

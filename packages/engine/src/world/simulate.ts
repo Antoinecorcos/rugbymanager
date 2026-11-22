@@ -1,8 +1,9 @@
 /** Day-by-day simulation: call-ups, matches, injuries, suspensions, fatigue, knock-out stages. */
-import { DEFAULT_REFEREE, type MatchTeam, type Weather } from "../domain/match-setup.js";
+import type { MatchSetup, MatchTeam, Weather } from "../domain/match-setup.js";
 import type { Player } from "../domain/player.js";
 import { isForward } from "../domain/positions.js";
 import { simulateMatch } from "../match/engine.js";
+import type { MatchResult } from "../match/types.js";
 import { Rng } from "../rng.js";
 import { playerLevel, selectMatchTeam } from "../squad/selection.js";
 import type { InternationalWindow } from "./calendar.js";
@@ -10,6 +11,7 @@ import { NATION_NAME_FR, progressCompetitions } from "./competitions.js";
 import { addDays, type IsoDate } from "./dates.js";
 import { NATION_LEVEL } from "./nations.js";
 import { managedTeam, recordReport } from "./manager.js";
+import { fixtureReferee } from "./referees.js";
 import type { Fixture, PlayerSeasonStats, PlayerState, World } from "./types.js";
 
 /**
@@ -34,13 +36,16 @@ export const isOnDuty = (ps: PlayerState, d: IsoDate): boolean => !!ps.duty && p
 /** Fit and not suspended (regardless of international duty). */
 export const isFit = (ps: PlayerState, d: IsoDate): boolean => !isInjured(ps, d) && !isSuspended(ps, d);
 
-/** Advances the world by one day. Returns the fixtures played that day. */
-export function advanceDay(w: World): Fixture[] {
+/**
+ * Advances the world by one day. Returns the fixtures played that day.
+ * `played`: fixtures already played live (by id), recorded instead of being simulated.
+ */
+export function advanceDay(w: World, played?: Record<string, PlayedFixture>): Fixture[] {
   const d = w.date;
   for (const win of w.calendar.windows) if (win.start === d) callUps(w, win);
   progressCompetitions(w);
   const today = w.fixtures.filter((f) => f.date === d && !f.result);
-  for (const f of today) playFixture(w, f);
+  for (const f of today) playFixture(w, f, played?.[f.id]);
   progressCompetitions(w);
   dailyRecovery(w);
   w.date = addDays(d, 1);
@@ -149,23 +154,50 @@ export function fixtureWeather(w: World, f: Fixture): Weather {
   return rng.weighted([["dry", winter ? 50 : 77], ["wet", winter ? 35 : 15], ["windy", winter ? 15 : 8]] as const);
 }
 
-export function playFixture(w: World, f: Fixture): void {
+/** A fixture ready to be simulated: both 23s and the match setup (used by the live match too). */
+export interface PreparedFixture {
+  setup: MatchSetup;
+  missing: [number, number];
+  staffChanges: string[];
+}
+
+export function prepareFixture(w: World, f: Fixture): PreparedFixture {
   const comp = w.competitions[f.competitionId]!;
   const staffChanges: string[] = [];
   const home = teamFor(w, f, 0, staffChanges);
   const away = teamFor(w, f, 1, staffChanges);
-  const seed = `${w.seed}:${f.id}`;
-  const weather = fixtureWeather(w, f);
-  const res = simulateMatch({
+  const setup: MatchSetup = {
     home: home.team,
     away: away.team,
-    referee: DEFAULT_REFEREE,
-    weather,
-    seed,
+    referee: fixtureReferee(w, f),
+    weather: fixtureWeather(w, f),
+    seed: `${w.seed}:${f.id}`,
     knockout: f.knockout,
     neutral: f.neutral,
     bonus: comp.bonus,
-  });
+  };
+  return { setup, missing: [home.missing, away.missing], staffChanges };
+}
+
+/** A match already played outside the daily loop (live match of the manager), to be recorded. */
+export interface PlayedFixture {
+  prepared: PreparedFixture;
+  result: MatchResult;
+}
+
+export function playFixture(w: World, f: Fixture, played?: PlayedFixture): void {
+  const prepared = played?.prepared ?? prepareFixture(w, f);
+  const res = played?.result ?? simulateMatch(prepared.setup);
+  recordFixtureResult(w, f, prepared, res);
+}
+
+/** Records a played fixture: result, report, player statistics, fatigue, cards, injuries, news. */
+export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixture, res: MatchResult): void {
+  const comp = w.competitions[f.competitionId]!;
+  const { setup, staffChanges } = prepared;
+  const home = { team: setup.home, missing: prepared.missing[0] };
+  const away = { team: setup.away, missing: prepared.missing[1] };
+  const weather = setup.weather;
   const all = [...res.playerStats[0], ...res.playerStats[1]];
   const best = all.reduce((a, b) => (b.rating > a.rating ? b : a), all[0]!);
   f.result = {

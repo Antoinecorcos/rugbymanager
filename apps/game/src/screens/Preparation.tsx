@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Check, Crown, Lightbulb, Play, Shirt, Target } from "lucide-react";
 import {
   analystAdvice,
-  DEFAULT_REFEREE,
+  fixtureReferee,
   fixtureWeather,
   formatDateFr,
   leagueTable,
@@ -17,6 +17,7 @@ import {
   teamForFixture,
   type TacticalAdvice,
   type Tactics,
+  type TargetedInstructions,
   type World,
 } from "@ovalie/engine";
 import { game, useWorld } from "../game/client";
@@ -27,6 +28,7 @@ import { Badge, Button, ClubCrest, CompareLegend, CompareRow, Empty, KeyValues, 
 import { PlayerLink } from "../ui/widgets";
 import { WeatherIcon } from "./Home";
 import { TACTIC_INFO } from "./Tactics";
+import { PenaltyRulesEditor, TargetsEditor } from "../ui/instructions";
 
 const refereeText = (strictness: number) => (strictness >= 0.65 ? "sévère" : strictness <= 0.35 ? "tolérant" : "dans la moyenne");
 
@@ -67,6 +69,15 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
     setPlaying(false);
     if (r?.playedFixtureId) navigate("match", r.playedFixtureId);
   };
+  const referee = useMemo(() => fixtureReferee(w, f), [w, f.id]);
+  const opponentTeam = useMemo(() => teamForFixture(w, f, v.opponent), [w, f.id]);
+  const opponents = opponentTeam.players.slice(0, 15).map((player, i) => ({ player, shirt: i + 1 }));
+  const setTargets = (t: TargetedInstructions | undefined) => {
+    const matchTargets = { ...(m.matchTargets ?? {}) };
+    if (t) matchTargets[f.id] = t;
+    else delete matchTargets[f.id];
+    void game.updateManager({ matchTargets });
+  };
 
   return (
     <>
@@ -75,9 +86,14 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
         title={`Préparation : ${opp.name}`}
         actions={
           today ? (
-            <Button variant="primary" size="lg" icon={<Play size={18} />} onClick={play} disabled={playing}>
-              {playing ? "Match en cours…" : "Jouer le match"}
-            </Button>
+            <div className="row">
+              <Button variant="secondary" size="lg" onClick={play} disabled={playing} title="Le match est simulé d'un coup : le staff prend les décisions">
+                {playing ? "Simulation…" : "Résultat immédiat"}
+              </Button>
+              <Button variant="primary" size="lg" icon={<Play size={18} />} onClick={() => navigate("direct")} disabled={playing}>
+                Match en direct
+              </Button>
+            </div>
           ) : (
             <span className="muted">Le match se joue le {dateShort(f.date)} : « Continuer » s'arrêtera ce jour-là.</span>
           )
@@ -242,11 +258,19 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
 
           <Panel title="Arbitre">
             <p style={{ marginTop: 0 }}>
-              <b>{DEFAULT_REFEREE.name}</b> — profil moyen : {refereeText(DEFAULT_REFEREE.breakdownStrictness)} au sol, {refereeText(DEFAULT_REFEREE.scrumStrictness)} en mêlée, {refereeText(DEFAULT_REFEREE.cardStrictness)} sur les cartons.
+              <b>{referee.name}</b> : {refereeText(referee.breakdownStrictness)} au sol, {refereeText(referee.scrumStrictness)} en mêlée, {refereeText(referee.cardStrictness)} sur les cartons.
             </p>
             <p className="faint" style={{ marginBottom: 0 }}>
-              Les profils réels des arbitres arrivent avec le match en direct (M5).
+              Profil estimé (aucune donnée publique ne mesure ces tendances de façon fiable) ; son effet sur le match reste léger.
             </p>
+          </Panel>
+
+          <Panel title="Consignes ciblées" subtitle="Viser une faiblesse de l'adversaire (modifiable pendant le match)">
+            <TargetsEditor opponents={opponents} value={m.matchTargets?.[f.id]} onChange={setTargets} />
+          </Panel>
+
+          <Panel title="Décisions sur pénalité">
+            <PenaltyRulesEditor rules={m.penaltyRules} onChange={(penaltyRules) => void game.updateManager({ penaltyRules })} />
           </Panel>
 
           <Panel title="Face à face">

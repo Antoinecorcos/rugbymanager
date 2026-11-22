@@ -1,5 +1,5 @@
 /** Messages between the interface (main thread) and the game worker, which owns the world. */
-import type { ContinueResult, ManagerProfile, ManagerState, World } from "@ovalie/engine";
+import type { ContinueResult, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 
 /** Club shown on the new-game screen. */
 export interface CatalogueClub {
@@ -27,7 +27,7 @@ export interface SaveInfo {
 }
 
 /** Fields of the manager state the interface may change. */
-export type ManagerPatch = Partial<Pick<ManagerState, "plans" | "activePlan" | "matchPlans" | "selection" | "newsRead">>;
+export type ManagerPatch = Partial<Pick<ManagerState, "plans" | "activePlan" | "matchPlans" | "selection" | "newsRead" | "matchTargets" | "penaltyRules" | "autoSubs">>;
 
 export type Request =
   | { kind: "catalogue" }
@@ -37,13 +37,28 @@ export type Request =
   | { kind: "continue" }
   | { kind: "playMatch" }
   | { kind: "updateManager"; patch: ManagerPatch }
-  | { kind: "deleteSave" };
+  | { kind: "deleteSave" }
+  // Live match (M5): the worker owns the running match.
+  | { kind: "liveStart" }
+  | { kind: "liveNext"; seconds?: number }
+  | { kind: "liveDecide"; choice: PenaltyOption }
+  | { kind: "liveTactics"; tactics: Tactics }
+  | { kind: "liveTargets"; targets: TargetedInstructions | undefined }
+  | { kind: "liveAutoSubs"; on: boolean }
+  | { kind: "liveRules"; rules: PenaltyRule[] }
+  | { kind: "liveSub"; offId: string; onId: string }
+  | { kind: "liveCancelSub"; onId: string }
+  | { kind: "liveFinish" }
+  | { kind: "liveAbort" };
 
 export type Response =
   | { kind: "catalogue"; clubs: CatalogueClub[] }
   | { kind: "saveInfo"; info: SaveInfo | null }
   | { kind: "world"; world: World | null; stop?: ContinueResult; playedFixtureId?: string }
   | { kind: "ok" }
+  | { kind: "liveStart"; info: LiveInfo; snapshot: LiveSnapshot }
+  | { kind: "liveChunk"; chunk: LiveChunk }
+  | { kind: "liveSnapshot"; snapshot: LiveSnapshot; error?: string | null }
   | { kind: "error"; message: string };
 
 export interface Envelope<T> {

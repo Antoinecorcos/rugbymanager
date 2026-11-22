@@ -3,14 +3,15 @@
  * "Continuer" loop (advance day by day until something needs the manager's attention).
  * Pure and deterministic, like the rest of the world simulation.
  */
-import type { MatchTeam, Weather } from "../domain/match-setup.js";
+import type { MatchTeam, TargetedInstructions, Weather } from "../domain/match-setup.js";
+import type { PenaltyRule } from "./live.js";
 import { SHIRT_POSITION, type Position } from "../domain/positions.js";
 import { DEFAULT_TACTICS, type Tactics } from "../domain/tactics.js";
 import { BENCH_LAYOUT, type BenchSplit } from "../gen/team-gen.js";
 import type { MatchEvent, MatchInjury, MatchResult, PlayerMatchStats, TeamStats } from "../match/types.js";
 import { playerLevel, selectionScore, selectMatchTeam } from "../squad/selection.js";
 import { addDays, type IsoDate } from "./dates.js";
-import { advanceDay, clubPool, freshnessOf, fullName, isFit, isInjured, isOnDuty, isSuspended } from "./simulate.js";
+import { advanceDay, clubPool, freshnessOf, fullName, isFit, isInjured, isOnDuty, isSuspended, type PlayedFixture } from "./simulate.js";
 import type { Fixture, PlayerState, World } from "./types.js";
 
 export type CareerStart = "noDiploma" | "bigClub";
@@ -50,6 +51,12 @@ export interface ManagerState {
   selection: MatchdaySelection;
   /** Number of news items already seen in the inbox (index in `world.news`). */
   newsRead: number;
+  /** Targeted instructions chosen during the preparation of a fixture (fixture id → instructions). */
+  matchTargets?: Record<string, TargetedInstructions>;
+  /** Penalty decisions taken automatically during live matches (first matching rule wins). */
+  penaltyRules?: PenaltyRule[];
+  /** Live matches: the staff makes the planned substitutions (default) or the manager does them all. */
+  autoSubs?: boolean;
 }
 
 export interface ReportTeam {
@@ -173,6 +180,8 @@ export function managedTeam(w: World, f: Fixture, staffChanges: string[]): { tea
   if (sel.auto || sel.lineup.length !== 23) {
     const team = staffSelection(w, id, d, { bench: sel.bench, knockout: f.knockout, tactics });
     team.controller = "ai";
+    const targets = m.matchTargets?.[f.id];
+    if (targets) team.targets = { ...targets };
     return { team, missing };
   }
   const squad = new Set(w.squads[id] ?? []);
@@ -222,6 +231,8 @@ export function managedTeam(w: World, f: Fixture, staffChanges: string[]): { tea
     controller: "ai",
     morale: 0.5,
   };
+  const targets = m.matchTargets?.[f.id];
+  if (targets) team.targets = { ...targets };
   return { team, missing };
 }
 
@@ -292,6 +303,7 @@ export function recordReport(w: World, f: Fixture, teams: [MatchTeam, MatchTeam]
   (w.reports ??= {})[f.id] = report;
   if (staffChanges.length) w.news.push({ date: f.date, topic: "club", clubs: [m.clubId], text: `Composition modifiée par le staff : ${staffChanges.join(" ")}`, importance: 2 });
   delete m.matchPlans[f.id];
+  if (m.matchTargets) delete m.matchTargets[f.id];
 }
 
 // ------------------------------------------------------------------ continue
@@ -334,8 +346,8 @@ export function continueCareer(w: World, maxDays = 60): ContinueResult {
 }
 
 /** Plays the current day (the manager's match included) and returns the manager's fixture played, if any. */
-export function playMatchDay(w: World): Fixture | undefined {
+export function playMatchDay(w: World, live?: Record<string, PlayedFixture>): Fixture | undefined {
   const m = w.manager;
-  const played = advanceDay(w);
+  const played = advanceDay(w, live);
   return m ? played.find((f) => f.home === m.clubId || f.away === m.clubId) : undefined;
 }
