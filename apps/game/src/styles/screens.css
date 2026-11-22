@@ -897,3 +897,56 @@
     min-width: 0;
   }
 }
+
+/* ---------- M6a: human side, training, medical, staff ---------- */
+.mood {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.mood--good { color: var(--good); }
+.mood--neutral { color: var(--text-2); }
+.mood--warning { color: var(--warning); }
+.mood--critical { color: var(--critical); }
+.mood span { color: var(--text); }
+.gauge { display: flex; flex-direction: column; gap: 4px; }
+.gauge__head { display: flex; justify-content: space-between; font-size: var(--fs-sm); color: var(--text-2); }
+.gauge__head b { color: var(--text); }
+.meter--serious > span { background: var(--serious); }
+.trend { display: inline-flex; align-items: center; gap: 2px; font-variant-numeric: tabular-nums; font-size: var(--fs-sm); }
+.trend--up { color: var(--good); }
+.trend--down { color: var(--serious); }
+.sparkline { display: block; }
+.talks { display: flex; flex-wrap: wrap; gap: 6px; }
+.reply {
+  margin-top: var(--sp-2);
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  border-radius: 4px;
+  font-size: var(--fs-md);
+}
+.reply__who { font-size: var(--fs-sm); color: var(--text-3); margin-bottom: 2px; }
+.unit-bars { display: flex; flex-direction: column; gap: 12px; }
+.unit-bar { display: grid; grid-template-columns: 150px 1fr 48px; gap: 10px; align-items: center; font-size: var(--fs-md); }
+.unit-bar__track { position: relative; height: 8px; border-radius: 4px; background: var(--surface-3); }
+.unit-bar__fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--accent); }
+.unit-bar__target { position: absolute; top: -3px; width: 2px; height: 14px; background: var(--text); opacity: 0.7; }
+.unit-bar__mid { position: absolute; left: 50%; top: 0; width: 1px; height: 8px; background: var(--text-3); }
+.option-help { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--text-3); }
+.staff-attrs { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: var(--fs-sm); color: var(--text-2); }
+.staff-attrs b { color: var(--text); }
+.banner {
+  margin-bottom: var(--sp-4);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  font-size: var(--fs-md);
+}
+.player-grid__wide {
+  grid-column: 1 / -1;
+  align-items: start;
+}

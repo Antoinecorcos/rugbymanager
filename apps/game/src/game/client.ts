@@ -1,7 +1,7 @@
 /** Interface side of the game: talks to the worker, keeps the latest world snapshot. */
 import { useSyncExternalStore } from "react";
-import type { ContinueResult, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
-import type { CatalogueClub, Envelope, ManagerPatch, Progress, Request, Response, SaveInfo } from "./protocol";
+import type { ContinueResult, TalkResult, TeamTalk, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
+import type { CatalogueClub, Envelope, GameAction, ManagerPatch, Progress, Request, Response, SaveInfo } from "./protocol";
 
 export interface GameState {
   world: World | null;
@@ -106,6 +106,16 @@ class GameClient {
   liveFinish = () => this.worldCall({ kind: "liveFinish" }, false);
   async liveAbort(): Promise<void> {
     await this.call({ kind: "liveAbort" });
+  }
+
+  /** A squad action (talk, status, training, medical, academy): updates the world, returns an error or a talk reply. */
+  async act(action: GameAction): Promise<{ error: string | null; talk?: TalkResult }> {
+    const r = (await this.call({ kind: "action", action })) as Extract<Response, { kind: "action" }>;
+    this.set({ world: r.world });
+    return r.talk ? { error: r.error, talk: r.talk } : { error: r.error };
+  }
+  async liveHalfTime(talk: TeamTalk): Promise<string> {
+    return ((await this.call({ kind: "liveHalfTime", talk })) as Extract<Response, { kind: "liveHalfTime" }>).reaction;
   }
 
   async deleteSave(): Promise<void> {

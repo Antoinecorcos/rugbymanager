@@ -25,7 +25,7 @@ describe("live match", () => {
     let chunk = live.next();
     let steps = chunk.steps.length;
     while (!chunk.finished) {
-      chunk = chunk.decision ? live.decide(chunk.decision.recommended) : live.next();
+      chunk = chunk.decision ? live.decide(chunk.decision.recommended) : chunk.halfTime ? (live.halfTimeTalk(a, "none"), live.next()) : live.next();
       steps += chunk.steps.length;
     }
     expect(steps).toBeGreaterThan(300);
@@ -56,6 +56,9 @@ describe("live match", () => {
         // The rule covers our own half: we are only asked beyond halfway.
         expect(chunk.decision.advance).toBeGreaterThan(50);
         chunk = live.decide("touch");
+      } else if (chunk.halfTime) {
+        live.halfTimeTalk(w, "none");
+        chunk = live.next();
       } else chunk = live.next();
     }
     expect(asked).toBeGreaterThan(0);
@@ -75,7 +78,7 @@ describe("live match", () => {
     expect(live.substitute(mine.players[11]!.id, mine.players[22]!.id)).toBeNull();
     live.setTactics({ ...live.snapshot().teams[info.side].tactics, kickingGame: "territory" });
     expect(live.snapshot().teams[info.side].tactics.kickingGame).toBe("territory");
-    for (let i = 0; i < 20 && !chunk.finished; i++) chunk = chunk.decision ? live.decide(chunk.decision.recommended) : live.next();
+    for (let i = 0; i < 20 && !chunk.finished; i++) chunk = chunk.decision ? live.decide(chunk.decision.recommended) : chunk.halfTime ? (live.halfTimeTalk(w, "none"), live.next()) : live.next();
     // On the field (or since sin-binned / replaced again): no longer on the bench.
     expect(live.snapshot().teams[info.side].players[mine.players[22]!.id]!.state).not.toBe("bench");
     expect(live.snapshot().teams[info.side].players[mine.players[11]!.id]!.state).toBe("off");
@@ -95,6 +98,7 @@ describe("live playback timeline", () => {
       steps.push(...chunk.steps);
       chunk.events.forEach((e, k) => (events[chunk.eventOffset + k] = e));
       if (chunk.finished) break;
+      if (chunk.halfTime) live.halfTimeTalk(w, "none");
       chunk = chunk.decision ? live.decide(chunk.decision.recommended, 600) : live.next(600);
     }
     const ev = (i: number) => events[i];

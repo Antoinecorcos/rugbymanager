@@ -1,6 +1,17 @@
 /// <reference lib="webworker" />
 /** The game worker owns the world: every change happens here, the interface receives snapshots. */
-import { LiveSession, type World } from "@ovalie/engine";
+import {
+  ensureWorldExtensions,
+  LiveSession,
+  promoteYouth,
+  releaseYouth,
+  rushBack,
+  setIndividualTraining,
+  setStatus,
+  talkToPlayer,
+  type World,
+} from "@ovalie/engine";
+import type { GameAction } from "../game/protocol";
 import type { Envelope, Progress, Request, Response } from "../game/protocol";
 import { applyPatch, buildCatalogue, continueWithProgress, newCareer, playToday, saveInfoOf } from "../game/session";
 import { CALENDAR, DATABASE } from "./database";
@@ -30,6 +41,8 @@ async function handle(req: Request, id: number): Promise<Response> {
       return { kind: "saveInfo", info: await readSaveInfo().catch(() => null) };
     case "load":
       world = (await readSave())?.world ?? null;
+      // Saves from older versions get the new parts of the world (staff, academies, relationships).
+      if (world) ensureWorldExtensions(world);
       return { kind: "world", world };
     case "deleteSave":
       await deleteSave();
@@ -93,6 +106,16 @@ async function handle(req: Request, id: number): Promise<Response> {
     case "liveAbort":
       live = null;
       return { kind: "ok" };
+    case "liveHalfTime": {
+      if (!world) throw new Error("Aucune partie en cours");
+      return { kind: "liveHalfTime", reaction: liveSession().halfTimeTalk(world, req.talk).reaction };
+    }
+    case "action": {
+      if (!world) throw new Error("Aucune partie en cours");
+      const r = act(world, req.action);
+      void autosave();
+      return { kind: "action", world, ...r };
+    }
     case "updateManager":
       if (!world) throw new Error("Aucune partie en cours");
       applyPatch(world, req.patch);
@@ -111,3 +134,28 @@ self.onmessage = async (ev: MessageEvent<Envelope<Request>>) => {
   }
   self.postMessage({ id, body: res } satisfies Envelope<Response>);
 };
+
+/** Runs a squad action of the manager on the world. */
+function act(w: World, a: GameAction): { error: string | null; talk?: Extract<ReturnType<typeof talkToPlayer>, { reaction: unknown }> } {
+  switch (a.type) {
+    case "talk": {
+      const r = talkToPlayer(w, a.playerId, a.talk);
+      return "error" in r ? { error: r.error } : { error: null, talk: r };
+    }
+    case "status":
+      return { error: setStatus(w, a.playerId, a.status) };
+    case "training": {
+      const club = w.clubs[w.manager!.clubId]!;
+      club.training = { ...a.plan };
+      return { error: null };
+    }
+    case "individual":
+      return { error: setIndividualTraining(w, a.playerId, a.focus, a.learning) };
+    case "rushBack":
+      return { error: rushBack(w, a.playerId) };
+    case "promote":
+      return { error: promoteYouth(w, a.playerId) };
+    case "release":
+      return { error: releaseYouth(w, a.playerId) };
+  }
+}

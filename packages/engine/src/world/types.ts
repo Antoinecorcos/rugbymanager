@@ -1,5 +1,7 @@
 /** State of the game world: JSON-serialisable (future save games), advanced day by day. */
+import type { AttributeKey } from "../domain/attributes.js";
 import type { BonusRules } from "../domain/match-setup.js";
+import type { Position } from "../domain/positions.js";
 import type { Player } from "../domain/player.js";
 import type { ManagerState, MatchReport } from "./manager.js";
 import type { SeasonCalendar } from "./calendar.js";
@@ -24,6 +26,125 @@ export interface WorldClub {
   founded?: number;
   /** Final league position last season. */
   previousRank?: { league: string; rank: number };
+  /** Coaching, medical and academy staff (M6a; fictional except the head coach). */
+  staff?: StaffMember[];
+  /** Weekly training plan (AI clubs keep the balanced default). */
+  training?: TrainingPlan;
+  /** Team automatisms per unit, 0..1 (0.5 = neutral), built by the training focus. */
+  sharpness?: Sharpness;
+  /** Club morale 0..100 (AI clubs; the manager's club uses its players' morale). */
+  morale?: number;
+}
+
+/* ------------------------------------------------------------------ M6a: staff, training */
+
+export type StaffRole = "assistant" | "forwards" | "backs" | "defence" | "fitness" | "physio" | "doctor" | "analyst" | "youth";
+
+export interface StaffAttributes {
+  coaching: number;
+  tactics: number;
+  motivation: number;
+  fitness: number;
+  medical: number;
+  youth: number;
+  analysis: number;
+}
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  role: StaffRole;
+  nationality: string;
+  age: number;
+  attributes: StaffAttributes;
+  /** Fictional staff member (real assistants are not in the database). */
+  generated: boolean;
+}
+
+export type TrainingIntensity = "light" | "normal" | "intense";
+export type TrainingFocus = "balanced" | "setPiece" | "attack" | "defence" | "kicking" | "fitness" | "recovery";
+export type ContactLevel = "low" | "normal" | "high";
+
+export interface TrainingPlan {
+  intensity: TrainingIntensity;
+  focus: TrainingFocus;
+  contact: ContactLevel;
+}
+
+export type SharpnessUnit = "setPiece" | "attack" | "defence" | "kicking" | "fitness";
+export type Sharpness = Record<SharpnessUnit, number>;
+
+/* ------------------------------------------------------------------ M6a: players */
+
+export type SquadStatus = "star" | "starter" | "rotation" | "backup" | "prospect";
+
+export interface PlayingTimePromise {
+  madeOn: IsoDate;
+  /** Starts required among the next `window` club matches he is available for. */
+  starts: number;
+  window: number;
+  /** Progress since the promise. */
+  matches: number;
+  started: number;
+  deadline: IsoDate;
+  outcome?: "kept" | "broken";
+}
+
+export interface ClubMatchRecord {
+  date: IsoDate;
+  available: boolean;
+  started: boolean;
+  minutes: number;
+  rating?: number;
+}
+
+/** Relationship with the manager (players of the manager's club). */
+export interface PlayerHuman {
+  /** Morale 0..100. */
+  morale: number;
+  /** Trust in the manager 0..100 (captain: low trust → he may ignore a penalty call). */
+  trust: number;
+  status: SquadStatus;
+  promises: PlayingTimePromise[];
+  /** Last individual talk. */
+  lastTalk?: IsoDate;
+  /** Last club matches (playing time, ratings), most recent last. */
+  recent: ClubMatchRecord[];
+  /** Last "unhappy" warning sent to the inbox. */
+  lastComplaint?: IsoDate;
+}
+
+export interface InjuryRecord {
+  type: string;
+  from: IsoDate;
+  days: number;
+  concussion: boolean;
+  training?: boolean;
+}
+
+export interface MedicalRecord {
+  history: InjuryRecord[];
+  /** Concussions in the career (escalating stand-downs). */
+  concussions: number;
+  /** Rushed back from injury: higher injury risk until this date. */
+  fragileUntil?: IsoDate;
+}
+
+export type IndividualFocus = "none" | "technical" | "mental" | "physical" | "position";
+
+/** Development bookkeeping (fractional progress until an attribute moves by one point). */
+export interface PlayerDevelopment {
+  progress: Partial<Record<AttributeKey, number>>;
+  /** Fraction of a current-ability point. */
+  caAcc: number;
+  /** Current ability on the first Monday of each month. */
+  history: { date: IsoDate; ca: number }[];
+  focus?: IndividualFocus;
+  /** Position being learnt (individual focus "position"). */
+  learning?: Position;
+  learningAcc?: number;
+  /** Minutes played per match date, last 5 weeks (match experience). */
+  minutes: { date: IsoDate; minutes: number }[];
 }
 
 /** Real-world facts about a player shown by the interface (from the database `info` block). */
@@ -78,6 +199,12 @@ export interface PlayerState {
   /** Fictional player of a national team pool (NZL, AUS, JPN… whose players play outside the database). */
   virtual?: boolean;
   profile?: PlayerProfile;
+  /** In the club's academy (centre de formation), not in the professional squad. */
+  academy?: boolean;
+  /** Relationship with the manager (manager's club only). */
+  human?: PlayerHuman;
+  medical?: MedicalRecord;
+  dev?: PlayerDevelopment;
 }
 
 export interface FixtureResult {
@@ -168,4 +295,8 @@ export interface World {
   manager?: ManagerState;
   /** Full match reports of the manager's matches, by fixture id. */
   reports?: Record<string, MatchReport>;
+  /** Academy players of each club (ids, not in `squads`). */
+  academies?: Record<string, string[]>;
+  /** Version of the world extensions (save migration). */
+  version?: number;
 }

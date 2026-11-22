@@ -11,12 +11,14 @@ Avant toute tâche, lire :
 - `docs/06-monde-et-saison.md` — monde et saison (calendrier réel, formats, doublons, rotation) ; la partie démarre le 1er juillet 2026
 - `docs/07-interface.md` — interface manager (`apps/game`) : architecture worker, carrière dans le moteur, système de design, écrans
 - `docs/08-match-en-direct.md` — match en direct (M5) : trace, couche spatiale, LiveSession, écran PixiJS, décisions de pénalité
+- `docs/09-effectif-et-humain.md` — effectif et humain (M6a) : moral, confiance, discussions, causeries, entraînement, progression, médical, staff, centre de formation
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.
 - Le moteur (`packages/engine`) reste du TypeScript pur, déterministe (RNG à graine), sans dépendance UI.
 - Toute modification du moteur de match doit garder les tests de calibrage au vert. La trace du direct ne doit jamais tirer de nombre aléatoire (test « never changes the match »).
 - Interface (`apps/game`) : le worker possède le monde, l'interface ne fait que lire des instantanés ; la logique de jeu reste dans le moteur. Textes en français, tokens de `src/styles/tokens.css`, statuts toujours avec icône + libellé.
+- Monde : toute nouvelle partie de l'état du monde doit être complétée par `ensureWorldExtensions` (migration des sauvegardes, idempotente).
 - Données : `packages/data/raw` = faits importés, `overrides/` = corrections manuelles, `db/` = base générée (ne pas l'éditer à la main : `build-db`).
 
 Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`,

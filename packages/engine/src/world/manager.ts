@@ -5,6 +5,7 @@
  */
 import type { MatchTeam, TargetedInstructions, Weather } from "../domain/match-setup.js";
 import type { PenaltyRule } from "./live.js";
+import { initSquadRelations, type TeamTalk } from "./human.js";
 import { SHIRT_POSITION, type Position } from "../domain/positions.js";
 import { DEFAULT_TACTICS, type Tactics } from "../domain/tactics.js";
 import { BENCH_LAYOUT, type BenchSplit } from "../gen/team-gen.js";
@@ -57,6 +58,8 @@ export interface ManagerState {
   penaltyRules?: PenaltyRule[];
   /** Live matches: the staff makes the planned substitutions (default) or the manager does them all. */
   autoSubs?: boolean;
+  /** Pre-match team talk chosen in the preparation (fixture id → talk). */
+  teamTalks?: Record<string, TeamTalk>;
 }
 
 export interface ReportTeam {
@@ -85,6 +88,8 @@ export interface MatchReport {
   decidedBy?: MatchResult["decidedBy"];
   /** Name of the tactical plan used by the manager. */
   planName: string;
+  /** Pre-match team talk and its reaction (M6a). */
+  teamTalk?: { talk: TeamTalk; reaction: string };
   /** Changes the staff had to make to the manager's 23 (unavailable players replaced). */
   staffChanges: string[];
 }
@@ -116,6 +121,7 @@ export function startCareer(w: World, profile: ManagerProfile, clubId: string): 
   club.headCoach = profile.name;
   w.reports ??= {};
   w.news.push({ date: w.date, topic: "club", clubs: [clubId], text: `${profile.name} est nommé manager de ${club.name}. Bienvenue !`, importance: 3 });
+  initSquadRelations(w);
   return m;
 }
 
@@ -283,7 +289,7 @@ export function staffLineup(w: World, clubId: string, d: IsoDate, bench: BenchSp
 
 // ------------------------------------------------------------------ reports
 
-export function recordReport(w: World, f: Fixture, teams: [MatchTeam, MatchTeam], res: MatchResult, weather: Weather, staffChanges: string[]): void {
+export function recordReport(w: World, f: Fixture, teams: [MatchTeam, MatchTeam], res: MatchResult, weather: Weather, staffChanges: string[], teamTalk?: MatchReport["teamTalk"]): void {
   const m = w.manager!;
   const rt = (t: MatchTeam): ReportTeam => ({ id: t.id, name: t.name, shortName: t.shortName, lineup: t.players.map((p) => p.id), captainId: t.captainId, goalKickerId: t.goalKickerId, tactics: { ...t.tactics } });
   const report: MatchReport = {
@@ -300,7 +306,9 @@ export function recordReport(w: World, f: Fixture, teams: [MatchTeam, MatchTeam]
     staffChanges,
   };
   if (res.decidedBy) report.decidedBy = res.decidedBy;
+  if (teamTalk) report.teamTalk = teamTalk;
   (w.reports ??= {})[f.id] = report;
+  if (m.teamTalks) delete m.teamTalks[f.id];
   if (staffChanges.length) w.news.push({ date: f.date, topic: "club", clubs: [m.clubId], text: `Composition modifiée par le staff : ${staffChanges.join(" ")}`, importance: 2 });
   delete m.matchPlans[f.id];
   if (m.matchTargets) delete m.matchTargets[f.id];

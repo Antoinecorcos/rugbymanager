@@ -21,6 +21,10 @@ export interface MatchTeam {
   morale?: number;
   /** Targeted instructions (GDD §5): aim at a weakness of the opponent. */
   targets?: TargetedInstructions;
+  /** Team automatisms per unit (training), 0..1 with 0.5 neutral: ±5 % on the unit's attributes. */
+  sharpness?: Partial<Record<"setPiece" | "attack" | "defence" | "kicking" | "fitness", number>>;
+  /** Players rushed back from injury: double injury risk in contact. */
+  fragile?: string[];
 }
 
 /**

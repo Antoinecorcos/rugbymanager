@@ -14,6 +14,8 @@ import {
   type MatchEvent,
   type PenaltyDecisionRequest,
   type PenaltyOption,
+  TEAM_TALK_FR,
+  type TeamTalk,
   type PenaltyRule,
   type Tactics,
   type TargetedInstructions,
@@ -122,7 +124,8 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
   const [ending, setEnding] = useState(false);
   const rendererRef = useRef<PitchRenderer | null>(null);
   const fetching = useRef(false);
-  const flags = useRef({ decision: false, finished: false });
+  const flags = useRef({ decision: false, finished: false, halfTime: false });
+  const [halfTime, setHalfTime] = useState<[number, number] | null>(null);
   const mine = info.side;
   const theirs = mine === 0 ? 1 : 0;
   const colours = useMemo(() => kitColours(info.teams[0].colors, info.teams[1].colors), [info]);
@@ -141,6 +144,11 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
       player.sourceDone = true;
       setDecision(chunk.decision);
     }
+    if (chunk.halfTime) {
+      flags.current.halfTime = true;
+      player.sourceDone = true;
+      setHalfTime(chunk.halfTime.score);
+    }
     if (chunk.finished) {
       flags.current.finished = true;
       player.sourceDone = true;
@@ -151,7 +159,7 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
   // Keep the playback fed with actions from the worker.
   useEffect(() => {
     const pump = async () => {
-      if (fetching.current || flags.current.decision || flags.current.finished) return;
+      if (fetching.current || flags.current.decision || flags.current.finished || flags.current.halfTime) return;
       const want = player.mode === "full" ? 8 : 16;
       if (player.mode !== "result" && player.backlog >= want) return;
       fetching.current = true;
@@ -226,6 +234,15 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
 
   const showDecision = decision && view.caughtUp;
   const showEnd = finished && view.caughtUp;
+  const showHalfTime = !!halfTime && view.caughtUp && !decision;
+
+  const halfTimeTalk = async (talk: TeamTalk) => {
+    setHalfTime(null);
+    const reaction = await game.liveHalfTime(talk);
+    say(`Causerie (${TEAM_TALK_FR[talk].label}) : ${reaction}`);
+    flags.current.halfTime = false;
+    player.sourceDone = false;
+  };
 
   const finish = async () => {
     setEnding(true);
@@ -332,6 +349,24 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
           )}
           {toast && <div className="live__toast" role="status">{toast}</div>}
           {showDecision && decision && <DecisionModal req={decision} info={info} onChoose={decide} />}
+          {showHalfTime && halfTime && (
+            <div className="live__modal" role="dialog" aria-modal="true" aria-labelledby="ht-title">
+              <div className="modal-card decision">
+                <div className="modal-card__kicker">Mi-temps · {info.teams[0].shortName} {halfTime[0]} – {halfTime[1]} {info.teams[1].shortName}</div>
+                <h2 id="ht-title">Causerie de mi-temps</h2>
+                <div className="decision__options">
+                  {(Object.keys(TEAM_TALK_FR) as TeamTalk[]).map((t, i) => (
+                    <button key={t} className="decision__option" onClick={() => void halfTimeTalk(t)} title={TEAM_TALK_FR[t].help}>
+                      <span className="decision__key">{i + 1}</span>
+                      <span className="decision__label">{TEAM_TALK_FR[t].label}</span>
+                      <span className="decision__meta">{TEAM_TALK_FR[t].help}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="faint decision__foot">L'effet dépend du score et du tempérament du groupe. Le match reprend après votre choix.</div>
+              </div>
+            </div>
+          )}
           {showEnd && (
             <div className="live__modal">
               <div className="modal-card">

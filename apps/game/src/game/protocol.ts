@@ -1,5 +1,5 @@
 /** Messages between the interface (main thread) and the game worker, which owns the world. */
-import type { ContinueResult, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
+import type { ContinueResult, IndividualFocus, Position, SquadStatus, TalkKind, TalkResult, TeamTalk, TrainingPlan, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 
 /** Club shown on the new-game screen. */
 export interface CatalogueClub {
@@ -27,7 +27,17 @@ export interface SaveInfo {
 }
 
 /** Fields of the manager state the interface may change. */
-export type ManagerPatch = Partial<Pick<ManagerState, "plans" | "activePlan" | "matchPlans" | "selection" | "newsRead" | "matchTargets" | "penaltyRules" | "autoSubs">>;
+export type ManagerPatch = Partial<Pick<ManagerState, "plans" | "activePlan" | "matchPlans" | "selection" | "newsRead" | "matchTargets" | "penaltyRules" | "autoSubs" | "teamTalks">>;
+
+/** Manager actions on the squad (M6a). */
+export type GameAction =
+  | { type: "talk"; playerId: string; talk: TalkKind }
+  | { type: "status"; playerId: string; status: SquadStatus }
+  | { type: "training"; plan: TrainingPlan }
+  | { type: "individual"; playerId: string; focus: IndividualFocus; learning?: Position }
+  | { type: "rushBack"; playerId: string }
+  | { type: "promote"; playerId: string }
+  | { type: "release"; playerId: string };
 
 export type Request =
   | { kind: "catalogue" }
@@ -49,6 +59,8 @@ export type Request =
   | { kind: "liveSub"; offId: string; onId: string }
   | { kind: "liveCancelSub"; onId: string }
   | { kind: "liveFinish" }
+  | { kind: "liveHalfTime"; talk: TeamTalk }
+  | { kind: "action"; action: GameAction }
   | { kind: "liveAbort" };
 
 export type Response =
@@ -59,6 +71,8 @@ export type Response =
   | { kind: "liveStart"; info: LiveInfo; snapshot: LiveSnapshot }
   | { kind: "liveChunk"; chunk: LiveChunk }
   | { kind: "liveSnapshot"; snapshot: LiveSnapshot; error?: string | null }
+  | { kind: "liveHalfTime"; reaction: string }
+  | { kind: "action"; world: World; error: string | null; talk?: TalkResult }
   | { kind: "error"; message: string };
 
 export interface Envelope<T> {

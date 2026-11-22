@@ -97,6 +97,14 @@ const ET_HALF = 10 * 60;
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
+/** Training unit of each attribute (team automatisms). */
+const UNIT_OF: Partial<Record<AttributeKey, "setPiece" | "attack" | "defence" | "kicking">> = {
+  scrummaging: "setPiece", lineoutThrowing: "setPiece", lineoutJumping: "setPiece", maul: "setPiece",
+  passing: "attack", handling: "attack", offloading: "attack", footwork: "attack", vision: "attack",
+  tackling: "defence", positioning: "defence", jackal: "defence", anticipation: "defence",
+  kicking: "kicking", tacticalKicking: "kicking", goalKicking: "kicking", highBall: "kicking",
+};
+
 const weightScore = (kg: number) => clamp(1 + ((kg - 70) / 65) * 19, 1, 20);
 const heightScore = (cm: number) => clamp(1 + ((cm - 172) / 38) * 19, 1, 20);
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
@@ -282,10 +290,24 @@ export class MatchSimulation {
     return this.clock;
   }
 
+  getPeriod(): number {
+    return this.period;
+  }
+
   /** Changes a team's tactics from the next action on. */
   setTactics(side: Side, tactics: Tactics): void {
     const ts = this.teams[side];
     ts.team = { ...ts.team, tactics: { ...tactics } };
+  }
+
+  /** Changes a team's morale (0..1), e.g. after a half-time team talk. */
+  setMorale(side: Side, morale: number): void {
+    const ts = this.teams[side];
+    ts.team = { ...ts.team, morale: clamp(morale, 0, 1) };
+  }
+
+  getMorale(side: Side): number {
+    return this.teams[side].team.morale ?? 0.5;
   }
 
   /** Changes a team's targeted instructions from the next action on. */
@@ -510,9 +532,12 @@ export class MatchSimulation {
         else this.teams[other(attacking)].stats.territorySeconds += seconds;
       }
       for (const ts of this.teams) {
+        // Fitness automatisms (training): fresher for longer.
+        const fit = ts.team.sharpness?.fitness;
+        const fitF = fit === undefined ? 1 : 1 - (fit - 0.5) * 0.3;
         for (const fp of this.onField(ts)) {
           const base = isForward(fp.pos) ? 0.0135 : 0.0105;
-          const staminaF = 1.35 - (this.raw(fp, "stamina") / 20) * 0.7;
+          const staminaF = (1.35 - (this.raw(fp, "stamina") / 20) * 0.7) * fitF;
           fp.condition = Math.max(20, fp.condition - seconds * base * staminaF);
         }
       }
@@ -546,13 +571,15 @@ export class MatchSimulation {
     const side = this.sideOf(fp);
     const team = this.teams[side].team;
     const home = side === 0 && !this.setup.neutral ? 1.035 : 1;
-    const morale = 1 + ((team.morale ?? 0.5) - 0.5) * 0.06;
+    const morale = 1 + ((team.morale ?? 0.5) - 0.5) * 0.1;
+    const unit = UNIT_OF[key];
+    const sharp = unit && team.sharpness?.[unit] !== undefined ? 1 + (team.sharpness[unit]! - 0.5) * 0.1 : 1;
     // Scoreboard effect: a big lead brings some complacency, a big deficit some desperation.
     const lead = this.score[side] - this.score[other(side)];
     let scoreF = lead > 12 ? 1 - Math.min(0.05, (lead - 12) * 0.004) : lead < -12 ? 1 + Math.min(0.025, (-lead - 12) * 0.002) : 1;
     // Last quarter of a close game: the trailing side chases the win (or the losing bonus), the leader manages.
     if (this.period === 2 && this.clock > LATE_GAME && lead !== 0 && Math.abs(lead) <= 12) scoreF *= lead < 0 ? 1 + CLOSE_GAME_PUSH : 1 - CLOSE_GAME_PUSH / 2;
-    return base * fatigue * (1 + fp.form) * famF * home * morale * scoreF;
+    return base * fatigue * (1 + fp.form) * famF * home * morale * sharp * scoreF;
   }
 
   private sideOf(fp: FieldPlayer): Side {
@@ -864,7 +891,8 @@ export class MatchSimulation {
     const resil = this.raw(fp, "contactResilience");
     const prone = fp.p.hidden.injuryProneness;
     const tired = fp.condition < 60 ? 1.5 : 1;
-    const pInj = 0.0026 * intensity * (1 + (12 - resil) * 0.05) * (0.6 + prone / 25) * tired;
+    const fragile = ts.team.fragile?.includes(fp.p.id) ? 2.2 : 1;
+    const pInj = 0.0026 * fragile * intensity * (1 + (12 - resil) * 0.05) * (0.6 + prone / 25) * tired;
     const pHia = 0.0013 * intensity;
     if (this.rng.chance(pHia)) {
       this.hia(ts, fp);

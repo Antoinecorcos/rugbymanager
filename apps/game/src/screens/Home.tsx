@@ -1,5 +1,6 @@
 import { CloudRain, Crosshair, Shirt, Sun, Wind } from "lucide-react";
-import { availability, daysBetween, fixtureWeather, formatDateFr, type World } from "@ovalie/engine";
+import { availability, daysBetween, fixtureWeather, formatDateFr, STATUS_FR, type World } from "@ovalie/engine";
+import { MoraleBadge } from "../ui/human";
 import { useWorld } from "../game/client";
 import { dateShort, stageFr, WEATHER_FR } from "../game/format";
 import { href, navigate } from "../game/router";
@@ -140,6 +141,37 @@ function SquadStatus({ w }: { w: World }) {
   );
 }
 
+/** Dressing room (M6a): average morale and the players who are not happy. */
+function DressingRoom({ w }: { w: World }) {
+  const squad = squadOf(w, myClubId(w)).filter((ps) => ps.human);
+  if (!squad.length) return null;
+  const avg = Math.round(squad.reduce((s, ps) => s + ps.human!.morale, 0) / squad.length);
+  const unhappy = squad.filter((ps) => ps.human!.morale < 45).sort((a, b) => a.human!.morale - b.human!.morale);
+  const promises = squad.filter((ps) => ps.human!.promises.some((p) => !p.outcome)).length;
+  return (
+    <Panel title="Vestiaire" actions={<a className="link" href={href("effectif")}>Moral des joueurs</a>}>
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <span>Moral du groupe</span>
+        <MoraleBadge value={avg} />
+      </div>
+      {promises > 0 && <p className="faint" style={{ margin: "6px 0 0" }}>{promises} promesse{promises > 1 ? "s" : ""} de temps de jeu en cours.</p>}
+      {unhappy.length > 0 ? (
+        <ul className="list" style={{ marginTop: 8 }}>
+          {unhappy.slice(0, 5).map((ps) => (
+            <li key={ps.player.id} className="row">
+              <MoraleBadge value={ps.human!.morale} compact />
+              <PlayerLink w={w} id={ps.player.id} />
+              <span className="faint" style={{ marginLeft: "auto" }}>{STATUS_FR[ps.human!.status]}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="faint" style={{ marginBottom: 0 }}>Personne ne fait la tête.</p>
+      )}
+    </Panel>
+  );
+}
+
 export function HomeScreen() {
   const w = useWorld();
   const club = myClub(w);
@@ -166,6 +198,7 @@ export function HomeScreen() {
         </div>
         <div className="stack">
           <SquadStatus w={w} />
+          <DressingRoom w={w} />
           <Panel title="Boîte de réception" actions={<a className="link" href={href("boite")}>{unread ? `${unread} non lue${unread > 1 ? "s" : ""}` : "Tout voir"}</a>}>
             <NewsList items={inboxItems(w)} unreadFrom={manager(w).newsRead} limit={6} />
           </Panel>

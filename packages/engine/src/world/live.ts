@@ -12,6 +12,7 @@ import type { Referee } from "./referees.js";
 import { fixtureReferee } from "./referees.js";
 import { prepareFixture, type PreparedFixture } from "./simulate.js";
 import type { Fixture, World } from "./types.js";
+import { teamTalkEffect, type TeamTalk } from "./human.js";
 
 /* ------------------------------------------------------------------ penalty rules */
 
@@ -109,6 +110,8 @@ export interface LiveChunk {
   decision?: PenaltyDecisionRequest;
   /** Decisions taken automatically by a rule during this chunk. */
   autoDecisions: { clock: number; choice: PenaltyOption; rule: string }[];
+  /** Half-time: the match waits for the manager's team talk (M6a). */
+  halfTime?: { score: [number, number] };
   finished: boolean;
 }
 
@@ -182,6 +185,7 @@ export class LiveSession {
     const auto: LiveChunk["autoDecisions"] = [];
     const start = this.sim.getClock();
     while (!this.sim.isFinished()) {
+      if (this.halfTimePending()) break;
       const req = this.sim.pendingDecision;
       if (req) {
         const rule = matchPenaltyRule(this.rules, req);
@@ -195,6 +199,29 @@ export class LiveSession {
       if (!this.sim.pendingDecision && this.sim.getClock() - start >= seconds && this.sim.getTrace().length > this.stepCursor) break;
     }
     return this.chunk(auto);
+  }
+
+  private halfTimeDone = false;
+  /** Half-time talk result, shown by the interface. */
+  halfTimeReaction?: string;
+
+  /** The first half is over and the manager has not spoken to his players yet. */
+  private halfTimePending(): boolean {
+    return !this.halfTimeDone && this.sim.getPeriod() >= 2 && !this.sim.isFinished();
+  }
+
+  /** Half-time team talk: changes the team's morale for the second half. */
+  halfTimeTalk(w: World, talk: TeamTalk): { reaction: string; delta: number } {
+    this.halfTimeDone = true;
+    const score = this.sim.getScore();
+    const diff = score[this.side] - score[this.side === 0 ? 1 : 0];
+    const team = this.side === 0 ? this.prepared.setup.home : this.prepared.setup.away;
+    const xv = team.players.slice(0, 15);
+    const effect = teamTalkEffect(talk, { favourite: 0, halfTimeDiff: diff, temperament: xv.reduce((s, p) => s + p.hidden.temperament, 0) / xv.length });
+    this.sim.setMorale(this.side, this.sim.getMorale(this.side) + effect.delta);
+    this.halfTimeReaction = effect.reaction;
+    void w;
+    return effect;
   }
 
   /** Answers the pending penalty decision, then simulates the next part. */
@@ -239,6 +266,7 @@ export class LiveSession {
 
   /** Plays the rest of the match (pending decisions: staff's advice) and records it in the world. */
   finish(w: World): Fixture {
+    this.halfTimeDone = true;
     const result = this.sim.run();
     const played = playMatchDay(w, { [this.fixture.id]: { prepared: this.prepared, result } });
     if (!played) throw new Error("Le match n'a pas pu être enregistré");
@@ -255,6 +283,7 @@ export class LiveSession {
     const chunk: LiveChunk = { steps, events, eventOffset: this.eventCursor, snapshot: this.sim.snapshot(), autoDecisions, finished: this.sim.isFinished() };
     this.eventCursor = end;
     if (this.sim.pendingDecision) chunk.decision = this.sim.pendingDecision;
+    if (this.halfTimePending()) chunk.halfTime = { score: this.sim.getScore() };
     return chunk;
   }
 }

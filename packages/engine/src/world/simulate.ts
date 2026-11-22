@@ -12,6 +12,11 @@ import { addDays, type IsoDate } from "./dates.js";
 import { NATION_LEVEL } from "./nations.js";
 import { managedTeam, recordReport } from "./manager.js";
 import { fixtureReferee } from "./referees.js";
+import { academyIntake, intakeDate } from "./academy.js";
+import { afterClubMatch, captainTrust, teamMorale, teamTalkEffect, weeklyHuman, type TeamTalk } from "./human.js";
+import { isFragile, recordInjury } from "./medical.js";
+import { dailyTrainingRecovery, logMinutes, planOf, weeklyTraining } from "./training.js";
+import { weekday } from "./dates.js";
 import type { Fixture, PlayerSeasonStats, PlayerState, World } from "./types.js";
 
 /**
@@ -42,6 +47,12 @@ export const isFit = (ps: PlayerState, d: IsoDate): boolean => !isInjured(ps, d)
  */
 export function advanceDay(w: World, played?: Record<string, PlayedFixture>): Fixture[] {
   const d = w.date;
+  // Mondays: training week (automatisms, training injuries, development) and the squad's morale.
+  if (weekday(d) === 1) {
+    weeklyTraining(w);
+    weeklyHuman(w);
+  }
+  if (d === intakeDate(w)) academyIntake(w);
   for (const win of w.calendar.windows) if (win.start === d) callUps(w, win);
   progressCompetitions(w);
   const today = w.fixtures.filter((f) => f.date === d && !f.result);
@@ -159,6 +170,8 @@ export interface PreparedFixture {
   setup: MatchSetup;
   missing: [number, number];
   staffChanges: string[];
+  /** Pre-match team talk of the manager and the dressing-room reaction. */
+  teamTalk?: { talk: TeamTalk; reaction: string };
 }
 
 export function prepareFixture(w: World, f: Fixture): PreparedFixture {
@@ -166,6 +179,21 @@ export function prepareFixture(w: World, f: Fixture): PreparedFixture {
   const staffChanges: string[] = [];
   const home = teamFor(w, f, 0, staffChanges);
   const away = teamFor(w, f, 1, staffChanges);
+  if (comp.kind !== "international") {
+    decorate(w, home.team, f.date);
+    decorate(w, away.team, f.date);
+  }
+  let teamTalk: PreparedFixture["teamTalk"];
+  const talk = w.manager?.teamTalks?.[f.id];
+  if (talk && talk !== "none" && w.manager) {
+    const mine = f.home === w.manager.clubId ? home.team : away.team;
+    const theirs = mine === home.team ? away.team : home.team;
+    const avg = (t: MatchTeam) => t.players.reduce((s, p) => s + playerLevel(p), 0) / t.players.length;
+    const xv = mine.players.slice(0, 15);
+    const effect = teamTalkEffect(talk, { favourite: Math.max(-1, Math.min(1, (avg(mine) - avg(theirs)) / 1.2)), temperament: xv.reduce((s, p) => s + p.hidden.temperament, 0) / xv.length });
+    mine.morale = Math.max(0, Math.min(1, (mine.morale ?? 0.5) + effect.delta));
+    teamTalk = { talk, reaction: effect.reaction };
+  }
   const setup: MatchSetup = {
     home: home.team,
     away: away.team,
@@ -176,7 +204,20 @@ export function prepareFixture(w: World, f: Fixture): PreparedFixture {
     neutral: f.neutral,
     bonus: comp.bonus,
   };
-  return { setup, missing: [home.missing, away.missing], staffChanges };
+  const out: PreparedFixture = { setup, missing: [home.missing, away.missing], staffChanges };
+  if (teamTalk) out.teamTalk = teamTalk;
+  return out;
+}
+
+/** Morale, automatisms, captain's trust and fragile players of a club's 23 (M6a). */
+function decorate(w: World, team: MatchTeam, d: IsoDate): void {
+  const club = w.clubs[team.id];
+  if (!club) return;
+  team.morale = teamMorale(w, team.id, team.players.map((p) => p.id));
+  if (club.sharpness) team.sharpness = { ...club.sharpness };
+  const fragile = team.players.filter((p) => w.players[p.id] && isFragile(w.players[p.id]!, d)).map((p) => p.id);
+  if (fragile.length) team.fragile = fragile;
+  if (team.id === w.manager?.clubId) team.captainTrust = captainTrust(w, team.captainId);
 }
 
 /** A match already played outside the daily loop (live match of the manager), to be recorded. */
@@ -210,7 +251,7 @@ export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixt
     playerOfTheMatch: best?.playerId,
   };
   if (res.decidedBy) f.result.decidedBy = res.decidedBy;
-  if (w.manager && (f.home === w.manager.clubId || f.away === w.manager.clubId)) recordReport(w, f, [home.team, away.team], res, weather, staffChanges);
+  if (w.manager && (f.home === w.manager.clubId || f.away === w.manager.clubId)) recordReport(w, f, [home.team, away.team], res, weather, staffChanges, prepared.teamTalk);
 
   const d = f.date;
   for (const ps of all) {
@@ -225,6 +266,7 @@ export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixt
     s.points += ps.points;
     s.yellowCards += ps.yellowCards;
     s.redCards += ps.redCards;
+    logMinutes(st, d, ps.minutes);
     if (comp.kind === "international") s.caps++;
     else st.startStreak = ps.started ? st.startStreak + 1 : 0;
     // Contacts tire forwards more; stamina softens it.
@@ -252,10 +294,18 @@ export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixt
   for (const inj of res.injuries) {
     const st = w.players[inj.playerId];
     if (!st) continue;
-    st.injury = { type: inj.type, until: addDays(d, inj.days), concussion: inj.concussion };
-    if (st.clubId && inj.days >= 28) {
-      w.news.push({ date: d, topic: "medical", clubs: [st.clubId], text: `${fullName(st.player)} (${w.clubs[st.clubId]!.name}) : ${inj.type.toLowerCase()}, environ ${Math.round(inj.days / 7)} semaines d'absence.`, importance: 2 });
+    const days = recordInjury(w, st, d, inj.type, inj.days, inj.concussion);
+    if (st.clubId && days >= 28) {
+      w.news.push({ date: d, topic: "medical", clubs: [st.clubId], text: `${fullName(st.player)} (${w.clubs[st.clubId]!.name}) : ${inj.type.toLowerCase()}, environ ${Math.round(days / 7)} semaines d'absence.`, importance: 2 });
     }
+  }
+  if (comp.kind !== "international") {
+    const margin = Math.abs(res.score[0] - res.score[1]);
+    ([0, 1] as const).forEach((side) => {
+      const club = side === 0 ? f.home : f.away;
+      const played = res.playerStats[side].map((p) => ({ playerId: p.playerId, started: p.started, minutes: p.minutes, rating: p.rating }));
+      afterClubMatch(w, f, club, played, res.winner === null ? null : res.winner === side, margin);
+    });
   }
   if (f.knockout && /finale|demi|access/.test(f.stage)) {
     const n = (id: string) => w.clubs[id]?.name ?? NATION_NAME_FR[id] ?? id;
@@ -271,7 +321,8 @@ export const fullName = (p: Pick<Player, "firstName" | "lastName">): string => `
 function dailyRecovery(w: World): void {
   const d = w.date;
   for (const ps of Object.values(w.players)) {
-    if (ps.freshness < 100) ps.freshness = Math.min(100, ps.freshness + FATIGUE.dailyRecovery + (ps.player.attributes.recovery - 10) * 0.1);
+    const plan = planOf(ps.clubId ? w.clubs[ps.clubId] : undefined);
+    if (ps.freshness < 100) ps.freshness = Math.max(0, Math.min(100, ps.freshness + FATIGUE.dailyRecovery + (ps.player.attributes.recovery - 10) * 0.1 + dailyTrainingRecovery(plan)));
     if (ps.injury && ps.injury.until <= d) delete ps.injury;
     if (ps.suspension && ps.suspension.until <= d) delete ps.suspension;
     if (ps.duty && ps.duty.until < d) {

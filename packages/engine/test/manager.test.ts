@@ -15,11 +15,18 @@ import {
   sectorRatings,
   staffLineup,
   startCareer,
+  teamMorale,
   type SeasonCalendar,
   type World,
 } from "../src/index.js";
 
 const PROFILE = { name: "Jean Test", nationality: "FRA", start: "bigClub" as const };
+
+/** "Continuer" until the morning of the club's next match (news may interrupt on the way). */
+function toMatchDay(w: World): void {
+  for (let i = 0; i < 50; i++) if (continueCareer(w, 400).reason === "matchDay") return;
+  throw new Error("no match day");
+}
 
 function miniWorld(seed: string): World {
   const rng = new Rng("mini-career");
@@ -56,7 +63,8 @@ describe("manager career", () => {
     const w = miniWorld("c2");
     startCareer(w, PROFILE, "a");
     const first = nextFixture(w, "a")!;
-    const r = continueCareer(w, 400);
+    let r = continueCareer(w, 400);
+    while (r.reason === "news") r = continueCareer(w, 400);
     expect(r.reason).toBe("matchDay");
     expect(r.fixture!.id).toBe(first.id);
     expect(w.date).toBe(first.date);
@@ -74,7 +82,7 @@ describe("manager career", () => {
     const w = miniWorld("c3");
     const m = startCareer(w, PROFILE, "b");
     const f = nextFixture(w, "b")!;
-    continueCareer(w, 400);
+    toMatchDay(w);
     m.selection = staffLineup(w, "b", w.date, "6-2");
     // Swap the starting fly-half and the bench fly-half, and pick a captain.
     const lu = m.selection.lineup;
@@ -97,7 +105,7 @@ describe("manager career", () => {
     const w = miniWorld("c4");
     const m = startCareer(w, PROFILE, "c");
     const f = nextFixture(w, "c")!;
-    continueCareer(w, 400);
+    toMatchDay(w);
     m.selection = staffLineup(w, "c", w.date, "5-3");
     const injured = m.selection.lineup[9]!;
     w.players[injured]!.injury = { type: "Ischios", until: addDays(w.date, 20), concussion: false };
@@ -123,14 +131,27 @@ describe("manager career", () => {
     expect(issues.some((i) => i.text.includes("deux fois"))).toBe(true);
   });
 
-  it("leaves the simulation unchanged when the staff picks the team (calibration stays valid)", () => {
+  it("plays a whole season with the staff's team and a morale centred on neutral (calibration stays valid)", () => {
     const plain = miniWorld("same");
     const career = miniWorld("same");
     startCareer(career, PROFILE, "d");
     playSeason(plain);
-    while (continueCareer(career, 400).reason !== "seasonEnd") playMatchDay(career);
-    expect(career.fixtures.map((f) => f.result!.score)).toEqual(plain.fixtures.map((f) => f.result!.score));
+    const morale: number[] = [];
+    for (;;) {
+      const r = continueCareer(career, 400);
+      if (r.reason === "seasonEnd") break;
+      if (r.reason !== "matchDay") continue;
+      morale.push(teamMorale(career, "d", career.squads.d!));
+      playMatchDay(career);
+    }
     expect(Object.keys(career.reports!).length).toBe(career.fixtures.filter((f) => f.home === "d" || f.away === "d").length);
+    const mean = morale.reduce((a, b) => a + b, 0) / morale.length;
+    // The manager's club is neither boosted nor handicapped by default (AI clubs sit at 0.5).
+    expect(mean).toBeGreaterThan(0.42);
+    expect(mean).toBeLessThan(0.6);
+    // Same fixtures, all played in both worlds.
+    expect(career.fixtures.every((f) => f.result)).toBe(true);
+    expect(plain.fixtures.every((f) => f.result)).toBe(true);
   });
 });
 

@@ -38,6 +38,9 @@ import { CompetitionsScreen } from "./screens/Competitions";
 import { ClubScreen } from "./screens/Club";
 import { SeasonEndScreen } from "./screens/SeasonEnd";
 import { LiveMatchScreen } from "./screens/LiveMatch";
+import { TrainingScreen } from "./screens/Training";
+import { MedicalScreen } from "./screens/Medical";
+import { StaffScreen } from "./screens/Staff";
 
 export function App() {
   const { world, busy, progressDate } = useGame();
@@ -103,6 +106,12 @@ function Screen() {
       return <ClubScreen clubId={params[0]} />;
     case "bilan":
       return <SeasonEndScreen />;
+    case "entrainement":
+      return <TrainingScreen />;
+    case "medical":
+      return <MedicalScreen />;
+    case "staff":
+      return <StaffScreen />;
     default:
       return <HomeScreen />;
   }
@@ -124,13 +133,13 @@ const NAV: NavDef[] = [
   { screen: "calendrier", label: "Calendrier", icon: <CalendarDays size={18} /> },
   { screen: "competitions", label: "Compétitions", icon: <Trophy size={18} /> },
   { screen: "club", label: "Club", icon: <Building2 size={18} /> },
+  { screen: "entrainement", label: "Entraînement", icon: <Dumbbell size={18} /> },
+  { screen: "medical", label: "Médical", icon: <Stethoscope size={18} /> },
+  { screen: "staff", label: "Staff", icon: <UserCog size={18} /> },
 ];
 const NAV_LATER: NavDef[] = [
-  { screen: "entrainement", label: "Entraînement", icon: <Dumbbell size={18} />, soon: "M6" },
-  { screen: "recrutement", label: "Recrutement", icon: <Search size={18} />, soon: "M6" },
-  { screen: "finances", label: "Finances", icon: <Euro size={18} />, soon: "M6" },
-  { screen: "staff", label: "Staff", icon: <UserCog size={18} />, soon: "M6" },
-  { screen: "medical", label: "Médical", icon: <Stethoscope size={18} />, soon: "M6" },
+  { screen: "recrutement", label: "Recrutement", icon: <Search size={18} />, soon: "M6b" },
+  { screen: "finances", label: "Finances", icon: <Euro size={18} />, soon: "M6b" },
 ];
 
 function Sidebar({ world }: { world: World }) {

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   ATTRIBUTE_LABEL_FR,
   availability,
@@ -13,7 +13,22 @@ import {
   type PlayerState,
   type Position,
   type World,
+  abilityTrend,
+  daysBetween,
+  EXPECTED_STARTS,
+  formOf,
+  injuryRisk,
+  REACTION_FR,
+  STATUS_FR,
+  TALK_FR,
+  TRAINING_FR,
+  type SquadStatus,
+  type TalkKind,
+  type TalkResult,
 } from "@ovalie/engine";
+import { game } from "../game/client";
+import { Gauge, MoraleBadge, RiskBadge, Sparkline, Trend } from "../ui/human";
+import { Button } from "../ui/components";
 import { useWorld } from "../game/client";
 import { ageIn, dateMedium, fmt1, fullName, nationName, playerStars, POSITION_SHORT_FR } from "../game/format";
 import { href } from "../game/router";
@@ -221,6 +236,12 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
           </Panel>
         </div>
 
+        <div className="player-grid__wide grid grid--3">
+          {ps.human && ps.clubId === myClubId(w) && <RelationPanel w={w} ps={ps} />}
+          {(ps.clubId === myClubId(w) || ps.academy) && <DevelopmentPanel w={w} ps={ps} />}
+          <MedicalPanel w={w} ps={ps} />
+        </div>
+
         <Panel title="Saison en cours" flush>
           {comps.length ? (
             <div className="table-wrap">
@@ -275,5 +296,135 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
         </Panel>
       </div>
     </>
+  );
+}
+
+/* ------------------------------------------------------------------ M6a panels */
+
+function RelationPanel({ w, ps }: { w: World; ps: PlayerState }) {
+  const h = ps.human!;
+  const [reply, setReply] = useState<TalkResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const talkedThisWeek = !!h.lastTalk && daysBetween(h.lastTalk, w.date) < 7;
+  const pending = h.promises.find((p) => !p.outcome);
+  const recent = h.recent.filter((r) => r.available).slice(-6);
+  const starts = recent.filter((r) => r.started).length;
+
+  const talk = async (kind: TalkKind) => {
+    const r = await game.act({ type: "talk", playerId: ps.player.id, talk: kind });
+    setError(r.error);
+    setReply(r.talk ?? null);
+  };
+  const setStatus = async (status: SquadStatus) => {
+    const r = await game.act({ type: "status", playerId: ps.player.id, status });
+    setError(r.error);
+  };
+
+  return (
+    <Panel title="Relation avec le manager" subtitle="Moral, confiance et temps de jeu attendu">
+      <div className="stack">
+        <Gauge value={h.morale} label="Moral" />
+        <Gauge value={h.trust} label="Confiance en vous" kind="trust" />
+        <KeyValues
+          items={[
+            [
+              "Statut",
+              <select key="s" className="select" value={h.status} onChange={(e) => void setStatus(e.target.value as SquadStatus)} aria-label="Statut dans l'effectif">
+                {(Object.keys(STATUS_FR) as SquadStatus[]).map((st) => (
+                  <option key={st} value={st}>
+                    {STATUS_FR[st]} (titulaire {Math.round(EXPECTED_STARTS[st] * 100)} % du temps)
+                  </option>
+                ))}
+              </select>,
+            ],
+            ["Temps de jeu récent", recent.length ? `${starts} titularisation${starts > 1 ? "s" : ""} sur ${recent.length} matchs où il était disponible` : "pas encore de match"],
+            ["Forme (notes récentes)", recent.some((r) => r.rating !== undefined) ? fmt1(formOf(h)) : "—"],
+            ...(pending ? [["Promesse en cours", `${pending.started}/${pending.starts} titularisations (sur ${pending.window} matchs)`] as [string, string]] : []),
+          ]}
+        />
+        <div>
+          <div className="field__label" style={{ marginBottom: 6 }}>
+            Lui parler {talkedThisWeek && <span className="faint">— déjà fait cette semaine</span>}
+          </div>
+          <div className="talks">
+            {(Object.keys(TALK_FR) as TalkKind[]).map((k) => (
+              <Button key={k} size="sm" variant="secondary" disabled={talkedThisWeek || (k === "promise" && !!pending)} title={TALK_FR[k].help} onClick={() => void talk(k)}>
+                {TALK_FR[k].label}
+              </Button>
+            ))}
+          </div>
+          {error && <p className="faint">{error}</p>}
+          {reply && (
+            <div className="reply" role="status">
+              <div className="reply__who">
+                {fullName(ps.player)} · <MoraleBadge value={h.morale} compact /> {REACTION_FR[reply.reaction]} ({reply.morale >= 0 ? "+" : ""}
+                {reply.morale} moral, {reply.trust >= 0 ? "+" : ""}
+                {reply.trust} confiance)
+              </div>
+              « {reply.reply} »
+            </div>
+          )}
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+function DevelopmentPanel({ w, ps }: { w: World; ps: PlayerState }) {
+  const history = (ps.dev?.history ?? []).map((h) => h.ca);
+  if (ps.player.currentAbility) history.push(ps.player.currentAbility);
+  const focus = ps.dev?.focus ?? "none";
+  return (
+    <Panel title="Progression" subtitle={ps.academy ? "Centre de formation" : `Entraînement individuel : ${TRAINING_FR.individual[focus]}${focus === "position" && ps.dev?.learning ? ` (${POSITION_LABEL_FR[ps.dev.learning]})` : ""}`}>
+      <div className="stack">
+        <Sparkline values={history.map((v) => v / 10)} />
+        <KeyValues
+          items={[
+            ["Sur un mois", <Trend key="t" delta={abilityTrend(ps, w.date)} />],
+            ["Niveau actuel", `${fmt1((ps.player.currentAbility ?? 0) / 10)} / 20`],
+          ]}
+        />
+        {!ps.academy && (
+          <a className="link" href={href("entrainement")}>
+            Régler l'entraînement individuel
+          </a>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function MedicalPanel({ w, ps }: { w: World; ps: PlayerState }) {
+  const history = ps.medical?.history ?? [];
+  const risk = injuryRisk(ps, w.date);
+  return (
+    <Panel title="Dossier médical">
+      <KeyValues
+        items={[
+          ["Risque de blessure", <RiskBadge key="r" level={risk.level} reasons={risk.reasons} />],
+          ["Commotions (carrière)", String(ps.medical?.concussions ?? 0)],
+          ...(ps.medical?.fragileUntil && ps.medical.fragileUntil > w.date ? [["Retour accéléré", `fragile jusqu'au ${dateMedium(ps.medical.fragileUntil)}`] as [string, string]] : []),
+        ]}
+      />
+      {history.length ? (
+        <ul className="list" style={{ marginTop: 8 }}>
+          {[...history].reverse().slice(0, 6).map((h, i) => (
+            <li key={i} className="row" style={{ justifyContent: "space-between" }}>
+              <span>
+                {h.type}
+                {h.training ? <span className="faint"> (entraînement)</span> : null}
+              </span>
+              <span className="faint">
+                {dateMedium(h.from)} · {h.days} j
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="faint" style={{ marginBottom: 0 }}>
+          Aucune blessure cette saison.
+        </p>
+      )}
+    </Panel>
   );
 }

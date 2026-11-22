@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AlertTriangle, Bandage, Info } from "lucide-react";
-import { commentaryFr, formatClock, formatDateFr, POSITION_LABEL_FR, type MatchEvent, type MatchReport, type PlayerMatchStats, type TeamStats, type World } from "@ovalie/engine";
+import { TEAM_TALK_FR, commentaryFr, formatClock, formatDateFr, POSITION_LABEL_FR, type MatchEvent, type MatchReport, type PlayerMatchStats, type TeamStats, type World } from "@ovalie/engine";
 import { useWorld } from "../game/client";
 import { fmt1, POSITION_SHORT_FR, shortName, stageFr, WEATHER_FR } from "../game/format";
 import { href } from "../game/router";
@@ -139,6 +139,7 @@ export function MatchReportScreen({ fixtureId }: { fixtureId: string }) {
           )}
           {r.decidedBy && <Badge tone="warning">{r.decidedBy === "extraTime" ? "Après prolongation" : r.decidedBy === "tries" ? "Au nombre d'essais" : "Aux tirs au but"}</Badge>}
           {rep && <span>Plan : {rep.planName}</span>}
+          {rep?.teamTalk && <span title={rep.teamTalk.reaction}>Causerie : {TEAM_TALK_FR[rep.teamTalk.talk].label} — {rep.teamTalk.reaction}</span>}
           {potm && (
             <span>
               Homme du match : <PlayerLink w={w} id={potm} />

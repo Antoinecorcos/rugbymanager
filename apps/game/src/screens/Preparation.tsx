@@ -18,6 +18,8 @@ import {
   type TacticalAdvice,
   type Tactics,
   type TargetedInstructions,
+  TEAM_TALK_FR,
+  type TeamTalk,
   type World,
 } from "@ovalie/engine";
 import { game, useWorld } from "../game/client";
@@ -72,6 +74,12 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
   const referee = useMemo(() => fixtureReferee(w, f), [w, f.id]);
   const opponentTeam = useMemo(() => teamForFixture(w, f, v.opponent), [w, f.id]);
   const opponents = opponentTeam.players.slice(0, 15).map((player, i) => ({ player, shirt: i + 1 }));
+  const setTalk = (t: TeamTalk) => {
+    const teamTalks = { ...(m.teamTalks ?? {}) };
+    if (t === "none") delete teamTalks[f.id];
+    else teamTalks[f.id] = t;
+    void game.updateManager({ teamTalks });
+  };
   const setTargets = (t: TargetedInstructions | undefined) => {
     const matchTargets = { ...(m.matchTargets ?? {}) };
     if (t) matchTargets[f.id] = t;
@@ -263,6 +271,20 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
             <p className="faint" style={{ marginBottom: 0 }}>
               Profil estimé (aucune donnée publique ne mesure ces tendances de façon fiable) ; son effet sur le match reste léger.
             </p>
+          </Panel>
+
+          <Panel title="Causerie d'avant-match" subtitle="Elle agit sur le moral du groupe pour ce match ; l'effet dépend du contexte (favori ou outsider)">
+            <div className="stack">
+              {(Object.keys(TEAM_TALK_FR) as TeamTalk[]).map((t) => (
+                <label key={t} className="check">
+                  <input type="radio" name="team-talk" checked={(m.teamTalks?.[f.id] ?? "none") === t} onChange={() => setTalk(t)} />
+                  <span>
+                    <b>{TEAM_TALK_FR[t].label}</b>
+                    <span className="field__help">{TEAM_TALK_FR[t].help}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
           </Panel>
 
           <Panel title="Consignes ciblées" subtitle="Viser une faiblesse de l'adversaire (modifiable pendant le match)">

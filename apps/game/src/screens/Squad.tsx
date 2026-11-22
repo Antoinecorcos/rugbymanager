@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
-import { availability, isForward, naturalPosition, playerLevel, POSITION_LABEL_FR, type PlayerState, type World } from "@ovalie/engine";
+import { abilityTrend, availability, isForward, naturalPosition, playerLevel, POSITION_LABEL_FR, STATUS_FR, type PlayerState, type World } from "@ovalie/engine";
 import { useWorld } from "../game/client";
 import { ageIn, fmt1, fullName, nationName, playerStars, POSITION_ORDER, POSITION_SHORT_FR } from "../game/format";
 import { href, navigate } from "../game/router";
 import { manager, myClubId, squadOf } from "../game/selectors";
-import { Badge, DataTable, Freshness, PageHeader, Panel, Segmented, Stars, StatusPill, type Column } from "../ui/components";
+import { game } from "../game/client";
+import { Badge, Button, DataTable, Empty, Freshness, PageHeader, Panel, Segmented, Stars, StatusPill, Tabs, type Column } from "../ui/components";
+import { MoraleBadge, Trend } from "../ui/human";
 
 /** Club-competition totals of a player this season (internationals counted apart). */
 export function clubTotals(w: World, ps: PlayerState) {
@@ -34,6 +36,7 @@ export function SquadScreen({ clubId }: { clubId?: string }) {
   const club = w.clubs[id]!;
   const [group, setGroup] = useState<Group>("all");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [tab, setTab] = useState<"pro" | "academy">("pro");
   const sel = manager(w).selection;
   const shirtOf = useMemo(() => new Map(mine && !sel.auto ? sel.lineup.map((p, i) => [p, i + 1]) : []), [mine, sel]);
 
@@ -81,6 +84,12 @@ export function SquadScreen({ clubId }: { clubId?: string }) {
       },
       sort: (ps) => playerLevel(ps.player),
     },
+    ...(mine
+      ? [
+          { key: "morale", label: "Moral", render: (ps: PlayerState) => (ps.human ? <MoraleBadge value={ps.human.morale} /> : null), sort: (ps: PlayerState) => ps.human?.morale ?? 0 },
+          { key: "role", label: "Statut", title: "Statut dans l'effectif (temps de jeu attendu)", render: (ps: PlayerState) => (ps.human ? <span className="muted">{STATUS_FR[ps.human.status]}</span> : null), sort: (ps: PlayerState) => ["prospect", "backup", "rotation", "starter", "star"].indexOf(ps.human?.status ?? "rotation") },
+        ]
+      : []),
     { key: "fresh", label: "Fraîcheur", render: (ps) => <Freshness value={ps.freshness} />, sort: (ps) => ps.freshness },
     {
       key: "status",
@@ -102,6 +111,19 @@ export function SquadScreen({ clubId }: { clubId?: string }) {
   return (
     <>
       <PageHeader kicker={mine ? "Votre effectif" : club.name} title={mine ? "Effectif" : `Effectif — ${club.name}`} actions={mine && <a className="btn btn--secondary btn--md" href={href("composition")}>Composition du match</a>} />
+      {mine && (
+        <Tabs
+          value={tab}
+          onChange={setTab}
+          tabs={[
+            { value: "pro", label: "Effectif professionnel", count: squadOf(w, id).length },
+            { value: "academy", label: "Centre de formation", count: w.academies?.[id]?.length ?? 0 },
+          ]}
+        />
+      )}
+      {tab === "academy" && mine ? (
+        <AcademyPanel w={w} clubId={id} />
+      ) : (
       <Panel
         flush
         title={`${rows.length} joueurs`}
@@ -126,6 +148,54 @@ export function SquadScreen({ clubId }: { clubId?: string }) {
       >
         <DataTable rows={rows} columns={columns} rowKey={(ps) => ps.player.id} onRowClick={(ps) => navigate("joueur", ps.player.id)} defaultSort={{ key: "pos", dir: 1 }} rowClass={(ps) => (availability(ps, w.date).status === "available" || availability(ps, w.date).status === "rest" ? undefined : "is-dim")} />
       </Panel>
+      )}
     </>
+  );
+}
+
+/** Academy (centre de formation): youngsters, their potential as the academy manager sees it, promotion. */
+function AcademyPanel({ w, clubId }: { w: World; clubId: string }) {
+  const [msg, setMsg] = useState<string | null>(null);
+  const rows = (w.academies?.[clubId] ?? []).map((pid) => w.players[pid]!).filter(Boolean);
+  const act = async (type: "promote" | "release", ps: PlayerState) => {
+    if (type === "release" && !window.confirm(`Libérer ${fullName(ps.player)} ? Il quittera le club.`)) return;
+    const r = await game.act({ type, playerId: ps.player.id });
+    setMsg(r.error ?? (type === "promote" ? `${fullName(ps.player)} rejoint l'effectif professionnel.` : `${fullName(ps.player)} quitte le centre de formation.`));
+  };
+  const columns: Column<PlayerState>[] = [
+    { key: "pos", label: "Poste", render: (ps) => <b>{POSITION_SHORT_FR[naturalPosition(ps.player)]}</b>, sort: (ps) => POSITION_ORDER.indexOf(naturalPosition(ps.player)), width: 60 },
+    { key: "name", label: "Nom", render: (ps) => <a className="link" href={href("joueur", ps.player.id)}><b>{fullName(ps.player)}</b></a>, sort: (ps) => ps.player.lastName },
+    { key: "age", label: "Âge", render: (ps) => ageIn(w, ps.player), sort: (ps) => ageIn(w, ps.player), align: "right" },
+    { key: "nat", label: "Nat.", render: (ps) => ps.player.nationality, sort: (ps) => ps.player.nationality },
+    {
+      key: "level",
+      label: "Niveau et potentiel",
+      title: "Potentiel estimé par le responsable du centre de formation",
+      render: (ps) => {
+        const st = playerStars(ps.player);
+        return <Stars value={st.current} potential={st.potential} />;
+      },
+      sort: (ps) => ps.player.potentialAbility ?? 0,
+    },
+    { key: "trend", label: "Sur un mois", render: (ps) => <Trend delta={abilityTrend(ps, w.date)} />, sort: (ps) => abilityTrend(ps, w.date) },
+    {
+      key: "act",
+      label: "",
+      render: (ps) => (
+        <span className="row" onClick={(e) => e.stopPropagation()}>
+          <Button size="sm" variant="secondary" onClick={() => void act("promote", ps)}>
+            Intégrer à l'effectif
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => void act("release", ps)}>
+            Libérer
+          </Button>
+        </span>
+      ),
+    },
+  ];
+  return (
+    <Panel flush title={`${rows.length} espoirs`} subtitle={msg ?? "Tous JIFF. Une nouvelle promotion arrive chaque mois de mars (journée des espoirs)."}>
+      {rows.length ? <DataTable rows={rows} columns={columns} rowKey={(ps) => ps.player.id} onRowClick={(ps) => navigate("joueur", ps.player.id)} defaultSort={{ key: "level", dir: -1 }} /> : <Empty>Le centre de formation est vide.</Empty>}
+    </Panel>
   );
 }

@@ -26,7 +26,7 @@ Captures : `docs/captures/direct-*.png`.
 - À chaque pénalité pour notre équipe, le match s'arrête. Une fenêtre indique la distance de l'en-but, le score, la probabilité de réussite au pied et le **conseil du staff**.
 - Le manager a **10 secondes** (anneau de décompte, touches 1 à 4). Sans réponse, le conseil du staff s'applique.
 - **Règles automatiques** (préparation ou onglet Consignes) : les règles cochées décident sans pause, par exemple « Dans notre moitié : la touche » ou « Tir facile (≥ 70 %) : les points ». Elles sont enregistrées dans `ManagerState.penaltyRules`.
-- **Désobéissance du capitaine** : la mécanique du moteur est en place. Mais la confiance capitaine ↔ coach reste fixée à 0,7 jusqu'à M6, donc **elle ne se déclenche pas encore** dans une carrière (testée dans le moteur avec une confiance basse).
+- **Désobéissance du capitaine** : depuis M6a, la confiance du capitaine est sa vraie confiance en vous (`docs/09-effectif-et-humain.md`). Sous 50, il peut rarement passer outre votre choix.
 
 ### Consignes ciblées (GDD §5)
 Elles se règlent dans la préparation, pour le match à venir, ou pendant le match. Chacune agit sur un vrai mécanisme du moteur et peut se retourner contre nous :
@@ -73,7 +73,6 @@ Interface (apps/game)
 - Calibrage : 29/29.
 
 ## Limites et suites
-- **Confiance du capitaine fixe** (0,7) : la désobéissance arrivera dans une carrière avec M6 (relation coach ↔ joueurs).
-- **Causeries** de mi-temps et d'avant-match : M6 (moral).
+- ~~Confiance du capitaine fixe ; causeries~~ : faits en M6a. La mi-temps du direct s'arrête pour la causerie.
 - Les positions sont **plausibles, pas simulées** : le moteur reste un moteur par phases. Un joueur peut « glisser » d'un placement à l'autre ; la 3D (M7) reprendra cette couche avec des animations.
 - Les nations hors Nations Championship et Tournoi ne jouent toujours pas leurs matchs (M3).

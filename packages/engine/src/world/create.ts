@@ -2,6 +2,7 @@
 import type { Player } from "../domain/player.js";
 import type { SeasonCalendar } from "./calendar.js";
 import { COMPETITION_INFO } from "./competitions.js";
+import { ensureWorldExtensions } from "./extensions.js";
 import { buildNationPools, newPlayerState } from "./nations.js";
 import type { CompetitionState, Fixture, PlayerProfile, World, WorldClub } from "./types.js";
 
@@ -71,5 +72,5 @@ export function createWorld(setup: WorldSetup): World {
   }
   buildNationPools(w, [...new Set(cal.internationals.flatMap((i) => i.groups.flat()))], setup.seed);
   w.fixtures.sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-  return w;
+  return ensureWorldExtensions(w);
 }
