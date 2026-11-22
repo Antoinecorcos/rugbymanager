@@ -7,3 +7,5 @@ export * from "./nations.js";
 export * from "./create.js";
 export * from "./simulate.js";
 export * from "./summary.js";
+export * from "./manager.js";
+export * from "./scouting.js";

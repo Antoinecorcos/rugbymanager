@@ -1,6 +1,7 @@
 /** State of the game world: JSON-serialisable (future save games), advanced day by day. */
 import type { BonusRules } from "../domain/match-setup.js";
 import type { Player } from "../domain/player.js";
+import type { ManagerState, MatchReport } from "./manager.js";
 import type { SeasonCalendar } from "./calendar.js";
 import type { IsoDate } from "./dates.js";
 
@@ -13,6 +14,33 @@ export interface WorldClub {
   country: string;
   reputation: number;
   stadium?: string;
+  /** Display metadata (interface): primary and secondary colours, city, stadium capacity… */
+  colors?: [string, string];
+  city?: string;
+  capacity?: number;
+  budgetEur?: number;
+  president?: string;
+  headCoach?: string;
+  founded?: number;
+  /** Final league position last season. */
+  previousRank?: { league: string; rank: number };
+}
+
+/** Real-world facts about a player shown by the interface (from the database `info` block). */
+export interface PlayerProfile {
+  shirtNumber?: number;
+  /** French JIFF status (homegrown), and whether it is an estimate. */
+  jiff?: boolean;
+  jiffEstimated?: boolean;
+  homegrown?: boolean;
+  previousClub?: string;
+  arrivalYear?: number;
+  /** Fictional player completing a squad. */
+  generated?: boolean;
+  /** Fields estimated rather than read from a source (birthDate, heightCm, weightKg, jiff). */
+  estimated?: string[];
+  /** Explainable rating: components of the level (club, international, age, club strength, override) and evidence 0–1. */
+  rating?: Record<string, number>;
 }
 
 export interface PlayerSeasonStats {
@@ -49,6 +77,7 @@ export interface PlayerState {
   stats: Record<string, PlayerSeasonStats>;
   /** Fictional player of a national team pool (NZL, AUS, JPN… whose players play outside the database). */
   virtual?: boolean;
+  profile?: PlayerProfile;
 }
 
 export interface FixtureResult {
@@ -135,4 +164,8 @@ export interface World {
   competitions: Record<string, CompetitionState>;
   fixtures: Fixture[];
   news: NewsItem[];
+  /** The human manager's career (absent in pure simulations). */
+  manager?: ManagerState;
+  /** Full match reports of the manager's matches, by fixture id. */
+  reports?: Record<string, MatchReport>;
 }

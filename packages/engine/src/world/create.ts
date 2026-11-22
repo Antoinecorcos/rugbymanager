@@ -3,12 +3,12 @@ import type { Player } from "../domain/player.js";
 import type { SeasonCalendar } from "./calendar.js";
 import { COMPETITION_INFO } from "./competitions.js";
 import { buildNationPools, newPlayerState } from "./nations.js";
-import type { CompetitionState, Fixture, World, WorldClub } from "./types.js";
+import type { CompetitionState, Fixture, PlayerProfile, World, WorldClub } from "./types.js";
 
 export interface WorldSetup {
   seed: string;
   calendar: SeasonCalendar;
-  clubs: (WorldClub & { squad: { player: Player; caps: number }[] })[];
+  clubs: (WorldClub & { squad: { player: Player; caps: number; profile?: PlayerProfile }[] })[];
 }
 
 export function createWorld(setup: WorldSetup): World {
@@ -30,7 +30,11 @@ export function createWorld(setup: WorldSetup): World {
     const { squad, ...club } = c;
     w.clubs[c.id] = club;
     w.squads[c.id] = squad.map((e) => e.player.id);
-    for (const e of squad) w.players[e.player.id] = newPlayerState(e.player, c.id, e.caps);
+    for (const e of squad) {
+      const ps = newPlayerState(e.player, c.id, e.caps);
+      if (e.profile) ps.profile = e.profile;
+      w.players[e.player.id] = ps;
+    }
   }
 
   const competition = (id: string, kind: CompetitionState["kind"], teams: string[], knockout: Record<string, string>, groups?: string[][]): CompetitionState => {

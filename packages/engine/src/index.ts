@@ -7,6 +7,7 @@ export * from "./domain/match-setup.js";
 export * from "./gen/player-gen.js";
 export * from "./gen/team-gen.js";
 export * from "./squad/selection.js";
+export * from "./squad/analysis.js";
 export * from "./world/index.js";
 export * from "./match/types.js";
 export * from "./match/engine.js";

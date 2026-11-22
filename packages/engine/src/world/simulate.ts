@@ -9,6 +9,7 @@ import type { InternationalWindow } from "./calendar.js";
 import { NATION_NAME_FR, progressCompetitions } from "./competitions.js";
 import { addDays, type IsoDate } from "./dates.js";
 import { NATION_LEVEL } from "./nations.js";
+import { managedTeam, recordReport } from "./manager.js";
 import type { Fixture, PlayerSeasonStats, PlayerState, World } from "./types.js";
 
 /**
@@ -96,22 +97,15 @@ function callUps(w: World, win: InternationalWindow): void {
 
 // ------------------------------------------------------------------ matches
 
-function teamFor(w: World, f: Fixture, side: 0 | 1): { team: MatchTeam; missing: number } {
-  const id = side === 0 ? f.home : f.away;
-  const d = f.date;
-  const comp = w.competitions[f.competitionId]!;
-  const freshness = new Map<string, number>();
-  if (comp.kind === "international") {
-    let pool = Object.values(w.players).filter((ps) => ps.duty?.nation === id && isOnDuty(ps, d) && isFit(ps, d));
-    if (pool.length < 23) pool = (w.nationPools[id] ?? []).map((p) => w.players[p]!).filter((ps) => isFit(ps, d));
-    for (const ps of pool) freshness.set(ps.player.id, ps.freshness);
-    const name = NATION_NAME_FR[id] ?? id;
-    return { team: selectMatchTeam(pool.map((p) => p.player), { id, name, shortName: id, freshness }), missing: 0 };
-  }
+/**
+ * Players a club can pick from on a date: fit, not with their country, and — outside knock-out
+ * matches — not rested by the rotation rules (as long as 26 players remain).
+ */
+export function clubPool(w: World, id: string, d: IsoDate, knockout = false): { pool: PlayerState[]; missing: number; rested: PlayerState[] } {
   const squad = (w.squads[id] ?? []).map((p) => w.players[p]!);
   const missing = squad.filter((ps) => isOnDuty(ps, d)).length;
   const resting = (ps: PlayerState) =>
-    !f.knockout && (ps.startStreak >= ROTATION.maxStreak || ps.freshness < ROTATION.minFreshness || (!!ps.restUntil && ps.restUntil > d));
+    !knockout && (ps.startStreak >= ROTATION.maxStreak || ps.freshness < ROTATION.minFreshness || (!!ps.restUntil && ps.restUntil > d));
   let pool = squad.filter((ps) => isFit(ps, d) && !isOnDuty(ps, d));
   // Rest the most tired first, as long as 26 players remain to pick a 23 from.
   const toRest = pool.filter(resting).sort((a, b) => a.freshness - b.freshness || b.startStreak - a.startStreak);
@@ -120,16 +114,36 @@ function teamFor(w: World, f: Fixture, side: 0 | 1): { team: MatchTeam; missing:
     if (pool.length - rested.size <= 26) break;
     rested.add(ps.player.id);
   }
+  const restedList = pool.filter((ps) => rested.has(ps.player.id));
   pool = pool.filter((ps) => !rested.has(ps.player.id));
   // Emergency: too few players → internationals released, then injured players patched up.
   if (pool.length < 26) pool = [...pool, ...squad.filter((ps) => isFit(ps, d) && isOnDuty(ps, d))];
   if (pool.length < 23) pool = squad;
-  for (const ps of pool) freshness.set(ps.player.id, ps.freshness);
-  const club = w.clubs[id]!;
-  return { team: selectMatchTeam(pool.map((p) => p.player), { id, name: club.name, shortName: club.shortName, freshness }), missing };
+  return { pool, missing, rested: restedList };
 }
 
-function weatherFor(f: Fixture, rng: Rng): Weather {
+/** Freshness map used by the selection (tired players are penalised). */
+export const freshnessOf = (pool: readonly PlayerState[]): Map<string, number> => new Map(pool.map((ps) => [ps.player.id, ps.freshness]));
+
+function teamFor(w: World, f: Fixture, side: 0 | 1, staffChanges: string[]): { team: MatchTeam; missing: number } {
+  const id = side === 0 ? f.home : f.away;
+  const d = f.date;
+  const comp = w.competitions[f.competitionId]!;
+  if (comp.kind === "international") {
+    let pool = Object.values(w.players).filter((ps) => ps.duty?.nation === id && isOnDuty(ps, d) && isFit(ps, d));
+    if (pool.length < 23) pool = (w.nationPools[id] ?? []).map((p) => w.players[p]!).filter((ps) => isFit(ps, d));
+    const name = NATION_NAME_FR[id] ?? id;
+    return { team: selectMatchTeam(pool.map((p) => p.player), { id, name, shortName: id, freshness: freshnessOf(pool) }), missing: 0 };
+  }
+  if (w.manager?.clubId === id) return managedTeam(w, f, staffChanges);
+  const { pool, missing } = clubPool(w, id, d, f.knockout);
+  const club = w.clubs[id]!;
+  return { team: selectMatchTeam(pool.map((p) => p.player), { id, name: club.name, shortName: club.shortName, freshness: freshnessOf(pool) }), missing };
+}
+
+/** Weather of a fixture: drawn from the fixture seed, so it can be forecast before the match. */
+export function fixtureWeather(w: World, f: Fixture): Weather {
+  const rng = new Rng(`${w.seed}:${f.id}:weather`);
   const month = Number(f.date.slice(5, 7));
   const winter = month >= 11 || month <= 2;
   return rng.weighted([["dry", winter ? 50 : 77], ["wet", winter ? 35 : 15], ["windy", winter ? 15 : 8]] as const);
@@ -137,14 +151,16 @@ function weatherFor(f: Fixture, rng: Rng): Weather {
 
 export function playFixture(w: World, f: Fixture): void {
   const comp = w.competitions[f.competitionId]!;
-  const home = teamFor(w, f, 0);
-  const away = teamFor(w, f, 1);
+  const staffChanges: string[] = [];
+  const home = teamFor(w, f, 0, staffChanges);
+  const away = teamFor(w, f, 1, staffChanges);
   const seed = `${w.seed}:${f.id}`;
+  const weather = fixtureWeather(w, f);
   const res = simulateMatch({
     home: home.team,
     away: away.team,
     referee: DEFAULT_REFEREE,
-    weather: weatherFor(f, new Rng(`${seed}:weather`)),
+    weather,
     seed,
     knockout: f.knockout,
     neutral: f.neutral,
@@ -162,6 +178,7 @@ export function playFixture(w: World, f: Fixture): void {
     playerOfTheMatch: best?.playerId,
   };
   if (res.decidedBy) f.result.decidedBy = res.decidedBy;
+  if (w.manager && (f.home === w.manager.clubId || f.away === w.manager.clubId)) recordReport(w, f, [home.team, away.team], res, weather, staffChanges);
 
   const d = f.date;
   for (const ps of all) {
