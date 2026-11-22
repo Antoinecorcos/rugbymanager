@@ -1,6 +1,6 @@
 # Données réelles — base de joueurs et notation (M2)
 
-Code : `packages/data`. Saison de référence : **2026-2027**, date de référence des âges : **21/11/2026**.
+Code : `packages/data`. Saison de référence : **2026-2027**. La partie démarre le **1er juillet 2026** : les âges sont calculés à cette date et les notes n'utilisent que les statistiques connues alors, jusqu'à la saison 2025-2026 (voir `docs/06-monde-et-saison.md`). Les données ont été collectées le 21/11/2026.
 
 ## Ce que contient la base
 
@@ -11,6 +11,7 @@ Code : `packages/data`. Saison de référence : **2026-2027**, date de référen
 | Nationale | 14 | 582 (dont 197 générés) | Wikipédia FR (9 clubs) ; 5 clubs complétés | Jouable |
 | PREM | 10 | 415 | Wikipédia EN | Simulée en arrière-plan |
 | URC | 16 | 754 | Wikipédia EN | Simulée en arrière-plan |
+| Invités européens | 2 | 72 (générés) | Black Lion, Cheetahs (effectifs non publiés) | Challenge Cup |
 
 Pour chaque club : nom, ville, stade et capacité, président (LNR), entraîneur, budget (Top 14, Pro D2, Nationale), classement de la saison précédente, couleurs.
 Pour chaque joueur : nom usuel, date de naissance, nationalité sportive, taille, poids, poste(s), sélections internationales, club précédent, année d'arrivée, statut « formé au club », statistiques de championnat des dernières saisons (LNR), puis **notes** (37 attributs visibles + 8 cachés, CA/PA).
@@ -47,7 +48,7 @@ Le **niveau** d'un joueur est une note globale sur l'échelle 1-20 du moteur (�
 
 | Composante | Calcul |
 |---|---|
-| **Club** (`club`) | Niveau impliqué par le temps de jeu en championnat sur 3 saisons (pondérées 1 / 1 / 0,45, la saison en cours au prorata des journées jouées) : `base de la compétition + bonus d'utilisation`. Base : Top 14 11,6 · Pro D2 10,1 · PREM 11,3 · URC 11,1 · Nationale 9,4. Le bonus d'utilisation va de −1,3 (jamais aligné) à +1,2 (titulaire indiscutable) ; il mélange la part des minutes disponibles et le statut quand le joueur est aligné, pour ne pas confondre un international (absent pendant les doublons) avec un remplaçant. Sans statistiques : base − 0,6. |
+| **Club** (`club`) | Niveau impliqué par le temps de jeu en championnat sur les 3 dernières saisons connues (2025-26, 2024-25, 2023-24, pondérées 1 / 1 / 0,45) : `base de la compétition + bonus d'utilisation`. Base : Top 14 11,6 · Pro D2 10,1 · PREM 11,3 · URC 11,1 · Nationale 9,4. Le bonus d'utilisation va de −1,3 (jamais aligné) à +1,2 (titulaire indiscutable) ; il mélange la part des minutes disponibles et le statut quand le joueur est aligné, pour ne pas confondre un international (absent pendant les doublons) avec un remplaçant. Sans statistiques : base − 0,6. |
 | **International** | Bonus de sélections : `poids de la nation × min(1,8 ; 0,5 + 0,35 × ln(1 + sélections/2))`. Poids : 1 pour les nations du top 8 mondial, 0,8-0,85 pour l'Italie, les Fidji et le pays de Galles, 0,65-0,7 pour la Géorgie, le Japon, les Samoa, les Tonga, ~0,5 pour les autres nations établies. Rugby à 7 : +0,25. |
 | **Âge** | Encore en développement avant 22 ans (24 pour la 1re ligne et les 2e lignes), déclin après 30-33 ans selon le poste. Atténué quand les statistiques existent (elles reflètent déjà le niveau actuel). |
 | **Force du club** | Écart du budget (ou, à défaut, du classement précédent) à la moyenne de la ligue ; pèse surtout quand on manque de statistiques. |
@@ -84,7 +85,7 @@ Le **potentiel** (PA) = niveau + marge de progression selon l'âge (+3,2 à 19 a
 - **PREM / URC** : pas de minutes officielles ; le temps de jeu est estimé à partir des matchs joués pour le club actuel (infobox Wikipédia), d'où une note moins précise (`evidence` plus faible). Les Springboks, qui jouent peu en club, sont corrigés par overrides.
 - **Nationale** : pas de statistiques ni de mensurations officielles (FFR) ; 5 clubs complétés par des joueurs fictifs.
 - **Pro D2** : les statistiques réelles (classements) ne sont pas encore lues (format de tableau différent).
-- Le moteur produit un peu moins de bonus défensifs (~0,21) que la réalité (0,32) : les matchs serrés sont un peu rares. À retravailler avec le moteur, pas avec les données.
+- Le moteur produit un peu moins de bonus défensifs (0,27 depuis M3) que la réalité (0,32).
 - Les overrides couvrent 86 joueurs majeurs (Top 14, PREM, URC) ; l'éditeur (M8) permettra d'en corriger d'autres.
 - Les noms des joueurs générés viennent des listes fictives du moteur (`NAME_POOLS`).
 
@@ -94,6 +95,7 @@ Le **potentiel** (PA) = niveau + marge de progression selon l'âge (+3,2 à 19 a
 pnpm --filter @ovalie/data import:fr         # Top 14 + Pro D2 (LNR + Wikipédia FR) → raw/fr
 pnpm --filter @ovalie/data import:en         # PREM + URC (Wikipédia EN) → raw/prem, raw/urc
 pnpm --filter @ovalie/data import:nationale  # Nationale (Wikipédia FR) → raw/nationale
+pnpm --filter @ovalie/data import:calendar   # calendrier réel 2026-2027 → calendar/2026-2027.json
 pnpm --filter @ovalie/data build-db          # raw + overrides → db (+ tableau de force des clubs)
 pnpm --filter @ovalie/data season TOP14 5    # saisons simulées + indicateurs de calibrage
 pnpm --filter @ovalie/data match toulouse bordeaux-begles   # un vrai match commenté

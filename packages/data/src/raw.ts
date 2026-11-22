@@ -71,6 +71,11 @@ export const rawClubSchema = z.object({
   budgetEur: z.number().nonnegative().optional(),
   /** Final rank last season (league + position). */
   previousRank: z.object({ league: z.enum(LEAGUES), rank: z.number().int().positive() }).optional(),
+  /**
+   * Level (1–20 scale) of the players generated when the real squad is unknown
+   * (invited European clubs such as Black Lion or the Cheetahs). Defaults to the league level.
+   */
+  levelHint: z.number().optional(),
   /** Club colours (hex), taken from the source squad table styling when available. */
   colors: z.tuple([z.string(), z.string()]).optional(),
   sources: z.object({ lnr: z.string().optional(), wikipedia: z.string().optional() }).default({}),

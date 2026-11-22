@@ -1,0 +1,109 @@
+
+=== Saison 2026-2027 — début de partie le mercredi 1 juillet 2026 (graine « ovalie ») ===
+72 clubs, 3419 joueurs, 973 matchs au calendrier avant les phases finales.
+Simulation jusqu'au dimanche 29 novembre 2026 en 3.1 s.
+
+=== Palmarès ===
+Nations Championship       Afrique du Sud (finaliste : France)
+
+--- Top 14 — saison régulière ---
+    Club                          J   G  N   P  Diff   B  Pts
+ 1. Stade toulousain             10   8  0   2   104   3   35
+ 2. Montpellier Hérault Rugby    10   7  0   3   106   6   34
+ 3. Section paloise              10   7  1   2    78   1   31
+ 4. Aviron bayonnais             10   6  1   3    37   3   29
+ 5. RC Toulon                    10   6  0   4    45   4   28
+ 6. Union Bordeaux Bègles        10   7  0   3     9   0   28
+ 7. Lyon OU                      10   5  0   5    47   4   24
+ 8. Racing 92                    10   5  0   5   -18   2   22
+ 9. Stade français Paris         10   4  2   4   -13   0   20
+10. Stade rochelais              10   4  0   6   -28   1   17
+11. USA Perpignan                10   3  1   6   -45   1   15
+12. ASM Clermont Auvergne        10   2  0   8   -30   5   13
+13. Castres olympique            10   2  0   8  -166   1    9
+14. RC Vannes                    10   1  1   8  -126   2    8
+
+--- Pro D2 — saison régulière ---
+    Club                          J   G  N   P  Diff   B  Pts
+ 1. Provence Rugby               12  11  0   1   138   3   47
+ 2. CA Brive                     12   9  0   3    71   4   40
+ 3. Oyonnax Rugby                12   9  0   3    73   2   38
+ 4. USON Nevers                  12   9  0   3    19   1   37
+ 5. Soyaux Angoulême XV          12   6  0   6    48   5   29
+ 6. US Dax                       12   7  0   5     2   1   29
+ 7. AS Béziers Hérault           12   6  0   6     2   3   27
+ 8. SU Agen                      12   5  0   7    21   6   26
+ 9. US Montauban                 12   5  0   7    -6   5   25
+10. Colomiers Rugby              12   5  0   7   -32   4   24
+11. Nissa Rugby                  12   5  0   7   -72   1   21
+12. Valence Romans Drôme Rugby   12   4  0   8    26   4   20
+13. Biarritz olympique           12   4  0   8   -12   4   20
+14. Stade aurillacois            12   4  0   8   -73   4   20
+15. FC Grenoble                  12   4  0   8   -76   3   19
+16. RC Narbonne                  12   3  0   9  -129   2   14
+
+=== Top 14 : meilleurs marqueurs ===
+Essais : Jack Maddocks (Section paloise) 6, Aaron Grandidier-Nkanang (Section paloise) 5, Camille Chat (Lyon OU) 5
+Points : Paddy Jackson (Lyon OU) 90, Harry Plummer (ASM Clermont Auvergne) 88, Gerónimo Prisciantelli (Racing 92) 86
+
+=== Doublons ===
+86 matchs de club joués sans des internationaux (907 absences au total).
+Top 14, absences cumulées : ST 57, UBB 42, SF 39, SR 33, RCT 33, AB 27, USAP 27, R92 24, LOU 24, MHR 24, CO 24, SP 24, ASM 21, RCV 9
+
+Blessures longues (≥ 4 semaines) : 145
+
+=== Stade toulousain : calendrier et résultats ===
+2026-09-06  Top 14             J1                 E Stade rochelais              21-6    
+2026-09-13  Top 14             J2                 D Union Bordeaux Bègles        49-26   
+2026-09-19  Top 14             J3                 E RC Vannes                    31-3    
+2026-09-27  Top 14             J4                 D Montpellier Hérault Rugby    28-13   
+2026-10-03  Top 14             J5                 E Castres olympique            34-20   
+2026-10-11  Top 14             J6                 D Aviron bayonnais             25-13   
+2026-10-18  Champions Cup      poule-2-J1         D Exeter Chiefs                40-17   
+2026-10-24  Top 14             J7                 D USA Perpignan                29-14   
+2026-11-01  Top 14             J8                 E Section paloise              15-30    (19 internationaux absents)
+2026-11-07  Top 14             J9                 D ASM Clermont Auvergne        29-24    (19 internationaux absents)
+2026-11-28  Top 14             J10                E Lyon OU                      13-21    (19 internationaux absents)
+2026-12-05  Top 14             J11                D Racing 92                    à jouer 
+2026-12-12  Champions Cup      poule-2-J2         E Lions                        à jouer 
+2026-12-19  Top 14             J12                E Stade français Paris         à jouer 
+2026-12-26  Top 14             J13                D RC Toulon                    à jouer 
+2027-01-02  Top 14             J14                E Aviron bayonnais             à jouer 
+2027-01-09  Champions Cup      poule-2-J3         E Connacht                     à jouer 
+2027-01-17  Champions Cup      poule-2-J4         D Saracens                     à jouer 
+2027-01-23  Top 14             J15                D Stade rochelais              à jouer 
+2027-01-30  Top 14             J16                E ASM Clermont Auvergne        à jouer 
+2027-02-20  Top 14             J17                D Lyon OU                      à jouer 
+2027-02-27  Top 14             J18                E Racing 92                    à jouer 
+2027-03-20  Top 14             J19                D RC Vannes                    à jouer 
+2027-03-27  Top 14             J20                E Union Bordeaux Bègles        à jouer 
+2027-04-17  Top 14             J21                E RC Toulon                    à jouer 
+2027-04-24  Top 14             J22                D Castres olympique            à jouer 
+2027-05-08  Top 14             J23                E Montpellier Hérault Rugby    à jouer 
+2027-05-15  Top 14             J24                D Section paloise              à jouer 
+2027-05-29  Top 14             J25                D Stade français Paris         à jouer 
+2027-06-05  Top 14             J26                E USA Perpignan                à jouer 
+
+=== Stade toulousain : actualités ===
+2026-07-01  France (Tests de juillet) : 32 joueurs convoqués.
+2026-07-01  Stade toulousain : 11 joueurs retenus par France (Tests de juillet).
+2026-07-01  Stade toulousain : 1 joueur retenu par Belgique (Tests de juillet).
+2026-07-01  Stade toulousain : 1 joueur retenu par Espagne (Tests de juillet).
+2026-07-01  Argentine (Tests de juillet) : 32 joueurs convoqués.
+2026-07-01  Stade toulousain : 3 joueurs retenus par Argentine (Tests de juillet).
+2026-07-01  Écosse (Tests de juillet) : 32 joueurs convoqués.
+2026-07-01  Stade toulousain : 1 joueur retenu par Écosse (Tests de juillet).
+2026-07-01  Italie (Tests de juillet) : 32 joueurs convoqués.
+2026-07-01  Stade toulousain : 2 joueurs retenus par Italie (Tests de juillet).
+2026-07-01  Stade toulousain : 1 joueur retenu par États-Unis (Tests de juillet).
+2026-07-18  Cyril Baille (Stade toulousain) : lésion aux ischio-jambiers, environ 5 semaines d'absence.
+2026-10-03  Tommaso Menoncello (Stade toulousain) : lésion au mollet, environ 4 semaines d'absence.
+2026-10-30  France (Tests de novembre) : 32 joueurs convoqués.
+2026-10-30  Stade toulousain : 11 joueurs retenus par France (Tests de novembre).
+2026-10-30  Stade toulousain : 1 joueur retenu par Belgique (Tests de novembre).
+2026-10-30  Stade toulousain : 1 joueur retenu par Espagne (Tests de novembre).
+2026-10-30  Argentine (Tests de novembre) : 32 joueurs convoqués.
+2026-10-30  Stade toulousain : 3 joueurs retenus par Argentine (Tests de novembre).
+2026-10-30  Italie (Tests de novembre) : 32 joueurs convoqués.
+2026-10-30  Stade toulousain : 2 joueurs retenus par Italie (Tests de novembre).
+2026-10-30  Stade toulousain : 1 joueur retenu par États-Unis (Tests de novembre).

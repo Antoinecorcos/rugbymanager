@@ -24,6 +24,34 @@ export const NAME_POOLS: Record<string, { first: string[]; last: string[] }> = {
     first: ["Julián", "Santiago", "Pablo", "Marcos", "Juan Martín", "Tomás", "Mateo", "Facundo", "Gonzalo"],
     last: ["Fernández", "Rossi", "Pereyra", "Acosta", "Ledesma", "Sosa", "Benítez", "Aguirre", "Molina"],
   },
+  ENG: {
+    first: ["Tom", "Ben", "Sam", "Joe", "Harry", "Ollie", "Jamie", "George", "Luke", "Alfie", "Charlie", "Freddie", "Will", "Henry"],
+    last: ["Smith", "Roberts", "Hill", "Underwood", "Johnson", "Clarke", "Spencer", "Baxter", "Thompson", "Marler", "Walker", "Barnes", "Lewis", "Ford"],
+  },
+  IRL: {
+    first: ["Conor", "Ciarán", "Seán", "Rónan", "Cian", "Darragh", "Jack", "Tadhg", "Peter", "Rob", "Craig", "Garry", "Eoin", "Niall"],
+    last: ["O'Brien", "Murphy", "Ryan", "Kelly", "Doyle", "O'Connell", "Byrne", "Healy", "Kearney", "McGrath", "Daly", "Walsh", "Moore", "O'Sullivan"],
+  },
+  SCO: {
+    first: ["Ali", "Rory", "Fraser", "Callum", "Ewan", "Hamish", "Stuart", "Jamie", "Kyle", "Magnus", "Duncan", "Gregor"],
+    last: ["Gray", "Hogg", "Ritchie", "Watson", "Darge", "McInally", "Cherry", "Horne", "Dobie", "Steyn", "Turner", "Campbell"],
+  },
+  WAL: {
+    first: ["Rhys", "Gareth", "Dafydd", "Iestyn", "Owain", "Taine", "Gruff", "Rhodri", "Aled", "Elis", "Morgan", "Tomos"],
+    last: ["Jones", "Davies", "Evans", "Williams", "Thomas", "Morgan", "Price", "Rees", "Griffiths", "Lloyd", "Hughes", "Llewellyn"],
+  },
+  ITA: {
+    first: ["Michele", "Giovanni", "Lorenzo", "Matteo", "Federico", "Paolo", "Leonardo", "Simone", "Danilo", "Juan Ignacio", "Marco", "Alessandro"],
+    last: ["Rossi", "Ferrari", "Bianchi", "Fusco", "Riccioni", "Lamaro", "Negri", "Lynagh", "Allan", "Garbisi", "Ruzza", "Zuliani"],
+  },
+  AUS: {
+    first: ["Jack", "Tom", "Harry", "Lachie", "Will", "Nick", "James", "Max", "Fraser", "Hamish", "Ryan", "Angus", "Tate", "Josh", "Matt"],
+    last: ["Stewart", "McReight", "Kellaway", "Paisami", "Gordon", "Skelton", "Leota", "Wilson", "Daugunu", "Lonergan", "Tupou", "Swinton", "Philip", "Hooper", "Ikitau"],
+  },
+  JPN: {
+    first: ["Kazuki", "Ryota", "Shota", "Takuya", "Yoshitaka", "Kotaro", "Seung", "Naoto", "Shuhei", "Atsushi", "Keita", "Daiki", "Tomoki", "Yutaka"],
+    last: ["Himeno", "Matsushima", "Nakamura", "Tatafu", "Saito", "Sakate", "Inagaki", "Horikoshi", "Fukui", "Nagare", "Tanaka", "Ishida", "Watanabe", "Yamamoto"],
+  },
 };
 
 export const NATIONALITY_WEIGHTS_TOP14: readonly (readonly [string, number])[] = [

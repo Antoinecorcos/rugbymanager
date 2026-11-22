@@ -1,4 +1,4 @@
-70 clubs, 3347 joueurs écrits dans packages/data/db/
+72 clubs, 3419 joueurs écrits dans packages/data/db/
 
 Club                        Ligue      XV    23  Effectif  Meilleurs joueurs
 Stade montois               NATIONALE  9.59  9.53        42  B. Kapanadze 10.4, A. Usarraga 10.2, A. Manu 10.2
@@ -7,7 +7,7 @@ US Carcassonne              NATIONALE  9.19  9.06        41  T. Futeu 10.0, O. L
 CS Bourgoin-Jallieu         NATIONALE  9.09  9.10        44  M. Pichardie 9.9, J. Mau'u 9.8, E. Fossano 9.2
 RC Suresnes                 NATIONALE  8.91  8.87        44  L. Lee 9.5, M. Hendrickx 9.2, J. Brasseur 9.2
 SO Chambéry                 NATIONALE  8.85  8.83        41  R. Rasaku 9.6, M. Ariceta 9.4, H. Vaovasa 9.3
-Rouen Normandie Rugby       NATIONALE  8.83  8.81        51  G. Gajion 10.2, S. Bekoshvili 9.6, B. Bordenave 9.4
+Rouen Normandie Rugby       NATIONALE  8.83  8.82        51  G. Gajion 10.2, S. Bekoshvili 9.6, B. Bordenave 9.4
 SC Albi                     NATIONALE  8.73  8.71        52  H. Camacho 9.4, A. Dos Santos 9.2, G. Aviragnet 9.2
 CA Périgueux                NATIONALE  8.73  8.56        36  A. Carrère 9.8, G. Fourcade 9.4, M. Javakhishvili 9.4
 US Bressane                 NATIONALE  8.65  8.63        42  V. Tutuila Vaea 9.3, F. Correa 9.0, V. Mupunga 9.0
@@ -15,59 +15,61 @@ Olympique marcquois         NATIONALE  8.58  8.52        45  S. Iglesias 9.4, D.
 RC Massy Essonne            NATIONALE  8.46  8.27        36  T. Etchegaray 9.5, G. Carrère 9.3, A. Etchegaray 9.0
 Rennes EC                   NATIONALE  8.42  8.21        36  T. Laborde 9.3, A. Vidal 9.2, P. Lacoste 9.1
 CS Vienne                   NATIONALE  8.27  8.21        36  P. Ducasse 9.4, Y. Bergès 8.9, J. Pujol 8.8
-Bath                        PREM    13.43 13.04        50  F. Russell 15.6, S. Underhill 14.8, S. Carreras 13.9
-Northampton Saints          PREM    13.18 12.98        40  H. Pollock 15.2, T. Freeman 15.2, A. Mitchell 14.9
-Saracens                    PREM    13.06 12.68        42  M. Itoje 15.6, B. Earl 15.3, J. Martín González 13.8
-Leicester Tigers            PREM    13.06 12.87        41  O. Chessum 14.9, J. Heyes 13.7, F. Steward 13.7
-Harlequins                  PREM    12.83 12.43        44  M. Smith 14.9, C. Cunningham-South 13.6, A. Dombrandt 13.6
-Sale Sharks                 PREM    12.65 12.23        38  T. Curry 15.2, G. Ford 14.6, L. Cowan-Dickie 13.8
-Bristol Bears               PREM    12.65 12.46        39  E. Genge 14.9, L. Rees-Zammit 14.6, T. Jordan 13.6
-Gloucester                  PREM    12.38 12.20        37  R. Byrne 13.5, S. Atkinson 13.2, M. Llewellyn 13.2
-Exeter Chiefs               PREM    12.35 12.04        41  I. Feyi-Waboso 14.9, H. Slade 13.8, S. Varney 13.5
-Newcastle Red Bulls         PREM    12.28 12.02        43  F. Molina 13.5, S. Benítez Cruz 13.4, M. McCallum 13.0
-US Montauban                PROD2   11.77 11.65        49  J. Vici 12.6, V. Fifita 12.5, J. Powell 12.4
-Provence Rugby              PROD2   11.68 11.55        59  T. Ardron 12.9, I. Rodda 12.7, C. Muntz 12.5
-FC Grenoble                 PROD2   11.60 11.36        51  L. Tauzin 13.6, A. Callandret 12.6, R. Costa Storti 12.3
-CA Brive                    PROD2   11.50 11.43        53  A. Luc 12.6, G. Shvelidze 12.1, J. Cooney 12.0
-Oyonnax Rugby               PROD2   11.45 11.32        56  A. Newsome 12.5, F. Kaitu'u 12.2, L. Mensa 12.2
-USON Nevers                 PROD2   11.22 11.11        62  P. Jedrasiak 13.0, V. Pasquet 12.4, A. Botha 11.7
-Biarritz olympique          PROD2   11.09 10.91        51  D. Paia'aua 12.2, S. Vailanu 11.7, C. Mignot 11.5
-SU Agen                     PROD2   11.03 10.84        46  C. Laloi 12.2, L. Martins 11.8, E. Pieretto 11.7
-Soyaux Angoulême XV         PROD2   10.93 10.76        51  G. Aprasidze 12.3, K. Rasaku 11.8, R. Arnold 11.7
-Colomiers Rugby             PROD2   10.89 10.76        46  V. Pinto 12.0, S. Bento 12.0, A. Carmona 11.7
-Nissa Rugby                 PROD2   10.82 10.73        52  É. Falgoux 12.2, V. Rattez 11.9, B. Ezcurra 11.7
-Valence Romans Drôme Rugby  PROD2   10.78 10.68        40  M. Tauleigne 12.1, J. Moura 11.6, R. McCauley 11.2
-RC Narbonne                 PROD2   10.78 10.55        48  C. Timu 11.7, A. Dyantyi 11.7, F. Peni 11.5
-AS Béziers Hérault          PROD2   10.74 10.68        48  M. Fekitoa 11.7, G. Benoy 11.4, P. Courtaud 11.3
-US Dax                      PROD2   10.62 10.50        37  C. Matthews 11.5, M. Oltmann 11.4, B. Ferrer 11.2
-Stade aurillacois           PROD2   10.59 10.50        45  T. Abzhandadze 12.2, T. de Jong 11.2, J. Strachan 11.1
-Stade toulousain            TOP14   14.84 14.61        57  A. Dupont 16.6, R. Ntamack 15.7, T. Ramos 15.5
-Union Bordeaux Bègles       TOP14   14.07 13.51        59  L. Bielle-Biarrey 16.0, D. Penaud 15.7, M. Jalibert 15.5
-RC Toulon                   TOP14   13.92 13.65        53  C. Ollivon 15.1, G. Fickou 14.9, H. Jones 14.9
-Stade rochelais             TOP14   13.65 13.18        56  G. Alldritt 15.5, O. Jégou 14.9, P. Boudehent 14.9
-Montpellier Hérault Rugby   TOP14   13.33 13.17        59  A. Hastings 14.2, B. Vunipola 14.1, A. Vincent 14.0
-Stade français Paris        TOP14   13.31 13.10        64  L. Barré 14.8, P. Gabrillagues 14.2, G. Nicotera 13.8
-Section paloise             TOP14   13.27 12.94        65  J. Montoya 14.9, T. Attissogbe 14.9, É. Gailleton 14.8
-Lyon OU                     TOP14   13.24 12.92        61  M. Guillard 14.7, D. Cretin 14.2, J. Wainiqolo 14.1
-ASM Clermont Auvergne       TOP14   13.17 12.82        52  M. Kremer 14.9, B. Delguy 14.4, D. Swain 13.7
-Aviron bayonnais            TOP14   13.12 12.84        56  M. Carreras 14.2, R. Bruni 13.8, S. Maqala 13.8
-Racing 92                   TOP14   12.90 12.72        52  J. Tuisova 13.8, J. Hill 13.6, V. Habosi 13.6
-USA Perpignan               TOP14   12.76 12.52        51  P. Garbisi 14.7, S. Reece 13.8, B. Ennor 13.2
-Castres olympique           TOP14   12.65 12.41        56  J. Goodhue 14.0, H. Watson 13.6, V. Botitu 13.4
-RC Vannes                   TOP14   12.03 11.77        61  M. Alemanno 13.6, N. Hulleu 13.1, S. Medrano 12.7
+Cheetahs                    OTHER   11.09 10.98        36  B. Fourie 12.2, F. Erasmus 11.9, R. Botha 11.7
+Black Lion                  OTHER   10.50 10.35        36  D. Kapanadze 11.6, S. Javakhishvili 11.2, B. Gelashvili 11.1
+Bath                        PREM    13.47 13.07        50  F. Russell 15.6, S. Underhill 14.8, S. Carreras 13.9
+Northampton Saints          PREM    13.21 13.01        40  H. Pollock 15.2, T. Freeman 15.2, A. Mitchell 14.9
+Saracens                    PREM    13.06 12.71        42  M. Itoje 15.6, B. Earl 15.3, J. Martín González 13.8
+Leicester Tigers            PREM    13.05 12.83        41  O. Chessum 14.9, J. Heyes 13.8, F. Steward 13.7
+Harlequins                  PREM    12.84 12.47        44  M. Smith 14.9, C. Cunningham-South 13.6, A. Dombrandt 13.6
+Bristol Bears               PREM    12.71 12.49        39  E. Genge 14.9, L. Rees-Zammit 14.6, K. Marmion 13.6
+Sale Sharks                 PREM    12.67 12.25        38  T. Curry 15.2, G. Ford 14.6, L. Cowan-Dickie 13.8
+Gloucester                  PREM    12.41 12.22        37  R. Byrne 13.5, S. Atkinson 13.2, M. Llewellyn 13.2
+Exeter Chiefs               PREM    12.37 12.05        41  I. Feyi-Waboso 14.9, H. Slade 13.8, S. Varney 13.5
+Newcastle Red Bulls         PREM    12.22 11.98        43  S. Benítez Cruz 13.4, M. McCallum 13.0, A. Brocklebank 12.8
+Provence Rugby              PROD2   11.73 11.58        59  T. Ardron 13.1, I. Rodda 12.8, C. Muntz 12.6
+FC Grenoble                 PROD2   11.70 11.41        51  L. Tauzin 13.6, A. Callandret 13.1, R. Costa Storti 12.2
+Oyonnax Rugby               PROD2   11.69 11.54        56  F. Kaitu'u 12.8, A. Newsome 12.8, V. Karkadze 12.3
+US Montauban                PROD2   11.62 11.46        49  V. Fifita 13.0, J. Vici 12.4, E. Hervé 12.2
+CA Brive                    PROD2   11.59 11.52        53  A. Luc 12.9, J. Tisseron 12.4, A. Tuivuaka 12.3
+SU Agen                     PROD2   11.18 10.95        46  C. Laloi 12.5, L. Dupichot 12.0, L. Martins 11.8
+USON Nevers                 PROD2   11.13 10.97        62  P. Jedrasiak 13.0, V. Pasquet 12.5, A. Botha 12.2
+Nissa Rugby                 PROD2   11.10 10.92        52  É. Falgoux 12.6, V. Rattez 12.4, F. Saili 12.0
+Biarritz olympique          PROD2   11.06 10.90        51  D. Paia'aua 12.6, J. Jegerlehner 11.4, C. Mignot 11.3
+Colomiers Rugby             PROD2   10.92 10.72        46  V. Pinto 12.0, S. Bento 12.0, A. Carmona 11.6
+Soyaux Angoulême XV         PROD2   10.89 10.73        51  G. Aprasidze 12.2, R. Arnold 12.1, K. Rasaku 11.8
+Valence Romans Drôme Rugby  PROD2   10.84 10.76        40  M. Tauleigne 12.4, J. Moura 11.6, T. Rozière 11.5
+AS Béziers Hérault          PROD2   10.78 10.62        48  N. Sutidze 11.5, G. Benoy 11.3, C. Dodson 11.3
+Stade aurillacois           PROD2   10.66 10.47        45  T. Abzhandadze 12.2, L. Nioradze 11.1, G. Kartvelishvili 11.1
+US Dax                      PROD2   10.66 10.56        37  C. Matthews 11.7, M. Oltmann 11.4, B. Ferrer 11.3
+RC Narbonne                 PROD2   10.32 10.09        48  C. Timu 11.9, F. Pomponio 11.4, A. Naqalevu 11.3
+Stade toulousain            TOP14   14.87 14.56        57  A. Dupont 16.6, R. Ntamack 15.7, T. Ramos 15.5
+RC Toulon                   TOP14   13.94 13.72        53  C. Ollivon 15.1, G. Fickou 14.9, H. Jones 14.9
+Union Bordeaux Bègles       TOP14   13.94 13.47        59  L. Bielle-Biarrey 16.0, D. Penaud 15.7, M. Jalibert 15.5
+Stade rochelais             TOP14   13.63 13.10        56  G. Alldritt 15.5, O. Jégou 14.9, P. Boudehent 14.9
+Montpellier Hérault Rugby   TOP14   13.35 13.13        59  B. Vunipola 14.2, A. Price 14.2, A. Vincent 14.0
+Section paloise             TOP14   13.25 12.91        65  J. Montoya 14.9, T. Attissogbe 14.9, É. Gailleton 14.8
+Stade français Paris        TOP14   13.23 13.01        64  L. Barré 14.8, P. Gabrillagues 14.2, L. Carbonel 13.8
+Lyon OU                     TOP14   13.19 12.84        61  M. Guillard 14.7, M. Ioane 14.2, J. Wainiqolo 14.0
+Aviron bayonnais            TOP14   13.13 12.83        56  M. Carreras 14.1, R. Bruni 14.0, M. Tuilagi 13.8
+ASM Clermont Auvergne       TOP14   12.95 12.68        52  M. Kremer 14.9, B. Delguy 14.4, R. Leota 14.2
+Racing 92                   TOP14   12.90 12.70        52  J. Hill 13.8, V. Habosi 13.7, J. Tuisova 13.7
+USA Perpignan               TOP14   12.80 12.48        51  P. Garbisi 14.7, J. de la Fuente 13.5, I. Ruiz 13.4
+Castres olympique           TOP14   12.62 12.39        56  J. Goodhue 13.9, V. Botitu 13.6, M. Babillot 13.5
+RC Vannes                   TOP14   11.85 11.73        61  N. Hulleu 13.1, S. Medrano 12.8, F. Gorrissen 12.6
 Leinster                    URC     14.43 14.09        43  D. Sheehan 15.7, C. Doris 15.6, A. Porter 15.2
-Glasgow Warriors            URC     13.52 13.08        47  Z. Fagerson 14.9, S. Tuipulotu 14.9, M. Fagerson 14.1
-Munster                     URC     12.89 12.68        43  T. Beirne 14.9, J. Crowley 14.6, C. Casey 13.6
-Stormers                    URC     12.89 12.50        62  S. Feinberg-Mngomezulu 15.6, C. Kolbe 15.3, S. Kolisi 14.8
+Glasgow Warriors            URC     13.51 13.10        47  Z. Fagerson 14.9, S. Tuipulotu 14.9, R. Sutherland 14.0
+Stormers                    URC     12.91 12.52        62  S. Feinberg-Mngomezulu 15.6, C. Kolbe 15.3, S. Kolisi 14.8
+Munster                     URC     12.88 12.70        43  T. Beirne 14.9, J. Crowley 14.6, C. Casey 13.6
+Edinburgh                   URC     12.77 12.37        47  D. van der Merwe 14.9, D. Graham 14.8, P. Schoeman 13.5
+Cardiff                     URC     12.75 12.46        40  J. Adams 13.3, T. Basham 13.2, J. Botham 13.2
 Ulster                      URC     12.74 12.48        44  I. Henderson 13.6, J. Stockdale 13.5, T. O'Toole 13.4
-Cardiff                     URC     12.71 12.41        40  K. Assiratti 13.2, T. Basham 13.2, J. Adams 13.2
-Edinburgh                   URC     12.70 12.30        47  D. van der Merwe 14.9, D. Graham 14.8, P. Schoeman 13.5
-Connacht                    URC     12.55 12.25        40  B. Aki 14.8, F. Bealham 13.3, M. Hansen 13.3
-Bulls                       URC     12.36 12.00        61  H. Pollard 14.9, C. Moodie 14.9, C. Wiese 13.2
-Dragons                     URC     12.13 11.92        40  E. Dee 13.0, R. Dyer 12.8, W. Jones 12.7
-Sharks                      URC     12.12 11.92        65  E. Etzebeth 15.6, O. Nché 14.9, T. du Toit 14.5
-Benetton                    URC     11.94 11.58        41  N. Cannone 13.2, L. Cannone 13.1, M. Zuliani 13.1
-Ospreys                     URC     11.88 11.58        40  O. Watkin 13.1, K. Hardy 13.0, D. Edwards 12.8
-Lions                       URC     11.83 11.74        59  Q. Horn 12.9, C. van Vuuren 12.6, E. Davids 12.1
-Scarlets                    URC     11.81 11.52        42  R. Elias 13.0, S. Costelow 12.8, T. Plumtree 12.7
-Zebre                       URC     11.68 11.26        40  A. Fusco 12.8, M. Hasa 12.6, G. Licata 12.6
+Connacht                    URC     12.59 12.27        40  B. Aki 14.8, F. Bealham 13.5, M. Hansen 13.5
+Bulls                       URC     12.43 12.02        61  H. Pollard 14.9, C. Moodie 14.9, C. Wiese 13.1
+Dragons                     URC     12.16 11.96        40  E. Dee 13.1, B. Carter 12.8, R. Dyer 12.8
+Sharks                      URC     12.13 11.94        65  E. Etzebeth 15.6, O. Nché 14.9, T. du Toit 14.5
+Benetton                    URC     11.98 11.60        41  N. Cannone 13.3, M. Zuliani 13.2, L. Cannone 13.1
+Scarlets                    URC     11.92 11.62        42  R. Elias 13.1, S. Costelow 12.9, T. Plumtree 12.8
+Ospreys                     URC     11.88 11.60        40  O. Watkin 13.2, K. Hardy 13.1, D. Edwards 12.8
+Lions                       URC     11.76 11.70        59  Q. Horn 12.9, C. van Vuuren 12.7, E. Davids 12.1
+Zebre                       URC     11.72 11.31        40  A. Fusco 12.9, M. Hasa 12.7, G. Licata 12.7

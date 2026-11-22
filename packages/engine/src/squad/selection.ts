@@ -42,7 +42,12 @@ export interface SelectionOptions {
   morale?: number;
   /** Players not available (injured, suspended, away with their country…). */
   unavailable?: ReadonlySet<string>;
+  /** Freshness 0–100 of each player (missing = 100): tired players are rotated. */
+  freshness?: ReadonlyMap<string, number>;
 }
+
+/** Selection malus (level points) for a tired player: 0 above 85 freshness, −2 at 45. */
+export const fatiguePenalty = (freshness: number): number => Math.max(0, 85 - freshness) * 0.05;
 
 /** Picks the 23 (shirts 1–23) of a squad. Throws if the squad cannot field 15 + the bench. */
 export function selectMatchTeam(squad: readonly Player[], opts: SelectionOptions): MatchTeam {
@@ -53,7 +58,7 @@ export function selectMatchTeam(squad: readonly Player[], opts: SelectionOptions
     let bestQ = -Infinity;
     for (const p of pool) {
       if (used.has(p.id)) continue;
-      const q = selectionScore(p, pos);
+      const q = selectionScore(p, pos) - fatiguePenalty(opts.freshness?.get(p.id) ?? 100);
       if (q > bestQ) {
         bestQ = q;
         best = p;

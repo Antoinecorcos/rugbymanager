@@ -1,0 +1,6149 @@
+{
+ "season": "2026-2027",
+ "start": "2026-07-01",
+ "end": "2027-06-30",
+ "leagues": [
+  {
+   "id": "top14",
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-09-05",
+       "home": "bayonne",
+       "away": "toulon"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "castres",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "lyon",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "montpellier",
+       "away": "pau"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "paris",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "bordeaux-begles",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-09-06",
+       "home": "la-rochelle",
+       "away": "toulouse"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-09-12",
+       "home": "perpignan",
+       "away": "castres"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "vannes",
+       "away": "montpellier"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "clermont",
+       "away": "paris"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "pau",
+       "away": "bayonne"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "racing-92",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "toulon",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-09-13",
+       "home": "toulouse",
+       "away": "bordeaux-begles"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-09-19",
+       "home": "castres",
+       "away": "toulon"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "bayonne",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "la-rochelle",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "lyon",
+       "away": "pau"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "montpellier",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "vannes",
+       "away": "toulouse"
+      },
+      {
+       "date": "2026-09-20",
+       "home": "bordeaux-begles",
+       "away": "paris"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-09-26",
+       "home": "perpignan",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "clermont",
+       "away": "castres"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "paris",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "racing-92",
+       "away": "bayonne"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "toulon",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "pau",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-09-27",
+       "home": "toulouse",
+       "away": "montpellier"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-10-03",
+       "home": "bordeaux-begles",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "bayonne",
+       "away": "paris"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "vannes",
+       "away": "pau"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "la-rochelle",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "racing-92",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "castres",
+       "away": "toulouse"
+      },
+      {
+       "date": "2026-10-04",
+       "home": "montpellier",
+       "away": "toulon"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-10-10",
+       "home": "paris",
+       "away": "montpellier"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "perpignan",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "lyon",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "pau",
+       "away": "castres"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "toulon",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "clermont",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2026-10-11",
+       "home": "toulouse",
+       "away": "bayonne"
+      }
+     ]
+    },
+    {
+     "round": 7,
+     "matches": [
+      {
+       "date": "2026-10-24",
+       "home": "vannes",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "bayonne",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "castres",
+       "away": "paris"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "racing-92",
+       "away": "montpellier"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "toulouse",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "toulon",
+       "away": "pau"
+      },
+      {
+       "date": "2026-10-25",
+       "home": "la-rochelle",
+       "away": "bordeaux-begles"
+      }
+     ]
+    },
+    {
+     "round": 8,
+     "matches": [
+      {
+       "date": "2026-10-31",
+       "home": "clermont",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "bordeaux-begles",
+       "away": "bayonne"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "lyon",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "paris",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "perpignan",
+       "away": "toulon"
+      },
+      {
+       "date": "2026-11-01",
+       "home": "montpellier",
+       "away": "castres"
+      },
+      {
+       "date": "2026-11-01",
+       "home": "pau",
+       "away": "toulouse"
+      }
+     ]
+    },
+    {
+     "round": 9,
+     "matches": [
+      {
+       "date": "2026-11-07",
+       "home": "toulouse",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "castres",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "montpellier",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "pau",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "toulon",
+       "away": "paris"
+      },
+      {
+       "date": "2026-11-08",
+       "home": "vannes",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2026-11-08",
+       "home": "la-rochelle",
+       "away": "bayonne"
+      }
+     ]
+    },
+    {
+     "round": 10,
+     "matches": [
+      {
+       "date": "2026-11-28",
+       "home": "bordeaux-begles",
+       "away": "montpellier"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "bayonne",
+       "away": "castres"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "la-rochelle",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "paris",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "racing-92",
+       "away": "pau"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "lyon",
+       "away": "toulouse"
+      },
+      {
+       "date": "2026-11-29",
+       "home": "clermont",
+       "away": "toulon"
+      }
+     ]
+    },
+    {
+     "round": 11,
+     "matches": [
+      {
+       "date": "2026-12-05",
+       "home": "toulouse",
+       "away": "racing-92"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "perpignan",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "vannes",
+       "away": "bayonne"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "castres",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "montpellier",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "pau",
+       "away": "paris"
+      },
+      {
+       "date": "2026-12-06",
+       "home": "toulon",
+       "away": "bordeaux-begles"
+      }
+     ]
+    },
+    {
+     "round": 12,
+     "matches": [
+      {
+       "date": "2026-12-19",
+       "home": "lyon",
+       "away": "toulon"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "bayonne",
+       "away": "perpignan"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "clermont",
+       "away": "montpellier"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "la-rochelle",
+       "away": "castres"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "racing-92",
+       "away": "vannes"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "paris",
+       "away": "toulouse"
+      },
+      {
+       "date": "2026-12-20",
+       "home": "bordeaux-begles",
+       "away": "pau"
+      }
+     ]
+    },
+    {
+     "round": 13,
+     "matches": [
+      {
+       "date": "2026-12-26",
+       "home": "perpignan",
+       "away": "lyon"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "vannes",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "castres",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "montpellier",
+       "away": "bayonne"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "pau",
+       "away": "clermont"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "racing-92",
+       "away": "paris"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "toulouse",
+       "away": "toulon"
+      }
+     ]
+    },
+    {
+     "round": 14,
+     "matches": [
+      {
+       "date": "2027-01-02",
+       "home": "bayonne",
+       "away": "toulouse"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "bordeaux-begles",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "clermont",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "la-rochelle",
+       "away": "pau"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "lyon",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "paris",
+       "away": "castres"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "toulon",
+       "away": "montpellier"
+      }
+     ]
+    },
+    {
+     "round": 15,
+     "matches": [
+      {
+       "date": "2027-01-23",
+       "home": "vannes",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "castres",
+       "away": "clermont"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "montpellier",
+       "away": "paris"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "pau",
+       "away": "lyon"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "racing-92",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "toulon",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "toulouse",
+       "away": "la-rochelle"
+      }
+     ]
+    },
+    {
+     "round": 16,
+     "matches": [
+      {
+       "date": "2027-01-30",
+       "home": "perpignan",
+       "away": "paris"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "bordeaux-begles",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "clermont",
+       "away": "toulouse"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "la-rochelle",
+       "away": "toulon"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "lyon",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "pau",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "racing-92",
+       "away": "castres"
+      }
+     ]
+    },
+    {
+     "round": 17,
+     "matches": [
+      {
+       "date": "2027-02-20",
+       "home": "bayonne",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "perpignan",
+       "away": "pau"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "vannes",
+       "away": "castres"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "montpellier",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "paris",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "toulon",
+       "away": "clermont"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "toulouse",
+       "away": "lyon"
+      }
+     ]
+    },
+    {
+     "round": 18,
+     "matches": [
+      {
+       "date": "2027-02-27",
+       "home": "bordeaux-begles",
+       "away": "toulon"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "castres",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "clermont",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "la-rochelle",
+       "away": "paris"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "lyon",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "pau",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "racing-92",
+       "away": "toulouse"
+      }
+     ]
+    },
+    {
+     "round": 19,
+     "matches": [
+      {
+       "date": "2027-03-20",
+       "home": "bayonne",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "perpignan",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "castres",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "montpellier",
+       "away": "clermont"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "paris",
+       "away": "pau"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "toulon",
+       "away": "lyon"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "toulouse",
+       "away": "vannes"
+      }
+     ]
+    },
+    {
+     "round": 20,
+     "matches": [
+      {
+       "date": "2027-03-27",
+       "home": "bayonne",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "perpignan",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "bordeaux-begles",
+       "away": "toulouse"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "vannes",
+       "away": "paris"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "clermont",
+       "away": "pau"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "lyon",
+       "away": "castres"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "racing-92",
+       "away": "toulon"
+      }
+     ]
+    },
+    {
+     "round": 21,
+     "matches": [
+      {
+       "date": "2027-04-17",
+       "home": "castres",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "la-rochelle",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "lyon",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "montpellier",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "paris",
+       "away": "clermont"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "pau",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "toulon",
+       "away": "toulouse"
+      }
+     ]
+    },
+    {
+     "round": 22,
+     "matches": [
+      {
+       "date": "2027-04-24",
+       "home": "bayonne",
+       "away": "pau"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "perpignan",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "bordeaux-begles",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "vannes",
+       "away": "toulon"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "clermont",
+       "away": "lyon"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "paris",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "toulouse",
+       "away": "castres"
+      }
+     ]
+    },
+    {
+     "round": 23,
+     "matches": [
+      {
+       "date": "2027-05-08",
+       "home": "bayonne",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "clermont",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "lyon",
+       "away": "paris"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "montpellier",
+       "away": "toulouse"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "pau",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "racing-92",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "toulon",
+       "away": "castres"
+      }
+     ]
+    },
+    {
+     "round": 24,
+     "matches": [
+      {
+       "date": "2027-05-15",
+       "home": "perpignan",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "bordeaux-begles",
+       "away": "clermont"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "vannes",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "castres",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "la-rochelle",
+       "away": "lyon"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "paris",
+       "away": "toulon"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "toulouse",
+       "away": "pau"
+      }
+     ]
+    },
+    {
+     "round": 25,
+     "matches": [
+      {
+       "date": "2027-05-29",
+       "home": "bayonne",
+       "away": "racing-92"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "castres",
+       "away": "pau"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "clermont",
+       "away": "la-rochelle"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "lyon",
+       "away": "bordeaux-begles"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "montpellier",
+       "away": "vannes"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "toulon",
+       "away": "perpignan"
+      },
+      {
+       "date": "2027-05-29",
+       "home": "toulouse",
+       "away": "paris"
+      }
+     ]
+    },
+    {
+     "round": 26,
+     "matches": [
+      {
+       "date": "2027-06-05",
+       "home": "perpignan",
+       "away": "toulouse"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "bordeaux-begles",
+       "away": "castres"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "vannes",
+       "away": "lyon"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "la-rochelle",
+       "away": "montpellier"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "paris",
+       "away": "bayonne"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "pau",
+       "away": "toulon"
+      },
+      {
+       "date": "2027-06-05",
+       "home": "racing-92",
+       "away": "clermont"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "barrages": "2027-06-12",
+    "access": "2027-06-19",
+    "demiFinales": "2027-06-19",
+    "finale": "2027-06-26"
+   }
+  },
+  {
+   "id": "prod2",
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-08-27",
+       "home": "biarritz",
+       "away": "nice"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "angouleme",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "beziers",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "dax",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "grenoble",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "nevers",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-08-27",
+       "home": "provence-rugby",
+       "away": "agen"
+      },
+      {
+       "date": "2026-08-28",
+       "home": "brive",
+       "away": "valence-romans"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-09-03",
+       "home": "colomiers",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "montauban",
+       "away": "grenoble"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "aurillac",
+       "away": "dax"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "narbonne",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "nice",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "oyonnax",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "valence-romans",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-09-04",
+       "home": "agen",
+       "away": "brive"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-09-10",
+       "home": "biarritz",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "angouleme",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "provence-rugby",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "beziers",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "brive",
+       "away": "nice"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "dax",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "oyonnax",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-09-11",
+       "home": "grenoble",
+       "away": "agen"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-09-17",
+       "home": "aurillac",
+       "away": "brive"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "nice",
+       "away": "grenoble"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "colomiers",
+       "away": "dax"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "montauban",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "narbonne",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "nevers",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "valence-romans",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-09-18",
+       "home": "agen",
+       "away": "oyonnax"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-09-24",
+       "home": "brive",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "beziers",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "provence-rugby",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "angouleme",
+       "away": "agen"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "biarritz",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "dax",
+       "away": "nice"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "oyonnax",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "grenoble",
+       "away": "valence-romans"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-10-08",
+       "home": "montauban",
+       "away": "brive"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "angouleme",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "agen",
+       "away": "dax"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "narbonne",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "nice",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "valence-romans",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "aurillac",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "grenoble",
+       "away": "colomiers"
+      }
+     ]
+    },
+    {
+     "round": 7,
+     "matches": [
+      {
+       "date": "2026-10-16",
+       "home": "oyonnax",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "beziers",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "colomiers",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "dax",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "nice",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "biarritz",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "nevers",
+       "away": "agen"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "brive",
+       "away": "grenoble"
+      }
+     ]
+    },
+    {
+     "round": 8,
+     "matches": [
+      {
+       "date": "2026-10-22",
+       "home": "montauban",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "narbonne",
+       "away": "brive"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "agen",
+       "away": "nice"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "angouleme",
+       "away": "dax"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "aurillac",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "valence-romans",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "provence-rugby",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "grenoble",
+       "away": "biarritz"
+      }
+     ]
+    },
+    {
+     "round": 9,
+     "matches": [
+      {
+       "date": "2026-10-29",
+       "home": "dax",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "colomiers",
+       "away": "agen"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "beziers",
+       "away": "grenoble"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "montauban",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "nice",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "oyonnax",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "biarritz",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "nevers",
+       "away": "brive"
+      }
+     ]
+    },
+    {
+     "round": 10,
+     "matches": [
+      {
+       "date": "2026-11-05",
+       "home": "agen",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "brive",
+       "away": "dax"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "aurillac",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "colomiers",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "narbonne",
+       "away": "nice"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "valence-romans",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "angouleme",
+       "away": "grenoble"
+      },
+      {
+       "date": "2026-11-06",
+       "home": "provence-rugby",
+       "away": "oyonnax"
+      }
+     ]
+    },
+    {
+     "round": 11,
+     "matches": [
+      {
+       "date": "2026-11-19",
+       "home": "grenoble",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "montauban",
+       "away": "agen"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "aurillac",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "beziers",
+       "away": "dax"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "nevers",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "nice",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "biarritz",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-11-20",
+       "home": "oyonnax",
+       "away": "brive"
+      }
+     ]
+    },
+    {
+     "round": 12,
+     "matches": [
+      {
+       "date": "2026-11-26",
+       "home": "brive",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "dax",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "agen",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "angouleme",
+       "away": "nice"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "colomiers",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "valence-romans",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "provence-rugby",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-11-27",
+       "home": "narbonne",
+       "away": "grenoble"
+      }
+     ]
+    },
+    {
+     "round": 13,
+     "matches": [
+      {
+       "date": "2026-12-03",
+       "home": "biarritz",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "beziers",
+       "away": "brive"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "aurillac",
+       "away": "angouleme"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "montauban",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "nevers",
+       "away": "dax"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "nice",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "narbonne",
+       "away": "agen"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "oyonnax",
+       "away": "grenoble"
+      }
+     ]
+    },
+    {
+     "round": 14,
+     "matches": [
+      {
+       "date": "2026-12-10",
+       "home": "provence-rugby",
+       "away": "brive"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "colomiers",
+       "away": "montauban"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "angouleme",
+       "away": "beziers"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "grenoble",
+       "away": "nevers"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "nice",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "valence-romans",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "agen",
+       "away": "aurillac"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "dax",
+       "away": "biarritz"
+      }
+     ]
+    },
+    {
+     "round": 15,
+     "matches": [
+      {
+       "date": "2026-12-17",
+       "home": "dax",
+       "away": "grenoble"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "nevers",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "aurillac",
+       "away": "narbonne"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "montauban",
+       "away": "nice"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "oyonnax",
+       "away": "colomiers"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "valence-romans",
+       "away": "agen"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "beziers",
+       "away": "biarritz"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "brive",
+       "away": "angouleme"
+      }
+     ]
+    },
+    {
+     "round": 16,
+     "matches": [
+      {
+       "date": "2027-01-07",
+       "home": "agen",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "provence-rugby",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "angouleme",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "biarritz",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "colomiers",
+       "away": "brive"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "grenoble",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "narbonne",
+       "away": "montauban"
+      },
+      {
+       "date": "2027-01-07",
+       "home": "nice",
+       "away": "dax"
+      }
+     ]
+    },
+    {
+     "round": 17,
+     "matches": [
+      {
+       "date": "2027-01-14",
+       "home": "aurillac",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "beziers",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "brive",
+       "away": "agen"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "dax",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "montauban",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "nevers",
+       "away": "nice"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "oyonnax",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-01-14",
+       "home": "valence-romans",
+       "away": "grenoble"
+      }
+     ]
+    },
+    {
+     "round": 18,
+     "matches": [
+      {
+       "date": "2027-01-21",
+       "home": "agen",
+       "away": "montauban"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "provence-rugby",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "angouleme",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "biarritz",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "colomiers",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "narbonne",
+       "away": "dax"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "nice",
+       "away": "brive"
+      },
+      {
+       "date": "2027-01-21",
+       "home": "oyonnax",
+       "away": "beziers"
+      }
+     ]
+    },
+    {
+     "round": 19,
+     "matches": [
+      {
+       "date": "2027-01-28",
+       "home": "aurillac",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "beziers",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "brive",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "dax",
+       "away": "agen"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "grenoble",
+       "away": "nice"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "montauban",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "nevers",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-01-28",
+       "home": "valence-romans",
+       "away": "biarritz"
+      }
+     ]
+    },
+    {
+     "round": 20,
+     "matches": [
+      {
+       "date": "2027-02-11",
+       "home": "provence-rugby",
+       "away": "dax"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "angouleme",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "aurillac",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "colomiers",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "grenoble",
+       "away": "brive"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "narbonne",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "nice",
+       "away": "agen"
+      },
+      {
+       "date": "2027-02-11",
+       "home": "oyonnax",
+       "away": "montauban"
+      }
+     ]
+    },
+    {
+     "round": 21,
+     "matches": [
+      {
+       "date": "2027-02-18",
+       "home": "agen",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "beziers",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "biarritz",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "brive",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "dax",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "montauban",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "nevers",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-02-18",
+       "home": "valence-romans",
+       "away": "nice"
+      }
+     ]
+    },
+    {
+     "round": 22,
+     "matches": [
+      {
+       "date": "2027-02-25",
+       "home": "provence-rugby",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "aurillac",
+       "away": "agen"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "brive",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "colomiers",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "grenoble",
+       "away": "montauban"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "narbonne",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "nice",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-02-25",
+       "home": "oyonnax",
+       "away": "dax"
+      }
+     ]
+    },
+    {
+     "round": 23,
+     "matches": [
+      {
+       "date": "2027-03-04",
+       "home": "agen",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "angouleme",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "beziers",
+       "away": "nice"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "biarritz",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "dax",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "montauban",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "nevers",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-03-04",
+       "home": "valence-romans",
+       "away": "brive"
+      }
+     ]
+    },
+    {
+     "round": 24,
+     "matches": [
+      {
+       "date": "2027-03-25",
+       "home": "provence-rugby",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "aurillac",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "biarritz",
+       "away": "agen"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "brive",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "colomiers",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "dax",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "grenoble",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-03-25",
+       "home": "nice",
+       "away": "montauban"
+      }
+     ]
+    },
+    {
+     "round": 25,
+     "matches": [
+      {
+       "date": "2027-04-01",
+       "home": "agen",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "angouleme",
+       "away": "brive"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "beziers",
+       "away": "montauban"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "colomiers",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "narbonne",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "nevers",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "oyonnax",
+       "away": "nice"
+      },
+      {
+       "date": "2027-04-01",
+       "home": "valence-romans",
+       "away": "dax"
+      }
+     ]
+    },
+    {
+     "round": 26,
+     "matches": [
+      {
+       "date": "2027-04-08",
+       "home": "agen",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "provence-rugby",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "biarritz",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "brive",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "grenoble",
+       "away": "dax"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "montauban",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "narbonne",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-04-08",
+       "home": "nice",
+       "away": "angouleme"
+      }
+     ]
+    },
+    {
+     "round": 27,
+     "matches": [
+      {
+       "date": "2027-04-15",
+       "home": "angouleme",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "aurillac",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "beziers",
+       "away": "agen"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "colomiers",
+       "away": "nice"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "dax",
+       "away": "brive"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "nevers",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "oyonnax",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-04-15",
+       "home": "valence-romans",
+       "away": "montauban"
+      }
+     ]
+    },
+    {
+     "round": 28,
+     "matches": [
+      {
+       "date": "2027-04-22",
+       "home": "agen",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "provence-rugby",
+       "away": "nice"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "biarritz",
+       "away": "dax"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "brive",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "grenoble",
+       "away": "oyonnax"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "montauban",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "narbonne",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-04-22",
+       "home": "nevers",
+       "away": "valence-romans"
+      }
+     ]
+    },
+    {
+     "round": 29,
+     "matches": [
+      {
+       "date": "2027-05-06",
+       "home": "provence-rugby",
+       "away": "biarritz"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "angouleme",
+       "away": "aurillac"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "beziers",
+       "away": "valence-romans"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "brive",
+       "away": "montauban"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "colomiers",
+       "away": "grenoble"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "dax",
+       "away": "nevers"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "nice",
+       "away": "narbonne"
+      },
+      {
+       "date": "2027-05-06",
+       "home": "oyonnax",
+       "away": "agen"
+      }
+     ]
+    },
+    {
+     "round": 30,
+     "matches": [
+      {
+       "date": "2027-05-13",
+       "home": "agen",
+       "away": "provence-rugby"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "aurillac",
+       "away": "nice"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "biarritz",
+       "away": "brive"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "grenoble",
+       "away": "angouleme"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "montauban",
+       "away": "dax"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "narbonne",
+       "away": "colomiers"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "nevers",
+       "away": "beziers"
+      },
+      {
+       "date": "2027-05-13",
+       "home": "valence-romans",
+       "away": "oyonnax"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "barrages": "2027-05-22",
+    "demiFinales": "2027-05-29",
+    "access": "2027-05-29",
+    "finale": "2027-06-05"
+   }
+  },
+  {
+   "id": "nationale",
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-09-05",
+       "home": "albi",
+       "away": "vienne"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "suresnes",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "bourgoin-jallieu",
+       "away": "rouen"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "rennes",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "chambery",
+       "away": "perigueux"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "orleans",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-09-05",
+       "home": "massy",
+       "away": "mont-de-marsan"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-09-12",
+       "home": "suresnes",
+       "away": "albi"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "vienne",
+       "away": "rouen"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "rennes",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "bourgoin-jallieu",
+       "away": "perigueux"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "orleans",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "chambery",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-09-12",
+       "home": "massy",
+       "away": "marcq-en-baroeul"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-09-19",
+       "home": "albi",
+       "away": "rouen"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "rennes",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "vienne",
+       "away": "perigueux"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "orleans",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "bourgoin-jallieu",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "massy",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-09-19",
+       "home": "chambery",
+       "away": "marcq-en-baroeul"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-09-26",
+       "home": "rennes",
+       "away": "albi"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "rouen",
+       "away": "perigueux"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "orleans",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "vienne",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "massy",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "bourgoin-jallieu",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "chambery",
+       "away": "carcassonne"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-10-03",
+       "home": "albi",
+       "away": "perigueux"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "orleans",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "rouen",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "massy",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "vienne",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "chambery",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "bourgoin-jallieu",
+       "away": "carcassonne"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-10-10",
+       "home": "orleans",
+       "away": "albi"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "perigueux",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "massy",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "rouen",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "chambery",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "vienne",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "bourgoin-jallieu",
+       "away": "bourg-en-bresse"
+      }
+     ]
+    },
+    {
+     "round": 7,
+     "matches": [
+      {
+       "date": "2026-10-17",
+       "home": "albi",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "massy",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "perigueux",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "chambery",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "rouen",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "bourgoin-jallieu",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "vienne",
+       "away": "bourg-en-bresse"
+      }
+     ]
+    },
+    {
+     "round": 8,
+     "matches": [
+      {
+       "date": "2026-10-24",
+       "home": "massy",
+       "away": "albi"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "mont-de-marsan",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "chambery",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "perigueux",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "bourgoin-jallieu",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "rouen",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "vienne",
+       "away": "suresnes"
+      }
+     ]
+    },
+    {
+     "round": 9,
+     "matches": [
+      {
+       "date": "2026-11-07",
+       "home": "albi",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "chambery",
+       "away": "massy"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "mont-de-marsan",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "bourgoin-jallieu",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "perigueux",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "vienne",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "rouen",
+       "away": "suresnes"
+      }
+     ]
+    },
+    {
+     "round": 10,
+     "matches": [
+      {
+       "date": "2026-11-14",
+       "home": "chambery",
+       "away": "albi"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "marcq-en-baroeul",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "bourgoin-jallieu",
+       "away": "massy"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "mont-de-marsan",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "vienne",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "perigueux",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "rouen",
+       "away": "rennes"
+      }
+     ]
+    },
+    {
+     "round": 11,
+     "matches": [
+      {
+       "date": "2026-11-21",
+       "home": "albi",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "bourgoin-jallieu",
+       "away": "chambery"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "marcq-en-baroeul",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "vienne",
+       "away": "massy"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "mont-de-marsan",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "rouen",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "perigueux",
+       "away": "rennes"
+      }
+     ]
+    },
+    {
+     "round": 12,
+     "matches": [
+      {
+       "date": "2026-11-28",
+       "home": "bourgoin-jallieu",
+       "away": "albi"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "carcassonne",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "vienne",
+       "away": "chambery"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "marcq-en-baroeul",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "rouen",
+       "away": "massy"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "mont-de-marsan",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-11-28",
+       "home": "perigueux",
+       "away": "orleans"
+      }
+     ]
+    },
+    {
+     "round": 13,
+     "matches": [
+      {
+       "date": "2026-12-05",
+       "home": "albi",
+       "away": "bourg-en-bresse"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "vienne",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "carcassonne",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "rouen",
+       "away": "chambery"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "marcq-en-baroeul",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "perigueux",
+       "away": "massy"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "mont-de-marsan",
+       "away": "orleans"
+      }
+     ]
+    },
+    {
+     "round": 14,
+     "matches": [
+      {
+       "date": "2026-12-12",
+       "home": "vienne",
+       "away": "albi"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "bourg-en-bresse",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "rouen",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "carcassonne",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "perigueux",
+       "away": "chambery"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "marcq-en-baroeul",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "mont-de-marsan",
+       "away": "massy"
+      }
+     ]
+    },
+    {
+     "round": 15,
+     "matches": [
+      {
+       "date": "2026-12-19",
+       "home": "albi",
+       "away": "suresnes"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "rouen",
+       "away": "vienne"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "bourg-en-bresse",
+       "away": "rennes"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "perigueux",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "carcassonne",
+       "away": "orleans"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "mont-de-marsan",
+       "away": "chambery"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "marcq-en-baroeul",
+       "away": "massy"
+      }
+     ]
+    },
+    {
+     "round": 16,
+     "matches": [
+      {
+       "date": "2027-01-09",
+       "home": "rouen",
+       "away": "albi"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "suresnes",
+       "away": "rennes"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "perigueux",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "bourg-en-bresse",
+       "away": "orleans"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "mont-de-marsan",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "carcassonne",
+       "away": "massy"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "marcq-en-baroeul",
+       "away": "chambery"
+      }
+     ]
+    },
+    {
+     "round": 17,
+     "matches": [
+      {
+       "date": "2027-01-16",
+       "home": "albi",
+       "away": "rennes"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "perigueux",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "suresnes",
+       "away": "orleans"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "mont-de-marsan",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "bourg-en-bresse",
+       "away": "massy"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "marcq-en-baroeul",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "carcassonne",
+       "away": "chambery"
+      }
+     ]
+    },
+    {
+     "round": 18,
+     "matches": [
+      {
+       "date": "2027-01-23",
+       "home": "perigueux",
+       "away": "albi"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "rennes",
+       "away": "orleans"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "mont-de-marsan",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "suresnes",
+       "away": "massy"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "marcq-en-baroeul",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "bourg-en-bresse",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "carcassonne",
+       "away": "bourgoin-jallieu"
+      }
+     ]
+    },
+    {
+     "round": 19,
+     "matches": [
+      {
+       "date": "2027-01-30",
+       "home": "albi",
+       "away": "orleans"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "mont-de-marsan",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "rennes",
+       "away": "massy"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "marcq-en-baroeul",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "suresnes",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "carcassonne",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "bourg-en-bresse",
+       "away": "bourgoin-jallieu"
+      }
+     ]
+    },
+    {
+     "round": 20,
+     "matches": [
+      {
+       "date": "2027-02-06",
+       "home": "mont-de-marsan",
+       "away": "albi"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "orleans",
+       "away": "massy"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "marcq-en-baroeul",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "rennes",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "carcassonne",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "suresnes",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "bourg-en-bresse",
+       "away": "vienne"
+      }
+     ]
+    },
+    {
+     "round": 21,
+     "matches": [
+      {
+       "date": "2027-02-13",
+       "home": "albi",
+       "away": "massy"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "marcq-en-baroeul",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "orleans",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "carcassonne",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "rennes",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "bourg-en-bresse",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "suresnes",
+       "away": "vienne"
+      }
+     ]
+    },
+    {
+     "round": 22,
+     "matches": [
+      {
+       "date": "2027-02-27",
+       "home": "marcq-en-baroeul",
+       "away": "albi"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "massy",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "carcassonne",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "orleans",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "bourg-en-bresse",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "rennes",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "suresnes",
+       "away": "rouen"
+      }
+     ]
+    },
+    {
+     "round": 23,
+     "matches": [
+      {
+       "date": "2027-03-06",
+       "home": "albi",
+       "away": "chambery"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "carcassonne",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "massy",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "bourg-en-bresse",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "orleans",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "suresnes",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "rennes",
+       "away": "rouen"
+      }
+     ]
+    },
+    {
+     "round": 24,
+     "matches": [
+      {
+       "date": "2027-03-13",
+       "home": "carcassonne",
+       "away": "albi"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "chambery",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "bourg-en-bresse",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "massy",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "suresnes",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "orleans",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "rennes",
+       "away": "perigueux"
+      }
+     ]
+    },
+    {
+     "round": 25,
+     "matches": [
+      {
+       "date": "2027-03-27",
+       "home": "albi",
+       "away": "bourgoin-jallieu"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "bourg-en-bresse",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "chambery",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "suresnes",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "massy",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "rennes",
+       "away": "mont-de-marsan"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "orleans",
+       "away": "perigueux"
+      }
+     ]
+    },
+    {
+     "round": 26,
+     "matches": [
+      {
+       "date": "2027-04-03",
+       "home": "bourg-en-bresse",
+       "away": "albi"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "bourgoin-jallieu",
+       "away": "vienne"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "suresnes",
+       "away": "carcassonne"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "chambery",
+       "away": "rouen"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "rennes",
+       "away": "marcq-en-baroeul"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "massy",
+       "away": "perigueux"
+      },
+      {
+       "date": "2027-04-03",
+       "home": "orleans",
+       "away": "mont-de-marsan"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "barrages": "2027-04-17",
+    "demiFinales": "2027-04-24",
+    "finale": "2027-05-01",
+    "access": "2027-05-08"
+   }
+  },
+  {
+   "id": "prem",
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-09-25",
+       "home": "harlequins",
+       "away": "bath",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "northampton-saints",
+       "away": "newcastle-red-bulls",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "exeter-chiefs",
+       "away": "gloucester",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "sale-sharks",
+       "away": "bristol-bears",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2026-09-27",
+       "home": "leicester-tigers",
+       "away": "saracens",
+       "venue": "Welford Road"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-10-02",
+       "home": "bath",
+       "away": "exeter-chiefs",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "bristol-bears",
+       "away": "northampton-saints",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "gloucester",
+       "away": "harlequins",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "newcastle-red-bulls",
+       "away": "leicester-tigers",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2026-10-04",
+       "home": "saracens",
+       "away": "sale-sharks",
+       "venue": "StoneX Stadium"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-10-09",
+       "home": "leicester-tigers",
+       "away": "gloucester",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "northampton-saints",
+       "away": "bath",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "saracens",
+       "away": "bristol-bears",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2026-10-11",
+       "home": "sale-sharks",
+       "away": "harlequins",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2026-10-11",
+       "home": "exeter-chiefs",
+       "away": "newcastle-red-bulls",
+       "venue": "Sandy Park"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-10-23",
+       "home": "gloucester",
+       "away": "bath",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "newcastle-red-bulls",
+       "away": "sale-sharks",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "leicester-tigers",
+       "away": "northampton-saints",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "bristol-bears",
+       "away": "exeter-chiefs",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2026-10-25",
+       "home": "harlequins",
+       "away": "saracens",
+       "venue": "Twickenham Stoop"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-10-30",
+       "home": "bristol-bears",
+       "away": "leicester-tigers",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "exeter-chiefs",
+       "away": "harlequins",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "saracens",
+       "away": "newcastle-red-bulls",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "bath",
+       "away": "sale-sharks",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "northampton-saints",
+       "away": "gloucester",
+       "venue": "Franklin's Gardens"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-12-04",
+       "home": "bath",
+       "away": "bristol-bears",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "gloucester",
+       "away": "newcastle-red-bulls",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "harlequins",
+       "away": "leicester-tigers",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "saracens",
+       "away": "northampton-saints",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2026-12-06",
+       "home": "sale-sharks",
+       "away": "exeter-chiefs",
+       "venue": "CorpAcq Stadium"
+      }
+     ]
+    },
+    {
+     "round": 7,
+     "matches": [
+      {
+       "date": "2026-12-18",
+       "home": "newcastle-red-bulls",
+       "away": "bath",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "gloucester",
+       "away": "saracens",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "leicester-tigers",
+       "away": "sale-sharks",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "northampton-saints",
+       "away": "exeter-chiefs",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2026-12-20",
+       "home": "bristol-bears",
+       "away": "harlequins",
+       "venue": "Ashton Gate"
+      }
+     ]
+    },
+    {
+     "round": 8,
+     "matches": [
+      {
+       "date": "2026-12-26",
+       "home": "bristol-bears",
+       "away": "newcastle-red-bulls",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "bath",
+       "away": "leicester-tigers",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "sale-sharks",
+       "away": "gloucester",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2026-12-27",
+       "home": "exeter-chiefs",
+       "away": "saracens",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2026-12-28",
+       "home": "harlequins",
+       "away": "northampton-saints",
+       "venue": "Twickenham Stadium"
+      }
+     ]
+    },
+    {
+     "round": 9,
+     "matches": [
+      {
+       "date": "2027-01-01",
+       "home": "gloucester",
+       "away": "bristol-bears",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "saracens",
+       "away": "bath",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "leicester-tigers",
+       "away": "exeter-chiefs",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "newcastle-red-bulls",
+       "away": "harlequins",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-01-03",
+       "home": "northampton-saints",
+       "away": "sale-sharks",
+       "venue": "Franklin's Gardens"
+      }
+     ]
+    },
+    {
+     "round": 10,
+     "matches": [
+      {
+       "date": "2027-01-24",
+       "home": "bath",
+       "away": "northampton-saints",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2027-01-24",
+       "home": "exeter-chiefs",
+       "away": "bristol-bears",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-01-24",
+       "home": "harlequins",
+       "away": "gloucester",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2027-01-24",
+       "home": "newcastle-red-bulls",
+       "away": "saracens",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-01-24",
+       "home": "sale-sharks",
+       "away": "leicester-tigers",
+       "venue": "CorpAcq Stadium"
+      }
+     ]
+    },
+    {
+     "round": 11,
+     "matches": [
+      {
+       "date": "2027-03-21",
+       "home": "bath",
+       "away": "gloucester",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2027-03-21",
+       "home": "bristol-bears",
+       "away": "sale-sharks",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2027-03-21",
+       "home": "exeter-chiefs",
+       "away": "northampton-saints",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-03-21",
+       "home": "leicester-tigers",
+       "away": "newcastle-red-bulls",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2027-03-21",
+       "home": "saracens",
+       "away": "harlequins",
+       "venue": "Tottenham Hotspur Stadium"
+      }
+     ]
+    },
+    {
+     "round": 12,
+     "matches": [
+      {
+       "date": "2027-03-28",
+       "home": "gloucester",
+       "away": "leicester-tigers",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2027-03-28",
+       "home": "harlequins",
+       "away": "exeter-chiefs",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2027-03-28",
+       "home": "newcastle-red-bulls",
+       "away": "bristol-bears",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-03-28",
+       "home": "northampton-saints",
+       "away": "saracens",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2027-03-28",
+       "home": "sale-sharks",
+       "away": "bath",
+       "venue": "CorpAcq Stadium"
+      }
+     ]
+    },
+    {
+     "round": 13,
+     "matches": [
+      {
+       "date": "2027-04-18",
+       "home": "bath",
+       "away": "newcastle-red-bulls",
+       "venue": "The Recreation Ground"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "bristol-bears",
+       "away": "gloucester",
+       "venue": "Millennium Stadium"
+      },
+      {
+       "date": "2027-04-18",
+       "home": "exeter-chiefs",
+       "away": "sale-sharks",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-04-18",
+       "home": "northampton-saints",
+       "away": "harlequins",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2027-04-18",
+       "home": "saracens",
+       "away": "leicester-tigers",
+       "venue": "StoneX Stadium"
+      }
+     ]
+    },
+    {
+     "round": 14,
+     "matches": [
+      {
+       "date": "2027-04-25",
+       "home": "gloucester",
+       "away": "northampton-saints",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2027-04-25",
+       "home": "harlequins",
+       "away": "bristol-bears",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2027-04-25",
+       "home": "leicester-tigers",
+       "away": "bath",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2027-04-25",
+       "home": "newcastle-red-bulls",
+       "away": "exeter-chiefs",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-04-25",
+       "home": "sale-sharks",
+       "away": "saracens",
+       "venue": "CorpAcq Stadium"
+      }
+     ]
+    },
+    {
+     "round": 15,
+     "matches": [
+      {
+       "date": "2027-05-09",
+       "home": "bristol-bears",
+       "away": "saracens",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2027-05-09",
+       "home": "exeter-chiefs",
+       "away": "bath",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-05-09",
+       "home": "gloucester",
+       "away": "sale-sharks",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2027-05-09",
+       "home": "harlequins",
+       "away": "newcastle-red-bulls",
+       "venue": "Twickenham Stadium"
+      },
+      {
+       "date": "2027-05-09",
+       "home": "northampton-saints",
+       "away": "leicester-tigers",
+       "venue": "Franklin's Gardens"
+      }
+     ]
+    },
+    {
+     "round": 16,
+     "matches": [
+      {
+       "date": "2027-05-16",
+       "home": "bath",
+       "away": "harlequins",
+       "venue": "TBC"
+      },
+      {
+       "date": "2027-05-16",
+       "home": "leicester-tigers",
+       "away": "bristol-bears",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2027-05-16",
+       "home": "newcastle-red-bulls",
+       "away": "gloucester",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-05-16",
+       "home": "sale-sharks",
+       "away": "northampton-saints",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2027-05-16",
+       "home": "saracens",
+       "away": "exeter-chiefs",
+       "venue": "StoneX Stadium"
+      }
+     ]
+    },
+    {
+     "round": 17,
+     "matches": [
+      {
+       "date": "2027-05-30",
+       "home": "bristol-bears",
+       "away": "bath",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2027-05-30",
+       "home": "exeter-chiefs",
+       "away": "leicester-tigers",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-05-30",
+       "home": "harlequins",
+       "away": "sale-sharks",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2027-05-30",
+       "home": "newcastle-red-bulls",
+       "away": "northampton-saints",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-05-30",
+       "home": "saracens",
+       "away": "gloucester",
+       "venue": "StoneX Stadium"
+      }
+     ]
+    },
+    {
+     "round": 18,
+     "matches": [
+      {
+       "date": "2027-06-06",
+       "home": "bath",
+       "away": "saracens",
+       "venue": "TBC"
+      },
+      {
+       "date": "2027-06-06",
+       "home": "gloucester",
+       "away": "exeter-chiefs",
+       "venue": "Kingsholm"
+      },
+      {
+       "date": "2027-06-06",
+       "home": "leicester-tigers",
+       "away": "harlequins",
+       "venue": "Welford Road"
+      },
+      {
+       "date": "2027-06-06",
+       "home": "northampton-saints",
+       "away": "bristol-bears",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2027-06-06",
+       "home": "sale-sharks",
+       "away": "newcastle-red-bulls",
+       "venue": "CorpAcq Stadium"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "demiFinales": "2027-06-12",
+    "finale": "2027-06-19"
+   }
+  },
+  {
+   "id": "urc",
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-09-25",
+       "home": "benetton",
+       "away": "dragons",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "connacht",
+       "away": "stormers",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2026-09-25",
+       "home": "ulster",
+       "away": "edinburgh",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "lions",
+       "away": "leinster",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "sharks",
+       "away": "ospreys",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "munster",
+       "away": "glasgow-warriors",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "zebre",
+       "away": "bulls",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2026-09-26",
+       "home": "scarlets",
+       "away": "cardiff",
+       "venue": "Parc y Scarlets"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-10-02",
+       "home": "cardiff",
+       "away": "zebre",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2026-10-02",
+       "home": "edinburgh",
+       "away": "stormers",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2026-10-02",
+       "home": "benetton",
+       "away": "connacht",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "lions",
+       "away": "ospreys",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "dragons",
+       "away": "scarlets",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "sharks",
+       "away": "leinster",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "munster",
+       "away": "bulls",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2026-10-03",
+       "home": "glasgow-warriors",
+       "away": "ulster",
+       "venue": "Scotstoun Stadium"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-10-09",
+       "home": "glasgow-warriors",
+       "away": "connacht",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2026-10-09",
+       "home": "dragons",
+       "away": "ospreys",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "bulls",
+       "away": "lions",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "stormers",
+       "away": "sharks",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "zebre",
+       "away": "edinburgh",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "scarlets",
+       "away": "benetton",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "ulster",
+       "away": "munster",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2026-10-10",
+       "home": "leinster",
+       "away": "cardiff",
+       "venue": "RDS Arena"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-10-23",
+       "home": "cardiff",
+       "away": "sharks",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "connacht",
+       "away": "zebre",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2026-10-23",
+       "home": "edinburgh",
+       "away": "lions",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "bulls",
+       "away": "ulster",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "stormers",
+       "away": "scarlets",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "benetton",
+       "away": "glasgow-warriors",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "leinster",
+       "away": "munster",
+       "venue": "Aviva Stadium"
+      },
+      {
+       "date": "2026-10-24",
+       "home": "ospreys",
+       "away": "dragons",
+       "venue": "St Helen's"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-10-30",
+       "home": "connacht",
+       "away": "leinster",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2026-10-30",
+       "home": "glasgow-warriors",
+       "away": "lions",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "stormers",
+       "away": "ulster",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "bulls",
+       "away": "scarlets",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "benetton",
+       "away": "edinburgh",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "munster",
+       "away": "sharks",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "dragons",
+       "away": "zebre",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2026-10-31",
+       "home": "ospreys",
+       "away": "cardiff",
+       "venue": "St Helen's"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-12-04",
+       "home": "ospreys",
+       "away": "leinster",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2026-12-04",
+       "home": "edinburgh",
+       "away": "dragons",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "lions",
+       "away": "bulls",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "sharks",
+       "away": "stormers",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "cardiff",
+       "away": "ulster",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "scarlets",
+       "away": "connacht",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "glasgow-warriors",
+       "away": "benetton",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2026-12-05",
+       "home": "zebre",
+       "away": "munster",
+       "venue": "Stadio Sergio Lanfranchi"
+      }
+     ]
+    },
+    {
+     "round": 7,
+     "matches": [
+      {
+       "date": "2026-12-18",
+       "home": "ulster",
+       "away": "ospreys",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2026-12-18",
+       "home": "munster",
+       "away": "scarlets",
+       "venue": "Musgrave Park"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "zebre",
+       "away": "benetton",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "stormers",
+       "away": "lions",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "cardiff",
+       "away": "dragons",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "sharks",
+       "away": "bulls",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "leinster",
+       "away": "glasgow-warriors",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2026-12-19",
+       "home": "connacht",
+       "away": "edinburgh",
+       "venue": "The Sportsground"
+      }
+     ]
+    },
+    {
+     "round": 8,
+     "matches": [
+      {
+       "date": "2026-12-26",
+       "home": "dragons",
+       "away": "cardiff",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2026-12-26",
+       "home": "ospreys",
+       "away": "scarlets",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2026-12-27",
+       "home": "benetton",
+       "away": "zebre",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2026-12-27",
+       "home": "edinburgh",
+       "away": "glasgow-warriors",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2026-12-27",
+       "home": "ulster",
+       "away": "connacht",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2026-12-27",
+       "home": "munster",
+       "away": "leinster",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "lions",
+       "away": "sharks",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-02-21",
+       "home": "bulls",
+       "away": "stormers",
+       "venue": "Loftus Versfeld"
+      }
+     ]
+    },
+    {
+     "round": 9,
+     "matches": [
+      {
+       "date": "2027-01-02",
+       "home": "sharks",
+       "away": "lions",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "zebre",
+       "away": "glasgow-warriors",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "scarlets",
+       "away": "dragons",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "connacht",
+       "away": "munster",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "edinburgh",
+       "away": "benetton",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "cardiff",
+       "away": "ospreys",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-01-02",
+       "home": "leinster",
+       "away": "ulster",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2027-01-03",
+       "home": "stormers",
+       "away": "bulls",
+       "venue": "Cape Town Stadium"
+      }
+     ]
+    },
+    {
+     "round": 10,
+     "matches": [
+      {
+       "date": "2027-01-22",
+       "home": "glasgow-warriors",
+       "away": "scarlets",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2027-01-22",
+       "home": "ulster",
+       "away": "sharks",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "lions",
+       "away": "zebre",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "stormers",
+       "away": "cardiff",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "ospreys",
+       "away": "edinburgh",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "benetton",
+       "away": "bulls",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "leinster",
+       "away": "dragons",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2027-01-23",
+       "home": "munster",
+       "away": "connacht",
+       "venue": "Thomond Park"
+      }
+     ]
+    },
+    {
+     "round": 11,
+     "matches": [
+      {
+       "date": "2027-01-29",
+       "home": "dragons",
+       "away": "munster",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-01-29",
+       "home": "glasgow-warriors",
+       "away": "ospreys",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "lions",
+       "away": "cardiff",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "stormers",
+       "away": "zebre",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "scarlets",
+       "away": "edinburgh",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "leinster",
+       "away": "bulls",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "benetton",
+       "away": "sharks",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2027-01-30",
+       "home": "connacht",
+       "away": "ulster",
+       "venue": "The Sportsground"
+      }
+     ]
+    },
+    {
+     "round": 12,
+     "matches": [
+      {
+       "date": "2027-02-26",
+       "home": "munster",
+       "away": "benetton",
+       "venue": "Musgrave Park"
+      },
+      {
+       "date": "2027-02-26",
+       "home": "dragons",
+       "away": "ulster",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "lions",
+       "away": "stormers",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "bulls",
+       "away": "sharks",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "cardiff",
+       "away": "glasgow-warriors",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "zebre",
+       "away": "scarlets",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "ospreys",
+       "away": "connacht",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-02-27",
+       "home": "edinburgh",
+       "away": "leinster",
+       "venue": "Edinburgh Rugby Stadium"
+      }
+     ]
+    },
+    {
+     "round": 13,
+     "matches": [
+      {
+       "date": "2027-03-19",
+       "home": "sharks",
+       "away": "edinburgh",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2027-03-19",
+       "home": "glasgow-warriors",
+       "away": "stormers",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2027-03-19",
+       "home": "connacht",
+       "away": "cardiff",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "ulster",
+       "away": "zebre",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "bulls",
+       "away": "dragons",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "munster",
+       "away": "ospreys",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "scarlets",
+       "away": "lions",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-03-20",
+       "home": "leinster",
+       "away": "benetton",
+       "venue": "RDS Arena"
+      }
+     ]
+    },
+    {
+     "round": 14,
+     "matches": [
+      {
+       "date": "2027-03-26",
+       "home": "glasgow-warriors",
+       "away": "zebre",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2027-03-26",
+       "home": "scarlets",
+       "away": "leinster",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "bulls",
+       "away": "edinburgh",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "connacht",
+       "away": "lions",
+       "venue": "The Sportsground"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "sharks",
+       "away": "dragons",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "cardiff",
+       "away": "munster",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "benetton",
+       "away": "ulster",
+       "venue": "Stadio Monigo"
+      },
+      {
+       "date": "2027-03-27",
+       "home": "ospreys",
+       "away": "stormers",
+       "venue": "St Helen's"
+      }
+     ]
+    },
+    {
+     "round": 15,
+     "matches": [
+      {
+       "date": "2027-04-16",
+       "home": "dragons",
+       "away": "glasgow-warriors",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-04-16",
+       "home": "edinburgh",
+       "away": "cardiff",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "lions",
+       "away": "munster",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "stormers",
+       "away": "benetton",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "ospreys",
+       "away": "bulls",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "leinster",
+       "away": "connacht",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "ulster",
+       "away": "scarlets",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2027-04-17",
+       "home": "zebre",
+       "away": "sharks",
+       "venue": "Stadio Sergio Lanfranchi"
+      }
+     ]
+    },
+    {
+     "round": 16,
+     "matches": [
+      {
+       "date": "2027-04-23",
+       "home": "zebre",
+       "away": "ospreys",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2027-04-23",
+       "home": "ulster",
+       "away": "leinster",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2027-04-23",
+       "home": "cardiff",
+       "away": "bulls",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "lions",
+       "away": "benetton",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "scarlets",
+       "away": "sharks",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "stormers",
+       "away": "munster",
+       "venue": "Cape Town Stadium"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "glasgow-warriors",
+       "away": "edinburgh",
+       "venue": "Hampden Park"
+      },
+      {
+       "date": "2027-04-24",
+       "home": "connacht",
+       "away": "dragons",
+       "venue": "The Sportsground"
+      }
+     ]
+    },
+    {
+     "round": 17,
+     "matches": [
+      {
+       "date": "2027-05-07",
+       "home": "dragons",
+       "away": "lions",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-05-07",
+       "home": "edinburgh",
+       "away": "zebre",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "sharks",
+       "away": "connacht",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "bulls",
+       "away": "glasgow-warriors",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "munster",
+       "away": "ulster",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "scarlets",
+       "away": "ospreys",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "leinster",
+       "away": "stormers",
+       "venue": "RDS Arena"
+      },
+      {
+       "date": "2027-05-08",
+       "home": "benetton",
+       "away": "cardiff",
+       "venue": "Stadio Monigo"
+      }
+     ]
+    },
+    {
+     "round": 18,
+     "matches": [
+      {
+       "date": "2027-05-14",
+       "home": "ospreys",
+       "away": "benetton",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-05-14",
+       "home": "ulster",
+       "away": "lions",
+       "venue": "Ravenhill Stadium"
+      },
+      {
+       "date": "2027-05-14",
+       "home": "edinburgh",
+       "away": "munster",
+       "venue": "Edinburgh Rugby Stadium"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "bulls",
+       "away": "connacht",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "cardiff",
+       "away": "scarlets",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "sharks",
+       "away": "glasgow-warriors",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "dragons",
+       "away": "stormers",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-05-15",
+       "home": "zebre",
+       "away": "leinster",
+       "venue": "Stadio Sergio Lanfranchi"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "quarts": "2027-05-29",
+    "demiFinales": "2027-06-05",
+    "finale": "2027-06-19"
+   }
+  }
+ ],
+ "cups": [
+  {
+   "id": "champions-cup",
+   "pools": [
+    [
+     "sale-sharks",
+     "glasgow-warriors",
+     "clermont",
+     "leinster",
+     "pau",
+     "leicester-tigers"
+    ],
+    [
+     "connacht",
+     "saracens",
+     "la-rochelle",
+     "lions",
+     "toulouse",
+     "exeter-chiefs"
+    ],
+    [
+     "gloucester",
+     "bordeaux-begles",
+     "stormers",
+     "bristol-bears",
+     "munster",
+     "racing-92"
+    ],
+    [
+     "bulls",
+     "paris",
+     "bath",
+     "montpellier",
+     "northampton-saints",
+     "cardiff"
+    ]
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-10-17",
+       "home": "sale-sharks",
+       "away": "glasgow-warriors",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "clermont",
+       "away": "leinster",
+       "venue": "Stade Marcel-Michelin"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "pau",
+       "away": "leicester-tigers",
+       "venue": "Stade du Hameau"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "connacht",
+       "away": "saracens",
+       "venue": "Dexcom Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "la-rochelle",
+       "away": "lions",
+       "venue": "Stade Marcel-Deflandre"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "toulouse",
+       "away": "exeter-chiefs",
+       "venue": "Stade Ernest-Wallon"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "gloucester",
+       "away": "bordeaux-begles",
+       "venue": "Kingsholm Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "stormers",
+       "away": "bristol-bears",
+       "venue": "DHL Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "munster",
+       "away": "racing-92",
+       "venue": "SuperValu Páirc Uí Chaoimh"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "bulls",
+       "away": "paris",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "bath",
+       "away": "montpellier",
+       "venue": "The Rec"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "northampton-saints",
+       "away": "cardiff",
+       "venue": "Franklin's Gardens"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-12-11",
+       "home": "glasgow-warriors",
+       "away": "pau",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "leicester-tigers",
+       "away": "clermont",
+       "venue": "Mattioli Woods Welford Road"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "leinster",
+       "away": "sale-sharks",
+       "venue": "Laya Arena"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "lions",
+       "away": "toulouse",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "saracens",
+       "away": "la-rochelle",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "exeter-chiefs",
+       "away": "connacht",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "bristol-bears",
+       "away": "munster",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "bordeaux-begles",
+       "away": "stormers",
+       "venue": "Stade Chaban-Delmas"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "racing-92",
+       "away": "gloucester",
+       "venue": "Plenitude Arena"
+      },
+      {
+       "date": "2026-12-11",
+       "home": "paris",
+       "away": "northampton-saints",
+       "venue": "Stade Jean-Bouin"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "montpellier",
+       "away": "bulls",
+       "venue": "Septeo Stadium"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "cardiff",
+       "away": "bath",
+       "venue": "Cardiff Arms Park"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2027-01-08",
+       "home": "glasgow-warriors",
+       "away": "leicester-tigers",
+       "venue": "Scotstoun Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "leinster",
+       "away": "pau",
+       "venue": "Laya Arena"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "sale-sharks",
+       "away": "clermont",
+       "venue": "CorpAcq Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "exeter-chiefs",
+       "away": "la-rochelle",
+       "venue": "Sandy Park"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "connacht",
+       "away": "toulouse",
+       "venue": "Dexcom Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "saracens",
+       "away": "lions",
+       "venue": "StoneX Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "gloucester",
+       "away": "stormers",
+       "venue": "Kingsholm Stadium"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "racing-92",
+       "away": "bristol-bears",
+       "venue": "TBA"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "bordeaux-begles",
+       "away": "munster",
+       "venue": "Stade Chaban-Delmas"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "bulls",
+       "away": "bath",
+       "venue": "Loftus Versfeld"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "montpellier",
+       "away": "northampton-saints",
+       "venue": "Septeo Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "paris",
+       "away": "cardiff",
+       "venue": "Stade Jean-Bouin"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2027-01-16",
+       "home": "pau",
+       "away": "sale-sharks",
+       "venue": "Stade du Hameau"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "clermont",
+       "away": "glasgow-warriors",
+       "venue": "Stade Marcel-Michelin"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "leicester-tigers",
+       "away": "leinster",
+       "venue": "Mattioli Woods Welford Road"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "lions",
+       "away": "exeter-chiefs",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "la-rochelle",
+       "away": "connacht",
+       "venue": "Stade Marcel-Deflandre"
+      },
+      {
+       "date": "2027-01-17",
+       "home": "toulouse",
+       "away": "saracens",
+       "venue": "Stade Ernest-Wallon"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "stormers",
+       "away": "racing-92",
+       "venue": "DHL Stadium"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "bristol-bears",
+       "away": "bordeaux-begles",
+       "venue": "Ashton Gate"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "munster",
+       "away": "gloucester",
+       "venue": "Thomond Park"
+      },
+      {
+       "date": "2027-01-15",
+       "home": "northampton-saints",
+       "away": "bulls",
+       "venue": "Franklin's Gardens"
+      },
+      {
+       "date": "2027-01-15",
+       "home": "cardiff",
+       "away": "montpellier",
+       "venue": "Cardiff Arms Park"
+      },
+      {
+       "date": "2027-01-17",
+       "home": "bath",
+       "away": "paris",
+       "venue": "The Rec"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "huitiemes": "2027-04-03",
+    "quarts": "2027-04-10",
+    "demiFinales": "2027-05-01",
+    "finale": "2027-05-22"
+   },
+   "finalVenue": "OL Stadium, Lyon"
+  },
+  {
+   "id": "challenge-cup",
+   "pools": [
+    [
+     "dragons",
+     "perpignan",
+     "zebre",
+     "ulster",
+     "bayonne",
+     "cheetahs"
+    ],
+    [
+     "lyon",
+     "sharks",
+     "scarlets",
+     "newcastle-red-bulls",
+     "castres",
+     "benetton"
+    ],
+    [
+     "edinburgh",
+     "toulon",
+     "black-lion",
+     "ospreys",
+     "harlequins",
+     "vannes"
+    ]
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-10-16",
+       "home": "dragons",
+       "away": "perpignan",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "zebre",
+       "away": "ulster",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "bayonne",
+       "away": "cheetahs",
+       "venue": "Stade Jean-Dauger"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "lyon",
+       "away": "sharks",
+       "venue": "Mahmut Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "scarlets",
+       "away": "newcastle-red-bulls",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "castres",
+       "away": "benetton",
+       "venue": "Stade Pierre-Fabre"
+      },
+      {
+       "date": "2026-10-16",
+       "home": "edinburgh",
+       "away": "toulon",
+       "venue": "Hive Stadium"
+      },
+      {
+       "date": "2026-10-17",
+       "home": "black-lion",
+       "away": "ospreys",
+       "venue": "Avchala Rugby Stadium"
+      },
+      {
+       "date": "2026-10-18",
+       "home": "harlequins",
+       "away": "vannes",
+       "venue": "Twickenham Stoop"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-12-12",
+       "home": "ulster",
+       "away": "bayonne",
+       "venue": "Affidea Stadium"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "cheetahs",
+       "away": "dragons",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "perpignan",
+       "away": "zebre",
+       "venue": "Stade Aimé Giral"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "benetton",
+       "away": "lyon",
+       "venue": "Stadio Comunale di Monigo"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "sharks",
+       "away": "scarlets",
+       "venue": "Hollywoodbets Kings Park"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "newcastle-red-bulls",
+       "away": "castres",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "ospreys",
+       "away": "harlequins",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2026-12-12",
+       "home": "toulon",
+       "away": "black-lion",
+       "venue": "Stade Mayol"
+      },
+      {
+       "date": "2026-12-13",
+       "home": "vannes",
+       "away": "edinburgh",
+       "venue": "Stade de la Rabine"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2027-01-08",
+       "home": "dragons",
+       "away": "bayonne",
+       "venue": "Rodney Parade"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "perpignan",
+       "away": "ulster",
+       "venue": "Stade Aimé Giral"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "zebre",
+       "away": "cheetahs",
+       "venue": "Stadio Sergio Lanfranchi"
+      },
+      {
+       "date": "2027-01-08",
+       "home": "newcastle-red-bulls",
+       "away": "benetton",
+       "venue": "Kingston Park"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "sharks",
+       "away": "castres",
+       "venue": "Hollywoodbets Kings Park"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "scarlets",
+       "away": "lyon",
+       "venue": "Parc y Scarlets"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "edinburgh",
+       "away": "harlequins",
+       "venue": "Hive Stadium"
+      },
+      {
+       "date": "2027-01-09",
+       "home": "toulon",
+       "away": "ospreys",
+       "venue": "Stade Mayol"
+      },
+      {
+       "date": "2027-01-10",
+       "home": "vannes",
+       "away": "black-lion",
+       "venue": "Stade de la Rabine"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2027-01-16",
+       "home": "bayonne",
+       "away": "zebre",
+       "venue": "Stade Jean-Dauger"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "ulster",
+       "away": "dragons",
+       "venue": "Affidea Stadium"
+      },
+      {
+       "date": "2027-01-17",
+       "home": "cheetahs",
+       "away": "perpignan",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "castres",
+       "away": "scarlets",
+       "venue": "Stade Pierre-Fabre"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "benetton",
+       "away": "sharks",
+       "venue": "Stadio Comunale di Monigo"
+      },
+      {
+       "date": "2027-01-17",
+       "home": "lyon",
+       "away": "newcastle-red-bulls",
+       "venue": "Mahmut Stadium"
+      },
+      {
+       "date": "2027-01-15",
+       "home": "harlequins",
+       "away": "toulon",
+       "venue": "Twickenham Stoop"
+      },
+      {
+       "date": "2027-01-16",
+       "home": "ospreys",
+       "away": "vannes",
+       "venue": "St Helen's"
+      },
+      {
+       "date": "2027-01-17",
+       "home": "black-lion",
+       "away": "edinburgh",
+       "venue": "Avchala Rugby Stadium"
+      }
+     ]
+    }
+   ],
+   "knockout": {
+    "huitiemes": "2027-04-03",
+    "quarts": "2027-04-10",
+    "demiFinales": "2027-05-01",
+    "finale": "2027-05-21"
+   },
+   "finalVenue": "OL Stadium, Lyon"
+  }
+ ],
+ "internationals": [
+  {
+   "id": "nations-championship",
+   "groups": [
+    [
+     "ENG",
+     "FRA",
+     "IRL",
+     "ITA",
+     "SCO",
+     "WAL"
+    ],
+    [
+     "ARG",
+     "AUS",
+     "FIJ",
+     "JPN",
+     "NZL",
+     "RSA"
+    ]
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2026-07-04",
+       "home": "NZL",
+       "away": "FRA",
+       "venue": "One NZ Stadium"
+      },
+      {
+       "date": "2026-07-04",
+       "home": "JPN",
+       "away": "ITA",
+       "venue": "Chichibunomiya Rugby Stadium"
+      },
+      {
+       "date": "2026-07-04",
+       "home": "AUS",
+       "away": "IRL",
+       "venue": "Sydney Football Stadium"
+      },
+      {
+       "date": "2026-07-04",
+       "home": "FIJ",
+       "away": "WAL",
+       "venue": "Cardiff City Stadium"
+      },
+      {
+       "date": "2026-07-04",
+       "home": "RSA",
+       "away": "ENG",
+       "venue": "Ellis Park Stadium"
+      },
+      {
+       "date": "2026-07-04",
+       "home": "ARG",
+       "away": "SCO",
+       "venue": "Estadio Mario Alberto Kempes"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2026-07-11",
+       "home": "NZL",
+       "away": "ITA",
+       "venue": "Wellington Regional Stadium"
+      },
+      {
+       "date": "2026-07-11",
+       "home": "AUS",
+       "away": "FRA",
+       "venue": "Lang Park"
+      },
+      {
+       "date": "2026-07-11",
+       "home": "JPN",
+       "away": "IRL",
+       "venue": "Newcastle International Sports Centre"
+      },
+      {
+       "date": "2026-07-11",
+       "home": "FIJ",
+       "away": "ENG",
+       "venue": "Hill Dickinson Stadium"
+      },
+      {
+       "date": "2026-07-11",
+       "home": "RSA",
+       "away": "SCO",
+       "venue": "Loftus Versfeld Stadium"
+      },
+      {
+       "date": "2026-07-11",
+       "home": "ARG",
+       "away": "WAL",
+       "venue": "Estadio San Juan del Bicentenario"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2026-07-18",
+       "home": "NZL",
+       "away": "IRL",
+       "venue": "Eden Park"
+      },
+      {
+       "date": "2026-07-18",
+       "home": "JPN",
+       "away": "FRA",
+       "venue": "Japan National Stadium"
+      },
+      {
+       "date": "2026-07-18",
+       "home": "AUS",
+       "away": "ITA",
+       "venue": "Perth Rectangular Stadium"
+      },
+      {
+       "date": "2026-07-18",
+       "home": "FIJ",
+       "away": "SCO",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2026-07-18",
+       "home": "RSA",
+       "away": "WAL",
+       "venue": "Kings Park Stadium"
+      },
+      {
+       "date": "2026-07-18",
+       "home": "ARG",
+       "away": "ENG",
+       "venue": "Estadio Único Madre de Ciudades"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2026-11-06",
+       "home": "IRL",
+       "away": "ARG",
+       "venue": "Aviva Stadium"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "ITA",
+       "away": "RSA",
+       "venue": "Juventus Stadium"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "SCO",
+       "away": "NZL",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "WAL",
+       "away": "JPN",
+       "venue": "Millennium Stadium"
+      },
+      {
+       "date": "2026-11-07",
+       "home": "FRA",
+       "away": "FIJ",
+       "venue": "Groupama Stadium"
+      },
+      {
+       "date": "2026-11-08",
+       "home": "ENG",
+       "away": "AUS",
+       "venue": "Twickenham Stadium"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2026-11-13",
+       "home": "FRA",
+       "away": "RSA",
+       "venue": "Stade de France"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "ITA",
+       "away": "ARG",
+       "venue": "Stadio Luigi Ferraris"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "WAL",
+       "away": "NZL",
+       "venue": "Millennium Stadium"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "ENG",
+       "away": "JPN",
+       "venue": "Twickenham Stadium"
+      },
+      {
+       "date": "2026-11-14",
+       "home": "IRL",
+       "away": "FIJ",
+       "venue": "Aviva Stadium"
+      },
+      {
+       "date": "2026-11-15",
+       "home": "SCO",
+       "away": "AUS",
+       "venue": "Murrayfield Stadium"
+      }
+     ]
+    },
+    {
+     "round": 6,
+     "matches": [
+      {
+       "date": "2026-11-21",
+       "home": "ENG",
+       "away": "NZL",
+       "venue": "Twickenham Stadium"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "SCO",
+       "away": "JPN",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "IRL",
+       "away": "RSA",
+       "venue": "Aviva Stadium"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "ITA",
+       "away": "FIJ",
+       "venue": "Stadio Friuli"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "WAL",
+       "away": "AUS",
+       "venue": "Millennium Stadium"
+      },
+      {
+       "date": "2026-11-21",
+       "home": "FRA",
+       "away": "ARG",
+       "venue": "Stade de France"
+      }
+     ]
+    }
+   ],
+   "finals": [
+    "2026-11-29",
+    "2026-11-28",
+    "2026-11-27",
+    "2026-11-29",
+    "2026-11-28",
+    "2026-11-27"
+   ],
+   "finalsVenue": "Twickenham Stadium"
+  },
+  {
+   "id": "six-nations",
+   "groups": [
+    [
+     "ENG",
+     "FRA",
+     "IRL",
+     "ITA",
+     "SCO",
+     "WAL"
+    ]
+   ],
+   "rounds": [
+    {
+     "round": 1,
+     "matches": [
+      {
+       "date": "2027-02-05",
+       "home": "IRL",
+       "away": "ENG",
+       "venue": "Aviva Stadium"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "SCO",
+       "away": "ITA",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2027-02-06",
+       "home": "FRA",
+       "away": "WAL",
+       "venue": "Stade de France"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "matches": [
+      {
+       "date": "2027-02-13",
+       "home": "ITA",
+       "away": "IRL",
+       "venue": "Stadio Olimpico"
+      },
+      {
+       "date": "2027-02-13",
+       "home": "SCO",
+       "away": "WAL",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2027-02-14",
+       "home": "ENG",
+       "away": "FRA",
+       "venue": "Twickenham Stadium"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "matches": [
+      {
+       "date": "2027-02-20",
+       "home": "WAL",
+       "away": "IRL",
+       "venue": "Millennium Stadium"
+      },
+      {
+       "date": "2027-02-20",
+       "home": "ENG",
+       "away": "ITA",
+       "venue": "Twickenham Stadium"
+      },
+      {
+       "date": "2027-02-21",
+       "home": "FRA",
+       "away": "SCO",
+       "venue": "Stade de France"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "matches": [
+      {
+       "date": "2027-03-05",
+       "home": "SCO",
+       "away": "IRL",
+       "venue": "Murrayfield Stadium"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "ITA",
+       "away": "FRA",
+       "venue": "Stadio Olimpico"
+      },
+      {
+       "date": "2027-03-06",
+       "home": "WAL",
+       "away": "ENG",
+       "venue": "Millennium Stadium"
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "matches": [
+      {
+       "date": "2027-03-13",
+       "home": "ITA",
+       "away": "WAL",
+       "venue": "Stadio Olimpico"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "ENG",
+       "away": "SCO",
+       "venue": "Twickenham Stadium"
+      },
+      {
+       "date": "2027-03-13",
+       "home": "IRL",
+       "away": "FRA",
+       "venue": "Aviva Stadium"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "windows": [
+  {
+   "id": "tests-juillet",
+   "name": "Tests de juillet",
+   "start": "2026-07-01",
+   "end": "2026-07-19",
+   "nations": "*"
+  },
+  {
+   "id": "tests-novembre",
+   "name": "Tests de novembre",
+   "start": "2026-10-30",
+   "end": "2026-11-30",
+   "nations": "*"
+  },
+  {
+   "id": "six-nations",
+   "name": "Tournoi des Six Nations",
+   "start": "2027-01-26",
+   "end": "2027-03-14",
+   "nations": [
+    "ENG",
+    "FRA",
+    "IRL",
+    "ITA",
+    "SCO",
+    "WAL",
+    "GEO",
+    "ESP",
+    "POR",
+    "ROU",
+    "BEL",
+    "NED"
+   ]
+  }
+ ]
+}

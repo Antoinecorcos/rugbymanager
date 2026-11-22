@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
+import type { SeasonCalendar } from "@ovalie/engine";
+import { seasonCalendarSchema } from "./calendar.js";
 import { rawSquadSchema, type RawSquad } from "./raw.js";
 import { clubDatabaseSchema, clubOverrideSchema, playerOverrideSchema, type ClubDatabase, type ClubOverride, type PlayerOverride } from "./schemas.js";
 
@@ -11,9 +13,14 @@ export const RAW_DIR = join(DATA_ROOT, "raw");
 export const DB_DIR = join(DATA_ROOT, "db");
 export const OVERRIDES_DIR = join(DATA_ROOT, "overrides");
 
-/** Season and reference date of the bundled database. */
+/** Season played with the bundled database, and the game's start date (ages are computed on it). */
 export const DATABASE_SEASON = "2026-2027";
-export const DATABASE_REFERENCE_DATE = "2026-11-21";
+export const DATABASE_REFERENCE_DATE = "2026-07-01";
+/**
+ * Last season whose statistics may be used by the ratings. The game starts on 1 July 2026:
+ * the 2026-27 statistics collected in November 2026 are "the future" and are ignored.
+ */
+export const DATABASE_STATS_SEASON = "2025-2026";
 
 const jsonFiles = (dir: string): string[] =>
   existsSync(dir)
@@ -57,6 +64,12 @@ export function serialiseClub(db: ClubDatabase): string {
 export function serialiseRawSquad(squad: RawSquad): string {
   const players = squad.players.map((p) => "  " + JSON.stringify(p)).join(",\n");
   return `{\n "club": ${JSON.stringify(squad.club)},\n "importedAt": ${JSON.stringify(squad.importedAt)},\n "players": [\n${players}\n ]\n}\n`;
+}
+
+export const CALENDAR_DIR = join(DATA_ROOT, "calendar");
+
+export function readCalendar(season = DATABASE_SEASON): SeasonCalendar {
+  return seasonCalendarSchema.parse(JSON.parse(readFileSync(join(CALENDAR_DIR, `${season}.json`), "utf8")));
 }
 
 export function readDatabase(): ClubDatabase[] {

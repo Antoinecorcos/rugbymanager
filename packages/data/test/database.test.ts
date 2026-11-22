@@ -1,6 +1,6 @@
 import { isFrontRow, naturalPosition, playerLevel, selectMatchTeam, TARGETS, teamStrength } from "@ovalie/engine";
 import { describe, expect, it } from "vitest";
-import { DATABASE_REFERENCE_DATE, DATABASE_SEASON, readDatabase, readOverrides, readRawSquads, serialiseClub, dbFile } from "../src/io.js";
+import { DATABASE_REFERENCE_DATE, DATABASE_STATS_SEASON, readDatabase, readOverrides, readRawSquads, serialiseClub, dbFile } from "../src/io.js";
 import { buildDatabase } from "../src/rating/build.js";
 import { clubDatabaseSchema } from "../src/schemas.js";
 import { seasonCalibration } from "../src/season.js";
@@ -71,7 +71,7 @@ describe("real database: content", () => {
 describe("real database: build pipeline", () => {
   it("is up to date with raw facts and overrides (run `pnpm --filter @ovalie/data build-db`)", () => {
     const ov = readOverrides();
-    const rebuilt = buildDatabase(readRawSquads(), { season: DATABASE_SEASON, referenceDate: DATABASE_REFERENCE_DATE, playerOverrides: ov.players, clubOverrides: ov.clubs });
+    const rebuilt = buildDatabase(readRawSquads(), { season: DATABASE_STATS_SEASON, referenceDate: DATABASE_REFERENCE_DATE, playerOverrides: ov.players, clubOverrides: ov.clubs });
     expect(rebuilt).toHaveLength(db.length);
     for (const d of rebuilt) expect(serialiseClub(d)).toBe(readFileSync(join(DB_DIR, dbFile(d)), "utf8"));
   });

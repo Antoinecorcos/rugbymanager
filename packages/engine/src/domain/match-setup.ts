@@ -42,6 +42,8 @@ export interface MatchSetup {
   seed: number | string;
   /** Knock-out match: draws go to extra time. */
   knockout?: boolean;
+  /** Neutral venue (finals): no home advantage. */
+  neutral?: boolean;
   /** Bonus point rules for the competition. */
   bonus?: BonusRules;
 }

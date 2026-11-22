@@ -10,6 +10,7 @@ import { ageAt, estimateLevel, type LevelContext } from "./level.js";
 import { resolvePositions, typicalBody } from "./positions.js";
 
 export interface BuildOptions {
+  /** Most recent season whose statistics are used (later seasons are ignored). */
   season: string;
   /** Reference date for ages and approximate birth dates. */
   referenceDate: string;
@@ -185,7 +186,7 @@ function completeSquad(squad: SquadEntry[], s: RawSquad, ctx: LevelContext, opts
     else for (const [pos, fam] of Object.entries(e.player.positions) as [Position, number][]) if (fam >= 14) count.set(pos, (count.get(pos) ?? 0) + 1);
   }
   const rng = new Rng(`complete:${s.club.id}`);
-  const base = estimateLevel({ id: "", firstName: "", lastName: "", nationality: "FRA", positionGroup: "", positionHints: [], career: [], sources: {} }, "FH", ctx).level;
+  const base = s.club.levelHint ?? estimateLevel({ id: "", firstName: "", lastName: "", nationality: "FRA", positionGroup: "", positionHints: [], career: [], sources: {} }, "FH", ctx).level;
   let n = 0;
   for (const [pos, min] of Object.entries(target) as [Position, number][]) {
     for (let k = count.get(pos) ?? 0; k < min; k++) {

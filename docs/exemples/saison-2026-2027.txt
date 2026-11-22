@@ -1,0 +1,89 @@
+
+=== Saison 2026-2027 — début de partie le mercredi 1 juillet 2026 (graine « ovalie ») ===
+72 clubs, 3419 joueurs, 973 matchs au calendrier avant les phases finales.
+Simulation jusqu'au mercredi 30 juin 2027 en 7.6 s.
+
+=== Palmarès ===
+Top 14                     Stade toulousain (finaliste : Union Bordeaux Bègles) — Access match : RC Vannes 13-33 Provence Rugby
+Pro D2                     US Montauban (finaliste : Provence Rugby) — Access match : Stade aurillacois 27-29 RC Orléans
+Nationale                  Stade montois (finaliste : RC Orléans) — Pas de relégation en 2026-2027 (passage de la Nationale à 16 clubs).
+PREM                       Bath (finaliste : Saracens)
+United Rugby Championship  Leinster (finaliste : Glasgow Warriors)
+Champions Cup              Montpellier Hérault Rugby (finaliste : Stade toulousain)
+Challenge Cup              RC Toulon (finaliste : Lyon OU)
+Nations Championship       Afrique du Sud (finaliste : France)
+Tournoi des Six Nations    Écosse (finaliste : Angleterre) — Triple Couronne : Écosse ; Cuillère de bois : Italie
+
+=== Montées et descentes pour 2027-2028 ===
+Castres olympique            TOP14 → PROD2 (14e du Top 14)
+RC Vannes                    TOP14 → PROD2 (battu en access match)
+US Montauban                 PROD2 → TOP14 (champion de Pro D2)
+Provence Rugby               PROD2 → TOP14 (vainqueur de l'access match)
+RC Narbonne                  PROD2 → NATIONALE (16e de Pro D2)
+Stade aurillacois            PROD2 → NATIONALE (battu en barrage d'accession)
+Stade montois                NATIONALE → PROD2 (champion de Nationale)
+RC Orléans                   NATIONALE → PROD2 (vainqueur du barrage d'accession)
+
+--- Top 14 — saison régulière ---
+    Club                          J   G  N   P  Diff   B  Pts
+ 1. Stade toulousain             26  18  0   8   296  11   83
+ 2. Section paloise              26  18  1   7   170   6   80
+ 3. Montpellier Hérault Rugby    26  15  1  10   108  11   73
+ 4. RC Toulon                    26  16  1   9   107   7   73
+ 5. Racing 92                    26  15  0  11     7   5   65
+ 6. Union Bordeaux Bègles        26  14  0  12    65   8   64
+ 7. Stade français Paris         26  13  2  11    15   6   62
+ 8. Lyon OU                      26  11  1  14    57  11   57
+ 9. Stade rochelais              26  12  0  14   -23   6   54
+10. ASM Clermont Auvergne        26  10  1  15   -43   7   49
+11. USA Perpignan                26  10  1  15  -130   4   46
+12. Aviron bayonnais             26   9  2  15   -76   5   45
+13. RC Vannes                    26   8  1  17  -246   4   38
+14. Castres olympique            26   7  1  18  -307   3   33
+
+--- Pro D2 — saison régulière ---
+    Club                          J   G  N   P  Diff   B  Pts
+ 1. Provence Rugby               30  26  0   4   303  10  114
+ 2. CA Brive                     30  20  0  10   143   9   89
+ 3. Oyonnax Rugby                30  19  0  11   139   9   85
+ 4. SU Agen                      30  19  0  11   115   9   85
+ 5. USON Nevers                  30  20  0  10    12   5   85
+ 6. US Montauban                 30  18  0  12   147  11   83
+ 7. FC Grenoble                  30  15  0  15    35  11   71
+ 8. US Dax                       30  15  0  15   -56   4   64
+ 9. Colomiers Rugby              30  14  0  16  -110   7   63
+10. Nissa Rugby                  30  12  2  16   -30   9   61
+11. AS Béziers Hérault           30  13  1  16   -78   6   60
+12. Soyaux Angoulême XV          30  12  1  17   -80   7   57
+13. Valence Romans Drôme Rugby   30  11  0  19   -32   9   53
+14. Biarritz olympique           30  11  0  19   -69   8   52
+15. Stade aurillacois            30   7  0  23  -164  12   40
+16. RC Narbonne                  30   6  0  24  -275   7   31
+
+--- Nationale — saison régulière ---
+    Club                          J   G  N   P  Diff   B  Pts
+ 1. RC Orléans                   26  18  0   8   273  11   83
+ 2. Stade montois                26  17  1   8   179  13   83
+ 3. RC Suresnes                  26  17  2   7    48   2   74
+ 4. Rouen Normandie Rugby        26  16  1   9    77   4   70
+ 5. CS Bourgoin-Jallieu          26  15  1  10    48   5   67
+ 6. US Bressane                  26  15  0  11    47   7   67
+ 7. SO Chambéry                  26  13  1  12    18   8   62
+ 8. SC Albi                      26  12  0  14    67   7   55
+ 9. Olympique marcquois          26  10  0  16   -85  11   51
+10. CA Périgueux                 26  11  0  15  -122   4   48
+11. US Carcassonne               26   8  3  15   -69   8   46
+12. RC Massy Essonne             26   9  3  14  -154   4   46
+13. CS Vienne                    26  10  0  16   -77   4   44
+14. Rennes EC                    26   5  0  21  -250   6   26
+
+=== Top 14 : meilleurs marqueurs ===
+Essais : Étienne Fourcade (ASM Clermont Auvergne) 13, Aaron Grandidier-Nkanang (Section paloise) 11, Damian Penaud (Union Bordeaux Bègles) 10
+Points : Matthieu Jalibert (Union Bordeaux Bègles) 264, Thomas Ramos (Stade toulousain) 226, Gerónimo Prisciantelli (Racing 92) 224
+
+=== Doublons ===
+189 matchs de club joués sans des internationaux (1572 absences au total).
+Top 14, absences cumulées : ST 105, UBB 63, RCT 63, SF 60, SR 51, SP 45, USAP 39, MHR 39, LOU 36, R92 33, CO 33, AB 30, ASM 24, RCV 12
+
+Blessures longues (≥ 4 semaines) : 410
+

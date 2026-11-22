@@ -1,0 +1,6 @@
+{
+ "club": {"id":"black-lion","name":"Black Lion","shortName":"BL","league":"OTHER","country":"GEO","city":"Tbilissi","stadium":{"name":"Stade Mikheil-Meskhi","city":"Tbilissi","capacity":27223},"colors":["#000000","#C8102E"],"levelHint":10.6,"sources":{"wikipedia":"en:Black Lion (rugby union)"}},
+ "importedAt": "2026-11-21",
+ "players": [
+ ]
+}

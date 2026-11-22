@@ -1,0 +1,6 @@
+{
+ "club": {"id":"cheetahs","name":"Cheetahs","shortName":"CHE","league":"OTHER","country":"RSA","city":"Bloemfontein","stadium":{"name":"Free State Stadium","city":"Bloemfontein","capacity":46000},"colors":["#F47920","#FFFFFF"],"levelHint":11.0,"sources":{"wikipedia":"en:Cheetahs (rugby union)"}},
+ "importedAt": "2026-11-21",
+ "players": [
+ ]
+}

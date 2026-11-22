@@ -8,6 +8,7 @@ Avant toute tâche, lire :
 - `docs/03-roadmap.md` — stack et étapes (M0 → M8)
 - `docs/04-moteur-de-match.md` — fonctionnement du moteur de match
 - `docs/05-donnees-reelles.md` — base réelle (sources, notation, overrides, validation)
+- `docs/06-monde-et-saison.md` — monde et saison (calendrier réel, formats, doublons, rotation) ; la partie démarre le 1er juillet 2026
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.
@@ -16,4 +17,5 @@ Conventions :
 - Données : `packages/data/raw` = faits importés, `overrides/` = corrections manuelles, `db/` = base générée (ne pas l'éditer à la main : `build-db`).
 
 Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`,
-`pnpm --filter @ovalie/data build-db`, `pnpm --filter @ovalie/data season TOP14 5`, imports : `import:fr`, `import:en`, `import:nationale`.
+`pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club id]`, `pnpm --filter @ovalie/data build-db`, `pnpm --filter @ovalie/data season TOP14 5`,
+imports : `import:fr`, `import:en`, `import:nationale`, `import:calendar`.

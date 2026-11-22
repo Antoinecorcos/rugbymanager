@@ -81,6 +81,10 @@ type Restart =
 type DeadReason = "knockOn" | "touch" | "score" | "penalty" | "scrumAwarded" | "goalLineDropout" | "dropout22" | "other";
 
 const HALF = 40 * 60;
+/** From this clock time (seconds, second half) close games tighten. */
+const LATE_GAME = 60 * 60;
+/** Effort bonus of the side trailing by 1–12 points late in the game. */
+const CLOSE_GAME_PUSH = 0.03;
 const ET_HALF = 10 * 60;
 
 /* ------------------------------------------------------------------ */
@@ -377,11 +381,13 @@ export class MatchSimulation {
     const famF = 0.82 + 0.18 * (fam / 20);
     const side = this.sideOf(fp);
     const team = this.teams[side].team;
-    const home = side === 0 ? 1.035 : 1;
+    const home = side === 0 && !this.setup.neutral ? 1.035 : 1;
     const morale = 1 + ((team.morale ?? 0.5) - 0.5) * 0.06;
     // Scoreboard effect: a big lead brings some complacency, a big deficit some desperation.
     const lead = this.score[side] - this.score[other(side)];
-    const scoreF = lead > 12 ? 1 - Math.min(0.05, (lead - 12) * 0.004) : lead < -12 ? 1 + Math.min(0.025, (-lead - 12) * 0.002) : 1;
+    let scoreF = lead > 12 ? 1 - Math.min(0.05, (lead - 12) * 0.004) : lead < -12 ? 1 + Math.min(0.025, (-lead - 12) * 0.002) : 1;
+    // Last quarter of a close game: the trailing side chases the win (or the losing bonus), the leader manages.
+    if (this.period === 2 && this.clock > LATE_GAME && lead !== 0 && Math.abs(lead) <= 12) scoreF *= lead < 0 ? 1 + CLOSE_GAME_PUSH : 1 - CLOSE_GAME_PUSH / 2;
     return base * fatigue * (1 + fp.form) * famF * home * morale * scoreF;
   }
 
