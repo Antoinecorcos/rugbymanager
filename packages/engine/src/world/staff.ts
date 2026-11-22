@@ -72,12 +72,60 @@ function generateStaff(rng: Rng, club: WorldClub): StaffMember[] {
   });
 }
 
-/** Gives every club of the main leagues its staff (idempotent). */
+/** Gives every club of the main leagues its staff (idempotent), with estimated wages. */
 export function initStaff(w: World): void {
   for (const club of Object.values(w.clubs)) {
-    if (club.staff || !STAFFED.has(club.league)) continue;
-    club.staff = generateStaff(new Rng(`${w.seed}:staff:${club.id}`), club);
+    if (!club.staff && STAFFED.has(club.league)) club.staff = generateStaff(new Rng(`${w.seed}:staff:${club.id}`), club);
+    for (const s of club.staff ?? []) s.wage ??= staffWage(s, club.league);
   }
+}
+
+/** Key attribute value of a staff member for his role. */
+export const staffQuality = (s: StaffMember): number => Math.max(...KEY[s.role].map((k) => s.attributes[k]));
+
+/** Estimated yearly wage of a staff member (quality and league). */
+export function staffWage(s: StaffMember, league: string): number {
+  const q = staffQuality(s);
+  const scale = league === "TOP14" || league === "PREM" ? 1 : league === "URC" ? 0.85 : league === "PROD2" ? 0.45 : 0.25;
+  return Math.round(((35_000 + q * q * 650) * scale) / 1000) * 1000;
+}
+
+/** Free staff looking for a club (idempotent): a few candidates per role, of every level. */
+export function initStaffMarket(w: World): void {
+  if (w.staffMarket) return;
+  const rng = new Rng(`${w.seed}:staff-market`);
+  const out: StaffMember[] = [];
+  for (const role of ROLES) {
+    for (let i = 0; i < 4; i++) {
+      const fake = { id: `free-${i}`, reputation: rng.int(40, 190), country: rng.pick(["FRA", "FRA", "FRA", "NZL", "RSA", "ARG"]) } as WorldClub;
+      const [member] = generateStaff(rng, fake).filter((m) => m.role === role);
+      if (!member) continue;
+      member.id = `staff-free-${role}-${i}`;
+      member.wage = staffWage(member, "TOP14");
+      out.push(member);
+    }
+  }
+  w.staffMarket = out;
+}
+
+/**
+ * Hires a free staff member for the manager's club: he replaces the current holder of the role,
+ * whose contract is settled with three months of wages. Returns an error (French) or null.
+ */
+export function hireStaff(w: World, staffId: string, pay: (label: string, amount: number) => boolean): string | null {
+  const m = w.manager;
+  const club = m ? w.clubs[m.clubId] : undefined;
+  const cand = w.staffMarket?.find((s) => s.id === staffId);
+  if (!m || !club || !cand) return "Candidat introuvable.";
+  const current = club.staff?.find((s) => s.role === cand.role);
+  const wage = staffWage(cand, club.league);
+  const compensation = current ? Math.round((current.wage ?? 0) / 4) : 0;
+  if (compensation && !pay(`Indemnité de départ : ${current!.name}`, compensation)) return "Budget de recrutement insuffisant pour indemniser le titulaire actuel.";
+  club.staff = [...(club.staff ?? []).filter((s) => s !== current), { ...cand, id: `staff-${club.id}-${cand.role}`, wage }];
+  w.staffMarket = w.staffMarket!.filter((s) => s.id !== staffId);
+  if (current) w.staffMarket.push({ ...current, id: `staff-free-${current.role}-${w.date}` });
+  w.news.push({ date: w.date, topic: "club", clubs: [club.id], text: `${cand.name} rejoint le staff (${STAFF_ROLE_FR[cand.role].toLowerCase()})${current ? ` et remplace ${current.name}` : ""}.`, importance: 1 });
+  return null;
 }
 
 export const staffOf = (club: WorldClub | undefined, role: StaffRole): StaffMember | undefined => club?.staff?.find((s) => s.role === role);

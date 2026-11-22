@@ -34,6 +34,83 @@ export interface WorldClub {
   sharpness?: Sharpness;
   /** Club morale 0..100 (AI clubs; the manager's club uses its players' morale). */
   morale?: number;
+  /** Finances (M6b; the manager's club). */
+  finances?: ClubFinances;
+}
+
+/* ------------------------------------------------------------------ M6b: money and market */
+
+export interface Contract {
+  clubId: string;
+  /** Gross yearly salary (euros). */
+  salary: number;
+  /** Season-end year: the contract ends on 30 June of that year. */
+  expires: number;
+  /** Salary and/or end estimated (real figures are not public). */
+  estimated: boolean;
+  /** Playing-time status promised when he signed (new signings, renewals). */
+  status?: SquadStatus;
+  /** Medical joker: contract until the end of the season. */
+  joker?: boolean;
+}
+
+export type RevenueKind = "sponsors" | "tv" | "gate" | "subsidies" | "prizes" | "other";
+export type ExpenseKind = "wages" | "staff" | "operations" | "travel" | "transfers" | "other";
+
+export interface LedgerLine {
+  date: IsoDate;
+  label: string;
+  /** Positive = income. */
+  amount: number;
+  kind: RevenueKind | ExpenseKind;
+}
+
+export interface ClubFinances {
+  /** Cash (euros). */
+  balance: number;
+  /** Season totals by category. */
+  revenue: Record<RevenueKind, number>;
+  expense: Record<ExpenseKind, number>;
+  /** Recent operations (most recent last). */
+  ledger: LedgerLine[];
+  /** Maximum yearly payroll the board allows. */
+  wageBudget: number;
+  /** Money available for buyouts, agent fees and staff compensations. */
+  transferBudget: number;
+}
+
+export type TransferKind = "preContract" | "buyout" | "medicalJoker" | "renewal";
+
+export interface TransferDeal {
+  id: string;
+  playerId: string;
+  /** Club he leaves (undefined: free agent). */
+  from?: string;
+  to: string;
+  kind: TransferKind;
+  contract: Contract;
+  /** Buyout fee paid to the former club. */
+  fee: number;
+  agentFee: number;
+  agreedOn: IsoDate;
+  /** When he joins (1 July of the next season, or immediately for a medical joker). */
+  effective: IsoDate;
+  done?: boolean;
+}
+
+export interface ScoutingState {
+  /** Knowledge of the player, 0..1 (1 = attributes and potential known). */
+  knowledge: number;
+  /** Supervision in progress: report expected on this date. */
+  reportOn?: IsoDate;
+}
+
+export interface NegotiationState {
+  rounds: number;
+  /** After three failed rounds the agent stops talking until this date. */
+  blockedUntil?: IsoDate;
+  /** Last demand of the agent (salary in euros, years). */
+  demand?: { salary: number; years: number; status: SquadStatus };
 }
 
 /* ------------------------------------------------------------------ M6a: staff, training */
@@ -59,6 +136,8 @@ export interface StaffMember {
   attributes: StaffAttributes;
   /** Fictional staff member (real assistants are not in the database). */
   generated: boolean;
+  /** Gross yearly wage (euros, estimated). */
+  wage?: number;
 }
 
 export type TrainingIntensity = "light" | "normal" | "intense";
@@ -162,6 +241,8 @@ export interface PlayerProfile {
   estimated?: string[];
   /** Explainable rating: components of the level (club, international, age, club strength, override) and evidence 0–1. */
   rating?: Record<string, number>;
+  /** Real contract end when the club publishes it (ISO date). */
+  contractExpires?: string;
 }
 
 export interface PlayerSeasonStats {
@@ -205,6 +286,8 @@ export interface PlayerState {
   human?: PlayerHuman;
   medical?: MedicalRecord;
   dev?: PlayerDevelopment;
+  /** Current contract (M6b, estimated for real players). */
+  contract?: Contract;
 }
 
 export interface FixtureResult {
@@ -297,6 +380,20 @@ export interface World {
   reports?: Record<string, MatchReport>;
   /** Academy players of each club (ids, not in `squads`). */
   academies?: Record<string, string[]>;
+  /** Agreed and completed transfers / renewals (M6b). */
+  transfers?: TransferDeal[];
+  /** The manager's knowledge of players (scouting). */
+  scouting?: Record<string, ScoutingState>;
+  /** Negotiations of the manager with agents, by player id. */
+  negotiations?: Record<string, NegotiationState>;
+  /** Unattached players (fictional free agents, released players). */
+  freeAgents?: string[];
+  /** JIFF count on the manager's league match sheets: sheets played and JIFF players fielded. */
+  jiffLog?: { sheets: number; jiff: number };
+  /** Staff available for hire. */
+  staffMarket?: StaffMember[];
+  /** AI clubs' approaches to the manager's players whose contract ends (player id → club, date). */
+  approaches?: Record<string, { club: string; date: IsoDate }>;
   /** Version of the world extensions (save migration). */
   version?: number;
 }

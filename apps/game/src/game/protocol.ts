@@ -1,5 +1,5 @@
 /** Messages between the interface (main thread) and the game worker, which owns the world. */
-import type { ContinueResult, IndividualFocus, Position, SquadStatus, TalkKind, TalkResult, TeamTalk, TrainingPlan, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
+import type { NegotiationResult, Offer, ContinueResult, IndividualFocus, Position, SquadStatus, TalkKind, TalkResult, TeamTalk, TrainingPlan, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 
 /** Club shown on the new-game screen. */
 export interface CatalogueClub {
@@ -37,7 +37,12 @@ export type GameAction =
   | { type: "individual"; playerId: string; focus: IndividualFocus; learning?: Position }
   | { type: "rushBack"; playerId: string }
   | { type: "promote"; playerId: string }
-  | { type: "release"; playerId: string };
+  | { type: "release"; playerId: string }
+  | { type: "scout"; playerId: string }
+  | { type: "offer"; playerId: string; offer: Offer }
+  | { type: "boardRequest"; kind: "wages" | "transfers" }
+  | { type: "press"; fixtureId: string; answers: Record<string, string> }
+  | { type: "hireStaff"; staffId: string };
 
 export type Request =
   | { kind: "catalogue" }
@@ -72,7 +77,7 @@ export type Response =
   | { kind: "liveChunk"; chunk: LiveChunk }
   | { kind: "liveSnapshot"; snapshot: LiveSnapshot; error?: string | null }
   | { kind: "liveHalfTime"; reaction: string }
-  | { kind: "action"; world: World; error: string | null; talk?: TalkResult }
+  | { kind: "action"; world: World; error: string | null; talk?: TalkResult; negotiation?: NegotiationResult; message?: string }
   | { kind: "error"; message: string };
 
 export interface Envelope<T> {

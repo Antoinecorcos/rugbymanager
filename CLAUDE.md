@@ -12,6 +12,7 @@ Avant toute tâche, lire :
 - `docs/07-interface.md` — interface manager (`apps/game`) : architecture worker, carrière dans le moteur, système de design, écrans
 - `docs/08-match-en-direct.md` — match en direct (M5) : trace, couche spatiale, LiveSession, écran PixiJS, décisions de pénalité
 - `docs/09-effectif-et-humain.md` — effectif et humain (M6a) : moral, confiance, discussions, causeries, entraînement, progression, médical, staff, centre de formation
+- `docs/10-argent-et-marche.md` — argent et marché (M6b) : contrats estimés, salary cap, JIFF, finances, président, transferts, supervision, presse
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.

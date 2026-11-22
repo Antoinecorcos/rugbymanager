@@ -127,7 +127,7 @@ describe("world season (synthetic league)", () => {
     const w = miniWorld("rotation");
     playSeason(w);
     const games = (club: string) => w.fixtures.filter((f) => f.home === club || f.away === club).length;
-    const shares = Object.values(w.players).map((p) => (p.stats.top14?.starts ?? 0) / games(p.clubId!));
+    const shares = Object.values(w.players).filter((p) => p.clubId).map((p) => (p.stats.top14?.starts ?? 0) / games(p.clubId!));
     expect(Math.max(...shares)).toBeLessThanOrEqual(0.85);
     expect(Math.max(...shares)).toBeGreaterThan(0.5);
     expect(w.news.filter((n) => n.topic === "medical").length).toBeGreaterThan(0);

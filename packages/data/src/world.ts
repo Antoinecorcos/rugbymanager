@@ -13,6 +13,7 @@ function profileOf(e: SquadEntry): PlayerProfile {
   if (e.info?.previousClub) p.previousClub = e.info.previousClub;
   if (e.info?.arrivalYear) p.arrivalYear = e.info.arrivalYear;
   if (e.info?.generated) p.generated = true;
+  if (e.contract.expires) p.contractExpires = e.contract.expires;
   if (e.info?.rating) p.rating = Object.fromEntries(Object.entries(e.info.rating).filter((x): x is [string, number] => typeof x[1] === "number"));
   return p;
 }

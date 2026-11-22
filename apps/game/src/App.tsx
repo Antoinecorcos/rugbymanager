@@ -41,6 +41,8 @@ import { LiveMatchScreen } from "./screens/LiveMatch";
 import { TrainingScreen } from "./screens/Training";
 import { MedicalScreen } from "./screens/Medical";
 import { StaffScreen } from "./screens/Staff";
+import { FinancesScreen } from "./screens/Finances";
+import { RecruitmentScreen } from "./screens/Recruitment";
 
 export function App() {
   const { world, busy, progressDate } = useGame();
@@ -52,6 +54,7 @@ export function App() {
   }, [accent?.[0], accent?.[1]]);
 
   if (!world?.manager) return <TitleScreen />;
+  if (world.manager.dismissed) return <DismissedScreen world={world} />;
   return <Shell world={world} busy={busy} progressDate={progressDate} />;
 }
 
@@ -112,6 +115,10 @@ function Screen() {
       return <MedicalScreen />;
     case "staff":
       return <StaffScreen />;
+    case "recrutement":
+      return <RecruitmentScreen />;
+    case "finances":
+      return <FinancesScreen />;
     default:
       return <HomeScreen />;
   }
@@ -136,10 +143,11 @@ const NAV: NavDef[] = [
   { screen: "entrainement", label: "Entraînement", icon: <Dumbbell size={18} /> },
   { screen: "medical", label: "Médical", icon: <Stethoscope size={18} /> },
   { screen: "staff", label: "Staff", icon: <UserCog size={18} /> },
+  { screen: "recrutement", label: "Recrutement", icon: <Search size={18} /> },
+  { screen: "finances", label: "Finances", icon: <Euro size={18} /> },
 ];
 const NAV_LATER: NavDef[] = [
-  { screen: "recrutement", label: "Recrutement", icon: <Search size={18} />, soon: "M6b" },
-  { screen: "finances", label: "Finances", icon: <Euro size={18} />, soon: "M6b" },
+
 ];
 
 function Sidebar({ world }: { world: World }) {
@@ -195,6 +203,7 @@ function TopBar({ world, busy }: { world: World; busy: boolean }) {
     if (r.stop?.reason === "matchDay") navigate("preparation");
     else if (r.stop?.reason === "news") navigate("boite");
     else if (r.stop?.reason === "seasonEnd") navigate("bilan");
+    else if (r.stop?.reason === "dismissed") navigate("accueil");
   };
 
   return (
@@ -227,3 +236,25 @@ function TopBar({ world, busy }: { world: World; busy: boolean }) {
   );
 }
 
+
+/** The board has sacked the manager: the career is over (M6b). */
+function DismissedScreen({ world }: { world: World }) {
+  const m = world.manager!;
+  const club = world.clubs[m.clubId]!;
+  return (
+    <div className="dismissed">
+      <div className="modal-card">
+        <ClubCrest colors={club.colors} label={club.shortName} size={56} />
+        <div className="modal-card__kicker">{formatDateFr(m.dismissed!.date)}</div>
+        <h1 className="display" style={{ margin: 0 }}>Vous êtes démis de vos fonctions</h1>
+        <p className="muted">{m.dismissed!.reason}</p>
+        <p className="faint">
+          Bilan : réputation {Math.round(m.reputation ?? 50)}/100. Une nouvelle carrière vous attend peut-être ailleurs.
+        </p>
+        <Button variant="primary" size="lg" onClick={() => game.quit()}>
+          Menu principal
+        </Button>
+      </div>
+    </div>
+  );
+}

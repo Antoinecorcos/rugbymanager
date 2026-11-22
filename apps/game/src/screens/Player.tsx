@@ -28,6 +28,15 @@ import {
 } from "@ovalie/engine";
 import { game } from "../game/client";
 import { Gauge, MoraleBadge, RiskBadge, Sparkline, Trend } from "../ui/human";
+import { OfferDialog } from "../ui/offer";
+import { knowledgeOf, pendingDeal, perceivedLevel } from "@ovalie/engine";
+import { formatMoney, levelStars } from "../game/format";
+
+const hashUnit = (s: string): number => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return ((h >>> 0) % 10000) / 10000;
+};
 import { Button } from "../ui/components";
 import { useWorld } from "../game/client";
 import { ageIn, dateMedium, fmt1, fullName, nationName, playerStars, POSITION_SHORT_FR } from "../game/format";
@@ -130,14 +139,23 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
   const ps = w.players[playerId];
   const pos = ps ? naturalPosition(ps.player) : "FH";
   const avg = useMemo(() => averageMorph(w, pos), [w.date, pos]);
+  const [offer, setOffer] = useState(false);
+  const [scoutMsg, setScoutMsg] = useState<string | null>(null);
   if (!ps) return <Empty>Joueur introuvable.</Empty>;
   const p = ps.player;
   const club = ps.clubId ? w.clubs[ps.clubId] : undefined;
-  const stars = playerStars(p);
+  const knowledge = knowledgeOf(w, playerId);
+  const unknown = knowledge < 0.99;
+  const perceived = perceivedLevel(w, playerId);
+  const real = playerStars(p);
+  const stars = unknown ? { current: levelStars(perceived.level), potential: levelStars(perceived.level) } : real;
+  /** Attribute as the staff sees it: exact when the player is known, an estimate otherwise. */
+  const shown = (k: AttributeKey) => (unknown ? Math.max(1, Math.min(20, Math.round(p.attributes[k] + (hashUnit(`${w.seed}:${playerId}:${k}`) * 2 - 1) * (1 - knowledge) * 4))) : p.attributes[k]);
+
   const av = availability(ps, w.date);
   const totals = clubTotals(w, ps);
   const est = new Set(ps.profile?.estimated ?? []);
-  const radar = FAMILIES.map((f) => ({ label: f.label, value: f.keys.reduce((a, k) => a + p.attributes[k], 0) / f.keys.length }));
+  const radar = FAMILIES.map((f) => ({ label: f.label, value: f.keys.reduce((a, k) => a + shown(k), 0) / f.keys.length }));
   const comps = Object.entries(ps.stats).sort((a, b) => b[1].minutes - a[1].minutes);
 
   const attrCol = (title: string, keys: readonly AttributeKey[]) => (
@@ -146,7 +164,7 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
       {keys.map((k) => (
         <div key={k} className="attr-row">
           <span>{ATTRIBUTE_LABEL_FR[k]}</span>
-          <AttrValue value={p.attributes[k]} label={ATTRIBUTE_LABEL_FR[k]} />
+          <AttrValue value={shown(k)} label={ATTRIBUTE_LABEL_FR[k]} />
         </div>
       ))}
     </div>
@@ -180,7 +198,21 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
       </PageHeader>
 
       <div className="grid player-grid">
-        <Panel title="Attributs" subtitle="Notes de 1 à 20" className="player-grid__attrs">
+        <Panel
+          title="Attributs"
+          subtitle={unknown ? `Estimations du staff (connaissance ${Math.round(knowledge * 100)} %) : supervisez-le pour des notes exactes` : "Notes de 1 à 20"}
+          className="player-grid__attrs"
+          actions={
+            unknown && !w.scouting?.[playerId]?.reportOn ? (
+              <Button size="sm" variant="secondary" onClick={async () => setScoutMsg((await game.act({ type: "scout", playerId })).error ?? "Supervision lancée.")}>
+                Superviser
+              </Button>
+            ) : w.scouting?.[playerId]?.reportOn ? (
+              <span className="faint">Rapport attendu le {dateMedium(w.scouting[playerId]!.reportOn!)}</span>
+            ) : undefined
+          }
+        >
+          {scoutMsg && <p className="faint">{scoutMsg}</p>}
           <div className="attr-cols">
             {attrCol("Technique", TECHNICAL_ATTRIBUTES)}
             {attrCol("Mental", MENTAL_ATTRIBUTES)}
@@ -279,21 +311,33 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
           )}
         </Panel>
 
-        <Panel title="Contrat et parcours">
+        <Panel
+          title="Contrat et parcours"
+          actions={
+            !ps.virtual && !ps.academy && !pendingDeal(w, playerId) ? (
+              <Button size="sm" variant="secondary" onClick={() => setOffer(true)}>
+                {ps.clubId === myClubId(w) ? "Prolonger" : "Négocier"}
+              </Button>
+            ) : undefined
+          }
+        >
           <KeyValues
             items={[
               ["Club", club?.name ?? "—"],
               ["Arrivée au club", ps.profile?.arrivalYear ? String(ps.profile.arrivalYear) : "inconnue"],
               ["Club précédent", ps.profile?.previousClub ?? (ps.profile?.homegrown ? "formé au club" : "inconnu")],
               ["Statut JIFF", ps.profile?.jiff === undefined ? "inconnu" : ps.profile.jiff ? `oui${ps.profile.jiffEstimated ? " (estimé)" : ""}` : "non"],
-              ["Contrat et salaire", <span key="c" className="faint">estimés avec la gestion du club (M6)</span>],
+              ["Contrat", ps.contract ? `jusqu'en juin ${ps.contract.expires}${ps.contract.joker ? " (joker médical)" : ""}` : "sans club"],
+              ["Salaire annuel", ps.contract ? `${formatMoney(ps.contract.salary)}${ps.contract.estimated ? " (estimé)" : ""}` : "—"],
+              ...(pendingDeal(w, playerId) ? [["Saison prochaine", `engagé avec ${w.clubs[pendingDeal(w, playerId)!.to]?.name ?? "?"}`] as [string, string]] : []),
             ]}
           />
         </Panel>
 
         <Panel title="D'où vient sa note ?" subtitle="Le niveau est expliqué composante par composante">
-          <RatingExplain ps={ps} />
+          {unknown ? <Empty>Détail connu une fois le joueur supervisé.</Empty> : <RatingExplain ps={ps} />}
         </Panel>
+        {offer && <OfferDialog w={w} playerId={playerId} onClose={() => setOffer(false)} />}
       </div>
     </>
   );

@@ -56,7 +56,8 @@ describe("manager career", () => {
     expect(m.clubId).toBe("a");
     expect(m.plans.length).toBe(2);
     expect(w.clubs.a!.headCoach).toBe("Jean Test");
-    expect(w.news.at(-1)!.text).toContain("Jean Test");
+    expect(w.news.some((n) => n.text.includes("Jean Test"))).toBe(true);
+    expect(w.news.at(-1)!.topic).toBe("board");
   });
 
   it("'Continuer' stops on the morning of the club's match, without playing it", () => {
@@ -139,7 +140,7 @@ describe("manager career", () => {
     const morale: number[] = [];
     for (;;) {
       const r = continueCareer(career, 400);
-      if (r.reason === "seasonEnd") break;
+      if (r.reason === "seasonEnd" || r.reason === "dismissed") break;
       if (r.reason !== "matchDay") continue;
       morale.push(teamMorale(career, "d", career.squads.d!));
       playMatchDay(career);

@@ -19,6 +19,8 @@ import {
   type Tactics,
   type TargetedInstructions,
   TEAM_TALK_FR,
+  pressQuestions,
+  type Fixture,
   type TeamTalk,
   type World,
 } from "@ovalie/engine";
@@ -273,6 +275,8 @@ function Preparation({ w, fixtureId }: { w: World; fixtureId: string }) {
             </p>
           </Panel>
 
+          <PressPanel w={w} f={f} />
+
           <Panel title="Causerie d'avant-match" subtitle="Elle agit sur le moral du groupe pour ce match ; l'effet dépend du contexte (favori ou outsider)">
             <div className="stack">
               {(Object.keys(TEAM_TALK_FR) as TeamTalk[]).map((t) => (
@@ -318,4 +322,41 @@ function rankText(w: World, club: string, comp: string): string {
   if (!c || c.kind !== "league") return teamName(w, club);
   const i = leagueTable(w, comp).findIndex((r) => r.team === club);
   return `${w.clubs[club]?.shortName ?? club} ${ordinal(i + 1)}`;
+}
+
+/** Pre-match press conference (M6b): three questions, the answers move morale and the president's mood. */
+function PressPanel({ w, f }: { w: World; f: Fixture }) {
+  const done = w.manager!.press?.[f.id] !== undefined;
+  const questions = useMemo(() => pressQuestions(w, f), [w.date, f.id]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [headline, setHeadline] = useState<string | null>(null);
+  const submit = async () => setHeadline((await game.act({ type: "press", fixtureId: f.id, answers })).message ?? null);
+  if (done)
+    return (
+      <Panel title="Conférence de presse">
+        <p style={{ margin: 0 }}>{headline ? `« ${headline} »` : "Conférence donnée pour ce match."}</p>
+      </Panel>
+    );
+  return (
+    <Panel title="Conférence de presse" subtitle="Facultative : vos réponses jouent un peu sur le moral du groupe, d'un joueur cité et sur le président">
+      <div className="stack">
+        {questions.map((q) => (
+          <div key={q.id} className="field">
+            <span className="field__label">{q.text}</span>
+            {q.answers.map((a) => (
+              <label key={a.id} className="check">
+                <input type="radio" name={`press-${q.id}`} checked={answers[q.id] === a.id} onChange={() => setAnswers({ ...answers, [q.id]: a.id })} />
+                <span>{a.label}</span>
+              </label>
+            ))}
+          </div>
+        ))}
+        <div>
+          <Button size="sm" variant="secondary" disabled={Object.keys(answers).length < questions.length} onClick={() => void submit()}>
+            Répondre aux journalistes
+          </Button>
+        </div>
+      </div>
+    </Panel>
+  );
 }

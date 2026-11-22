@@ -1,4 +1,5 @@
-import { clubForm, leagueTable, playerLevel, type World } from "@ovalie/engine";
+import { clubForm, confidenceLabel, jiffAverage, leagueTable, payroll, playerLevel, salaryCap, type World } from "@ovalie/engine";
+import { Gauge } from "../ui/human";
 import { useWorld } from "../game/client";
 import { fmt1, formatMoney, ordinal, LEAGUE_LABEL, levelStars, nationName } from "../game/format";
 import { href } from "../game/router";
@@ -48,6 +49,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
           {mine && <Badge tone="accent">Votre club</Badge>}
         </div>
       </PageHeader>
+      {mine && <BoardPanel w={w} />}
       <div className="grid grid--3">
         <Panel title="Le club">
           <KeyValues
@@ -88,10 +90,10 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
             items={[
               ["Classement", rank ? `${ordinal(rank)} de ${LEAGUE_LABEL[c.league]}` : "—"],
               ["Forme", <span key="f" className="row">{clubForm(w, id).map((l) => <ResultChip key={l.fixtureId} outcome={l.outcome} title={`${teamName(w, l.opponent)} ${l.for}-${l.against}`} />)}</span>],
-              ...(mine ? [["Objectif (indicatif)", objective(w, id)] as [string, string]] : []),
+              ...(mine ? [["Objectif du président", manager(w).board?.objectives[0]?.label ?? objective(w, id)] as [string, string]] : []),
             ]}
           />
-          {mine && <p className="faint" style={{ marginBottom: 0 }}>Les attentes du président, la confiance et les finances arrivent avec la gestion du club (M6). Manager depuis le {manager(w).since.split("-").reverse().join("/")}.</p>}
+          {mine && <p className="faint" style={{ marginBottom: 0 }}>Manager depuis le {manager(w).since.split("-").reverse().join("/")}.</p>}
         </Panel>
       </div>
       <Panel title="Matchs de la saison">
@@ -107,5 +109,56 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
             ))}
       </Panel>
     </>
+  );
+}
+
+/** The president, his objectives and his confidence (M6b). */
+function BoardPanel({ w }: { w: World }) {
+  const m = manager(w);
+  const b = m.board;
+  if (!b) return null;
+  const club = w.clubs[m.clubId]!;
+  const league = club.league.toLowerCase();
+  const table = w.competitions[league] ? leagueTable(w, league) : [];
+  const row = table.find((r) => r.team === club.id);
+  const pos = row && row.played > 0 ? table.indexOf(row) + 1 : 0;
+  const status = (id: string, rank?: number): { ok: boolean; text: string } => {
+    if (id === "league") return pos && rank ? { ok: pos <= rank, text: `actuellement ${ordinal(pos)}` } : { ok: true, text: "pas encore de match" };
+    if (id === "cap") {
+      const pay = payroll(w, club.id);
+      return { ok: pay <= salaryCap(w, club.id), text: `${formatMoney(pay)} / ${formatMoney(salaryCap(w, club.id))}` };
+    }
+    if (id === "jiff") {
+      const avg = jiffAverage(w);
+      return avg === undefined ? { ok: true, text: "pas encore de match" } : { ok: avg >= (rank ?? 0) - 0.5, text: `moyenne ${fmt1(avg)}` };
+    }
+    const bal = club.finances?.balance ?? 0;
+    return { ok: bal >= 0, text: `trésorerie ${formatMoney(bal)}` };
+  };
+  return (
+    <Panel title={`Le président : ${b.president}`} subtitle="Objectifs de la saison et confiance" className="board-panel">
+      <div className="grid grid--2">
+        <ul className="list">
+          {b.objectives.map((o) => {
+            const st = status(o.id, o.rank);
+            return (
+              <li key={o.id} className="row" style={{ justifyContent: "space-between" }}>
+                <span>{o.label}</span>
+                <Badge tone={st.ok ? "good" : "warning"}>{st.ok ? "En bonne voie" : "En danger"}{st.text ? ` · ${st.text}` : ""}</Badge>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="stack">
+          <Gauge value={b.confidence} label="Confiance du président" kind="plain" />
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <span className="faint">Niveau</span>
+            <b>{confidenceLabel(b.confidence)}</b>
+          </div>
+          {b.ultimatum && <Badge tone="critical">Ultimatum en cours</Badge>}
+          <div className="faint">Votre réputation : {Math.round(m.reputation ?? 50)}/100. Demandes de budget : écran Finances.</div>
+        </div>
+      </div>
+    </Panel>
   );
 }

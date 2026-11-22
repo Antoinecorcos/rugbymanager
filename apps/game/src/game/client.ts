@@ -1,6 +1,6 @@
 /** Interface side of the game: talks to the worker, keeps the latest world snapshot. */
 import { useSyncExternalStore } from "react";
-import type { ContinueResult, TalkResult, TeamTalk, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
+import type { NegotiationResult, ContinueResult, TalkResult, TeamTalk, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 import type { CatalogueClub, Envelope, GameAction, ManagerPatch, Progress, Request, Response, SaveInfo } from "./protocol";
 
 export interface GameState {
@@ -109,10 +109,14 @@ class GameClient {
   }
 
   /** A squad action (talk, status, training, medical, academy): updates the world, returns an error or a talk reply. */
-  async act(action: GameAction): Promise<{ error: string | null; talk?: TalkResult }> {
+  async act(action: GameAction): Promise<{ error: string | null; talk?: TalkResult; negotiation?: NegotiationResult; message?: string }> {
     const r = (await this.call({ kind: "action", action })) as Extract<Response, { kind: "action" }>;
     this.set({ world: r.world });
-    return r.talk ? { error: r.error, talk: r.talk } : { error: r.error };
+    const out: { error: string | null; talk?: TalkResult; negotiation?: NegotiationResult; message?: string } = { error: r.error };
+    if (r.talk) out.talk = r.talk;
+    if (r.negotiation) out.negotiation = r.negotiation;
+    if (r.message) out.message = r.message;
+    return out;
   }
   async liveHalfTime(talk: TeamTalk): Promise<string> {
     return ((await this.call({ kind: "liveHalfTime", talk })) as Extract<Response, { kind: "liveHalfTime" }>).reaction;

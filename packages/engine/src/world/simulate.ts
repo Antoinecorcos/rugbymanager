@@ -17,6 +17,9 @@ import { afterClubMatch, captainTrust, teamMorale, teamTalkEffect, weeklyHuman, 
 import { isFragile, recordInjury } from "./medical.js";
 import { dailyTrainingRecovery, logMinutes, planOf, weeklyTraining } from "./training.js";
 import { weekday } from "./dates.js";
+import { boardAfterMatch, weeklyBoard } from "./board.js";
+import { fixtureFinances, monthlyFinances } from "./finances.js";
+import { dailyScouting, jiffCount, weeklyMarket } from "./market.js";
 import type { Fixture, PlayerSeasonStats, PlayerState, World } from "./types.js";
 
 /**
@@ -48,9 +51,13 @@ export const isFit = (ps: PlayerState, d: IsoDate): boolean => !isInjured(ps, d)
 export function advanceDay(w: World, played?: Record<string, PlayedFixture>): Fixture[] {
   const d = w.date;
   // Mondays: training week (automatisms, training injuries, development) and the squad's morale.
+  monthlyFinances(w);
+  dailyScouting(w);
   if (weekday(d) === 1) {
     weeklyTraining(w);
     weeklyHuman(w);
+    weeklyMarket(w);
+    weeklyBoard(w);
   }
   if (d === intakeDate(w)) academyIntake(w);
   for (const win of w.calendar.windows) if (win.start === d) callUps(w, win);
@@ -194,6 +201,11 @@ export function prepareFixture(w: World, f: Fixture): PreparedFixture {
     mine.morale = Math.max(0, Math.min(1, (mine.morale ?? 0.5) + effect.delta));
     teamTalk = { talk, reaction: effect.reaction };
   }
+  const press = w.manager?.press?.[f.id];
+  if (press && w.manager) {
+    const mine = f.home === w.manager.clubId ? home.team : away.team;
+    mine.morale = Math.max(0, Math.min(1, (mine.morale ?? 0.5) + press));
+  }
   const setup: MatchSetup = {
     home: home.team,
     away: away.team,
@@ -297,6 +309,17 @@ export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixt
     const days = recordInjury(w, st, d, inj.type, inj.days, inj.concussion);
     if (st.clubId && days >= 28) {
       w.news.push({ date: d, topic: "medical", clubs: [st.clubId], text: `${fullName(st.player)} (${w.clubs[st.clubId]!.name}) : ${inj.type.toLowerCase()}, environ ${Math.round(days / 7)} semaines d'absence.`, importance: 2 });
+    }
+  }
+  const m = w.manager;
+  if (m && (f.home === m.clubId || f.away === m.clubId)) {
+    const side = f.home === m.clubId ? 0 : 1;
+    fixtureFinances(w, f, res.winner === null ? null : res.winner === side);
+    boardAfterMatch(w, f);
+    if (m.press) delete m.press[f.id];
+    if (comp.kind === "league") {
+      const sheet = (side === 0 ? setup.home : setup.away).players.map((p) => p.id);
+      w.jiffLog = { sheets: (w.jiffLog?.sheets ?? 0) + 1, jiff: (w.jiffLog?.jiff ?? 0) + jiffCount(w, sheet) };
     }
   }
   if (comp.kind !== "international") {

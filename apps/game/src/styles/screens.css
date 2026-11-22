@@ -950,3 +950,48 @@
   grid-column: 1 / -1;
   align-items: start;
 }
+
+/* ---------- M6b: dialogs, money ---------- */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgb(5 7 10 / 0.6);
+}
+.dialog {
+  width: min(640px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: var(--sp-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+}
+.dialog__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-3); }
+.dialog__head h2 { margin: 0; font-family: var(--font-display); text-transform: uppercase; font-size: var(--fs-xl); }
+.icon-btn { background: none; border: 0; color: var(--text-2); cursor: pointer; padding: 4px; border-radius: 4px; }
+.icon-btn:hover { background: var(--surface-hover); color: var(--text); }
+.offer-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); }
+@media (max-width: 640px) { .offer-form { grid-template-columns: 1fr; } }
+.banner--good { border-color: var(--good); }
+.banner--warning { border-color: var(--warning); }
+.banner--critical { border-color: var(--critical); }
+.text-critical { color: var(--critical); font-weight: 600; }
+.text-good { color: var(--good); }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-4); }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.kpi { padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-lg); background: var(--surface-1); border: 1px solid var(--border); }
+.kpi__label { font-size: var(--fs-sm); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.kpi__value { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 600; }
+.kpi__sub { font-size: var(--fs-sm); color: var(--text-2); }
+.filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: end; padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border); }
+.filters .field { min-width: 140px; }
+.dismissed { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--sp-5); }
+.dismissed .modal-card { text-align: center; }
+
+.board-panel { margin-bottom: var(--sp-4); }

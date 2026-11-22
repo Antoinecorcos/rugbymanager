@@ -6,6 +6,8 @@
 import type { MatchTeam, TargetedInstructions, Weather } from "../domain/match-setup.js";
 import type { PenaltyRule } from "./live.js";
 import { initSquadRelations, type TeamTalk } from "./human.js";
+import { initBoard, type BoardState } from "./board.js";
+import { initFinances } from "./finances.js";
 import { SHIRT_POSITION, type Position } from "../domain/positions.js";
 import { DEFAULT_TACTICS, type Tactics } from "../domain/tactics.js";
 import { BENCH_LAYOUT, type BenchSplit } from "../gen/team-gen.js";
@@ -60,6 +62,14 @@ export interface ManagerState {
   autoSubs?: boolean;
   /** Pre-match team talk chosen in the preparation (fixture id → talk). */
   teamTalks?: Record<string, TeamTalk>;
+  /** President and board (M6b). */
+  board?: BoardState;
+  /** Manager's reputation 1–100 (attracts players). */
+  reputation?: number;
+  /** Sacked by the board: the career is over. */
+  dismissed?: { date: IsoDate; reason: string };
+  /** Press conference answered before a fixture (fixture id → morale effect for the match). */
+  press?: Record<string, number>;
 }
 
 export interface ReportTeam {
@@ -122,6 +132,9 @@ export function startCareer(w: World, profile: ManagerProfile, clubId: string): 
   w.reports ??= {};
   w.news.push({ date: w.date, topic: "club", clubs: [clubId], text: `${profile.name} est nommé manager de ${club.name}. Bienvenue !`, importance: 3 });
   initSquadRelations(w);
+  m.reputation = profile.start === "bigClub" ? 65 : 30;
+  initFinances(w);
+  initBoard(w);
   return m;
 }
 
@@ -316,7 +329,7 @@ export function recordReport(w: World, f: Fixture, teams: [MatchTeam, MatchTeam]
 
 // ------------------------------------------------------------------ continue
 
-export type StopReason = "matchDay" | "news" | "seasonEnd" | "limit";
+export type StopReason = "matchDay" | "news" | "seasonEnd" | "limit" | "dismissed";
 
 export interface ContinueResult {
   reason: StopReason;
@@ -341,6 +354,7 @@ export function continueCareer(w: World, maxDays = 60): ContinueResult {
   const end = addDays(w.calendar.end, 1);
   let days = 0;
   for (;;) {
+    if (m.dismissed) return { reason: "dismissed", days };
     if (w.date >= end) return { reason: "seasonEnd", days };
     const today = w.fixtures.find((f) => f.date === w.date && !f.result && (f.home === m.clubId || f.away === m.clubId));
     if (today) return { reason: "matchDay", days, fixture: today };

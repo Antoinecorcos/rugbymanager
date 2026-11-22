@@ -17,3 +17,8 @@ export * from "./training.js";
 export * from "./human.js";
 export * from "./academy.js";
 export * from "./extensions.js";
+export * from "./contracts.js";
+export * from "./finances.js";
+export * from "./board.js";
+export * from "./market.js";
+export * from "./press.js";

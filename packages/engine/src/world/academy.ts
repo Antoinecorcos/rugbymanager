@@ -11,6 +11,7 @@ import { ageOn, type IsoDate } from "./dates.js";
 import { humanOf } from "./human.js";
 import { newPlayerState } from "./nations.js";
 import { youthQuality } from "./staff.js";
+import { marketSalary, seasonEndYear } from "./contracts.js";
 import type { PlayerState, World } from "./types.js";
 
 /** Leagues with an academy, and the starting level (1–20) of their youngsters. */
@@ -97,6 +98,9 @@ export function promoteYouth(w: World, playerId: string): string | null {
   list.splice(list.indexOf(playerId), 1);
   delete ps.academy;
   (w.squads[m.clubId] ??= []).push(playerId);
+  // First professional contract: three seasons on the league's scale for his level.
+  const league = w.clubs[m.clubId]!.league;
+  ps.contract = { clubId: m.clubId, salary: marketSalary(ps, league, w.date), expires: seasonEndYear(w) + 3, estimated: false, status: "prospect" };
   humanOf(w, ps).status = "prospect";
   ps.human!.morale = Math.min(100, ps.human!.morale + 12);
   w.news.push({ date: w.date, topic: "academy", clubs: [m.clubId], text: `${ps.player.firstName} ${ps.player.lastName} (${ageOn(ps.player.birthDate, w.date)} ans) intègre l'effectif professionnel.`, importance: 1 });

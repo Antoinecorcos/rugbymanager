@@ -9,6 +9,12 @@ import {
   setIndividualTraining,
   setStatus,
   talkToPlayer,
+  answerPress,
+  book,
+  boardRequest,
+  hireStaff,
+  makeOffer,
+  scoutPlayer,
   type World,
 } from "@ovalie/engine";
 import type { GameAction } from "../game/protocol";
@@ -136,7 +142,7 @@ self.onmessage = async (ev: MessageEvent<Envelope<Request>>) => {
 };
 
 /** Runs a squad action of the manager on the world. */
-function act(w: World, a: GameAction): { error: string | null; talk?: Extract<ReturnType<typeof talkToPlayer>, { reaction: unknown }> } {
+function act(w: World, a: GameAction): { error: string | null; talk?: Extract<ReturnType<typeof talkToPlayer>, { reaction: unknown }>; negotiation?: Extract<ReturnType<typeof makeOffer>, { outcome: unknown }>; message?: string } {
   switch (a.type) {
     case "talk": {
       const r = talkToPlayer(w, a.playerId, a.talk);
@@ -157,5 +163,33 @@ function act(w: World, a: GameAction): { error: string | null; talk?: Extract<Re
       return { error: promoteYouth(w, a.playerId) };
     case "release":
       return { error: releaseYouth(w, a.playerId) };
+    case "scout":
+      return { error: scoutPlayer(w, a.playerId) };
+    case "offer": {
+      const r = makeOffer(w, a.playerId, a.offer);
+      return "error" in r ? { error: r.error } : { error: null, negotiation: r };
+    }
+    case "boardRequest": {
+      const r = boardRequest(w, a.kind);
+      return { error: null, message: r.text };
+    }
+    case "press": {
+      const f = w.fixtures.find((x) => x.id === a.fixtureId);
+      if (!f) return { error: "Match introuvable." };
+      return { error: null, message: answerPress(w, f, a.answers) };
+    }
+    case "hireStaff": {
+      const club = w.clubs[w.manager!.clubId]!;
+      const fin = club.finances;
+      const error = hireStaff(w, a.staffId, (label, amount) => {
+        if (fin && amount > fin.transferBudget) return false;
+        if (fin) {
+          book(w, fin, label, -amount, "transfers");
+          fin.transferBudget -= amount;
+        }
+        return true;
+      });
+      return { error };
+    }
   }
 }

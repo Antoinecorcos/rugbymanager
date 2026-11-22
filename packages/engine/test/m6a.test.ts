@@ -98,6 +98,7 @@ describe("staff and academies", () => {
     expect(promoteYouth(w, youth)).toBeNull();
     expect(w.squads.b).toContain(youth);
     expect(w.players[youth]!.human!.status).toBe("prospect");
+    expect(w.players[youth]!.contract!.salary).toBeGreaterThan(0);
     expect(promoteYouth(w, youth)).not.toBeNull();
   });
 });
