@@ -9,13 +9,15 @@ Avant toute tâche, lire :
 - `docs/04-moteur-de-match.md` — fonctionnement du moteur de match
 - `docs/05-donnees-reelles.md` — base réelle (sources, notation, overrides, validation)
 - `docs/06-monde-et-saison.md` — monde et saison (calendrier réel, formats, doublons, rotation) ; la partie démarre le 1er juillet 2026
+- `docs/07-interface.md` — interface manager (`apps/game`) : architecture worker, carrière dans le moteur, système de design, écrans
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.
 - Le moteur (`packages/engine`) reste du TypeScript pur, déterministe (RNG à graine), sans dépendance UI.
 - Toute modification du moteur de match doit garder les tests de calibrage au vert.
+- Interface (`apps/game`) : le worker possède le monde, l'interface ne fait que lire des instantanés ; la logique de jeu reste dans le moteur. Textes en français, tokens de `src/styles/tokens.css`, statuts toujours avec icône + libellé.
 - Données : `packages/data/raw` = faits importés, `overrides/` = corrections manuelles, `db/` = base générée (ne pas l'éditer à la main : `build-db`).
 
 Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`,
-`pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club id]`, `pnpm --filter @ovalie/data build-db`, `pnpm --filter @ovalie/data season TOP14 5`,
+`pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club id]`, `pnpm jeu` (interface), `pnpm build`, `pnpm --filter @ovalie/game smoke` (parcours Chromium, après build), `pnpm --filter @ovalie/data build-db`, `pnpm --filter @ovalie/data season TOP14 5`,
 imports : `import:fr`, `import:en`, `import:nationale`, `import:calendar`.

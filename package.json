@@ -9,7 +9,9 @@
     "typecheck": "pnpm -r typecheck",
     "sim": "pnpm --filter @ovalie/engine sim",
     "calibrate": "pnpm --filter @ovalie/engine calibrate",
-    "saison": "pnpm --filter @ovalie/data saison"
+    "saison": "pnpm --filter @ovalie/data saison",
+    "jeu": "pnpm --filter @ovalie/game dev",
+    "build": "pnpm --filter @ovalie/game build"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

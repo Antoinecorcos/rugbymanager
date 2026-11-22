@@ -27,7 +27,7 @@ docs/             → recherche, GDD, roadmap
 | **M1** ✅ | Moteur de match v1 (headless) | Simulation complète d'un match, stats de match, **calibrage sur les moyennes du Top 14** |
 | **M2** ✅ | Base de données réelle | Effectifs Top 14 + Pro D2 réels avec notes, puis PREM, URC et Nationale (voir `docs/05-donnees-reelles.md`) |
 | **M3** ✅ | Monde et saison | Calendrier réel, Top 14, Pro D2, Nationale et coupes d'Europe, phases finales, internationaux simulés, doublons ; départ au 1er juillet 2026 (voir `docs/06-monde-et-saison.md`) |
-| **M4** | Interface manager | Design system, accueil, effectif, fiche joueur, tactique, préparation de match, calendrier, classements |
+| **M4** ✅ | Interface manager | Design system, accueil, effectif, fiche joueur, tactique, préparation de match, calendrier, classements (voir `docs/07-interface.md`) |
 | **M5** | Match en 2D en direct | Vue PixiJS, consignes, remplacements, **décisions de pénalité + désobéissance** |
 | **M6** | Management profond | Transferts et agents, contrats, salary cap/JIFF, finances, président, presse, moral, entraînement, médical, formation, scouting |
 | **M7** | Match en 3D | Three.js, modèles et animations, caméras TV |

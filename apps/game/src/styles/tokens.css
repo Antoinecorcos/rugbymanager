@@ -1,0 +1,66 @@
+/*
+ * Design tokens — Ovalie Manager (docs/07-interface.md).
+ * Dark theme only (GDD §8). The accent comes from the manager's club colours (set at runtime on :root).
+ */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces, from the page background to raised elements. */
+  --bg: #0d1015;
+  --surface-1: #161a20;
+  --surface-2: #1d222a;
+  --surface-3: #262c36;
+  --surface-hover: #2b323d;
+  --border: #2a313c;
+  --border-strong: #3a4350;
+
+  /* Ink. */
+  --text: #eef0f3;
+  --text-2: #aeb6c2;
+  --text-3: #7c8696;
+  --text-disabled: #555e6b;
+
+  /* Club accent (overridden by the club colours). */
+  --accent: #3987e5;
+  --accent-ink: #0b0d10;
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --club-secondary: #ffffff;
+
+  /* Data: "us" vs "them" (validated pair, dark surface), magnitude ramp. */
+  --us: #3987e5;
+  --them: #d95926;
+  --ramp-low: #184f95;
+  --ramp-high: #86b6ef;
+
+  /* Status (always with an icon and a label). */
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  /* Type. */
+  --font-body: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+  --fs-xl: 20px;
+  --fs-2xl: 28px;
+  --fs-3xl: 44px;
+
+  /* Space and shape. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+
+  --sidebar-w: 228px;
+  --topbar-h: 64px;
+}

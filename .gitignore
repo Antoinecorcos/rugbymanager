@@ -6,3 +6,4 @@ coverage/
 .vite/
 .cache/
 packages/data/scripts/dev/
+.smoke/
