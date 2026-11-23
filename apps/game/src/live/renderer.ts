@@ -4,12 +4,30 @@
  * x along the pitch (home try line at 0, in-goals to -10 / 110), y across (0..70).
  */
 import { Application, Container, Graphics, Text } from "pixi.js";
-import type { Vec } from "@ovalie/engine";
+import type { PlayKind, Vec } from "@ovalie/engine";
 
 export interface TeamColours {
   fill: string;
   ink: string;
   ring: string;
+}
+
+/** The action being shown (used by the 3D view for gestures and camera shots). */
+export interface FrameAction {
+  kind: PlayKind;
+  detail?: string;
+  /** Team acting / in possession. */
+  side: 0 | 1;
+  /** "setup": dead time before the action (set pieces); "action": the action; "done": it has ended. */
+  phase: "setup" | "action" | "done";
+  /** Progress within the phase, 0..1. */
+  t: number;
+  /** Ball path of the action. */
+  from: Vec;
+  to: Vec;
+  inAir: boolean;
+  /** Apex height of a kick (metres). */
+  apex: number;
 }
 
 export interface Frame {
@@ -18,6 +36,17 @@ export interface Frame {
   /** Ball height above the ground (metres). */
   height: number;
   carrier?: { side: 0 | 1; slot: number };
+  action?: FrameAction;
+}
+
+/** What the live screen needs from a pitch view (2D PixiJS or 3D Three.js). */
+export interface LiveView {
+  onTick(fn: (deltaMs: number) => void): void;
+  setFollow(on: boolean): void;
+  /** Shirt numbers (and names) of the players in each slot. */
+  setNumbers(side: 0 | 1, numbers: (number | null)[], names?: (string | null)[]): void;
+  render(frame: Frame): void;
+  destroy(): void;
 }
 
 const PITCH = { x0: -10, x1: 110, y0: 0, y1: 70 };
@@ -34,7 +63,7 @@ interface Token {
   number: number;
 }
 
-export class PitchRenderer {
+export class PitchRenderer implements LiveView {
   private app: Application;
   private world = new Container();
   private tokens: [Token[], Token[]] = [[], []];

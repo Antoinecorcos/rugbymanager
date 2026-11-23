@@ -4,7 +4,7 @@
  * penalty decision with a 10-second countdown.
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { Flag, Pause, Play, Maximize2, Minimize2, X, Timer, Repeat, ArrowRight } from "lucide-react";
+import { Flag, Pause, Play, Maximize2, Minimize2, X, Timer, Repeat, ArrowRight, Box, Square } from "lucide-react";
 import {
   commentaryFr,
   TACTIC_LABEL_FR,
@@ -26,7 +26,8 @@ import { clubAccent, contrast, fmt1, stageFr, WEATHER_FR } from "../game/format"
 import { navigate } from "../game/router";
 import { competitionName } from "../game/selectors";
 import { LivePlayer } from "../live/player";
-import { PitchRenderer, type TeamColours } from "../live/renderer";
+import { PitchRenderer, type LiveView, type TeamColours } from "../live/renderer";
+import type { CameraMode } from "../live3d/director";
 import { formatClock, VIEW_MODES, type ViewMode } from "../live/timeline";
 import { Badge, Button, ClubCrest, CompareLegend, CompareRow, Segmented, Tabs } from "../ui/components";
 import { PenaltyRulesEditor, rulesOf, TargetsEditor } from "../ui/instructions";
@@ -122,7 +123,9 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
   const [toast, setToast] = useState<string | null>(null);
   const [tab, setTab] = useState<"comment" | "stats" | "players" | "orders">("comment");
   const [ending, setEnding] = useState(false);
-  const rendererRef = useRef<PitchRenderer | null>(null);
+  const rendererRef = useRef<LiveView | null>(null);
+  const [view3d, setView3d] = useState(readView3d);
+  const [camera, setCamera] = useState<CameraMode>("tv");
   const fetching = useRef(false);
   const flags = useRef({ decision: false, finished: false, halfTime: false });
   const [halfTime, setHalfTime] = useState<[number, number] | null>(null);
@@ -176,14 +179,37 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
     return () => window.clearInterval(id);
   }, [player]);
 
-  // Pitch renderer.
+  // Pitch renderer: 3D (Three.js, loaded on demand) or 2D (PixiJS).
   useEffect(() => {
-    let r: PitchRenderer | null = null;
+    let r: LiveView | null = null;
     let alive = true;
-    void PitchRenderer.create(host.current!, colours).then((created) => {
+    const make = async (): Promise<LiveView> => {
+      if (view3d) {
+        try {
+          const m = await import("../live3d/renderer3d");
+          if (m.webglAvailable()) {
+            const three = await m.Match3DRenderer.create(host.current!, {
+              colours,
+              clubColours: [info.teams[0].colors, info.teams[1].colors],
+              weather: info.weather,
+              boards: competitionName(w, info.competitionId),
+            });
+            three.setCamera(camera);
+            return three;
+          }
+        } catch (e) {
+          console.warn("Vue 3D indisponible", e);
+        }
+        say("Vue 3D indisponible sur cet appareil : affichage en 2D.");
+        setView3d(false);
+      }
+      return PitchRenderer.create(host.current!, colours);
+    };
+    void make().then((created) => {
       if (!alive) return created.destroy();
       r = created;
       rendererRef.current = created;
+      created.setFollow(follow);
       let shownLineup: unknown = null;
       created.onTick((ms) => {
         player.tick(ms);
@@ -191,7 +217,10 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
         const lineup = player.view.lineup;
         if (lineup !== shownLineup) {
           shownLineup = lineup;
-          for (const side of [0, 1] as const) created.setNumbers(side, lineup[side].map((id) => (id ? (info.teams[side].players.find((p) => p.id === id)?.shirt ?? null) : null)));
+          for (const side of [0, 1] as const) {
+            const on = lineup[side].map((id) => (id ? info.teams[side].players.find((p) => p.id === id) : undefined));
+            created.setNumbers(side, on.map((p) => p?.shirt ?? null), on.map((p) => p?.short ?? null));
+          }
         }
         created.render(player.currentFrame());
       });
@@ -201,9 +230,19 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
       r?.destroy();
       rendererRef.current = null;
     };
-  }, [player, colours, info]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, colours, info, view3d]);
 
   useEffect(() => rendererRef.current?.setFollow(follow), [follow]);
+  useEffect(() => {
+    const r = rendererRef.current as (LiveView & { setCamera?: (m: CameraMode) => void }) | null;
+    r?.setCamera?.(camera);
+  }, [camera]);
+  const toggleView = () => {
+    const next = !view3d;
+    writeView3d(next);
+    setView3d(next);
+  };
 
   const setMode = (m: ViewMode) => {
     player.mode = m;
@@ -326,6 +365,15 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
           <Button size="sm" variant="secondary" onClick={togglePause} icon={paused ? <Play size={14} /> : <Pause size={14} />} title={paused ? "Reprendre" : "Pause"}>
             {paused ? "Reprendre" : "Pause"}
           </Button>
+          <Button size="sm" variant="ghost" onClick={toggleView} icon={view3d ? <Square size={14} /> : <Box size={14} />} title={view3d ? "Passer à la vue 2D (plus légère)" : "Passer à la vue 3D"}>
+            {view3d ? "Vue 2D" : "Vue 3D"}
+          </Button>
+          {view3d && follow && (
+            <select className="select select--sm" value={camera} onChange={(e) => setCamera(e.target.value as CameraMode)} aria-label="Caméra">
+              <option value="tv">Réalisation TV</option>
+              <option value="high">Caméra haute</option>
+            </select>
+          )}
           <Button size="sm" variant="ghost" onClick={() => setFollow((f) => !f)} icon={follow ? <Maximize2 size={14} /> : <Minimize2 size={14} />} title={follow ? "Voir tout le terrain" : "Suivre le ballon"}>
             {follow ? "Terrain entier" : "Suivre le jeu"}
           </Button>
@@ -678,4 +726,22 @@ function OrdersPanel({ info, control, setControl, w, lineup }: { info: LiveInfo;
       </div>
     </div>
   );
+}
+
+/* ------------------------------------------------------------------ 2D / 3D preference */
+
+const VIEW_KEY = "ovalie:vue3d";
+function readView3d(): boolean {
+  try {
+    return localStorage.getItem(VIEW_KEY) !== "0";
+  } catch {
+    return true;
+  }
+}
+function writeView3d(on: boolean): void {
+  try {
+    localStorage.setItem(VIEW_KEY, on ? "1" : "0");
+  } catch {
+    /* préférence non enregistrée */
+  }
 }

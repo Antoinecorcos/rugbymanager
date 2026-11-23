@@ -62,7 +62,7 @@ Interface (apps/game)
 
 - **La trace ne change jamais le match.** Elle est enregistrée sans tirer aucun nombre aléatoire. Un test le vérifie sur 30 matchs, avec un résultat identique avec ou sans trace.
 - **Le direct est fidèle au moteur calibré.** Un match en direct où l'on suit toujours le conseil du staff donne **exactement** le même résultat qu'un match simulé d'un coup (test `apps/game/test/live.test.ts`).
-- **Couche spatiale** : elle illustre la simulation sans jamais la nourrir. Elle couvre la ligne de défense (déchirée quand l'organisation défensive est basse), le système en pods 1-3-3-1 en attaque, la mêlée, l'alignement en touche, le maul, la chasse et la réception des coups de pied, les renvois, les essais et les tirs au but. Elle est déterministe et servira aussi à la 3D (M7).
+- **Couche spatiale** : elle illustre la simulation sans jamais la nourrir. Elle couvre la ligne de défense (déchirée quand l'organisation défensive est basse), le système en pods 1-3-3-1 en attaque, la mêlée, l'alignement en touche, le maul, la chasse et la réception des coups de pied, les renvois, les essais et les tirs au but. Elle est déterministe et alimente aussi la vue 3D (M7).
 - **Pas de divulgation** : statistiques, score et commentaire ne montrent que les actions déjà affichées.
 - **Pas de sauvegarde en cours de match** : un match quitté par fermeture de l'onglet est rejoué depuis le coup d'envoi (même graine). « Quitter » fait terminer le match par le staff et l'enregistre.
 
@@ -74,5 +74,5 @@ Interface (apps/game)
 
 ## Limites et suites
 - ~~Confiance du capitaine fixe ; causeries~~ : faits en M6a. La mi-temps du direct s'arrête pour la causerie.
-- Les positions sont **plausibles, pas simulées** : le moteur reste un moteur par phases. Un joueur peut « glisser » d'un placement à l'autre ; la 3D (M7) reprendra cette couche avec des animations.
+- Les positions sont **plausibles, pas simulées** : le moteur reste un moteur par phases. Un joueur peut « glisser » d'un placement à l'autre. La vue 3D (M7, `docs/12-match-3d.md`) reprend cette couche avec des gestes animés.
 - Les nations hors Nations Championship et Tournoi ne jouent toujours pas leurs matchs (M3).

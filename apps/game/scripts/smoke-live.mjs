@@ -52,8 +52,23 @@ try {
   // Full match view for a few seconds.
   await page.getByRole("radio", { name: "Match complet" }).click().catch(() => page.getByText("Match complet").click());
   await page.waitForTimeout(6000);
+  await shot("60-direct-3d-realisation-tv");
+  step(`vue 3D, réalisation TV — ${await clock()}`);
+  // 3D cameras (M7): high camera, whole pitch, then the 2D view and back to 3D.
+  await page.getByLabel("Caméra").selectOption("high");
+  await page.waitForTimeout(2500);
+  await shot("61-direct-3d-camera-haute");
+  await page.getByLabel("Caméra").selectOption("tv");
+  await page.getByRole("button", { name: "Terrain entier" }).click();
+  await page.waitForTimeout(2500);
+  await shot("62-direct-3d-terrain-entier");
+  await page.getByRole("button", { name: "Suivre le jeu" }).click();
+  await page.getByRole("button", { name: "Vue 2D" }).click();
+  await page.waitForTimeout(2500);
   await shot("21-direct-match-complet");
-  step(`vue TV — ${await clock()}`);
+  await page.getByRole("button", { name: "Vue 3D" }).click();
+  await page.locator(".live canvas").waitFor();
+  step("caméras 3D et vue 2D");
 
   // Penalty decision: speed up until the modal shows, answer it.
   await page.getByRole("radio", { name: "×4" }).click().catch(() => page.getByText("×4", { exact: true }).click());

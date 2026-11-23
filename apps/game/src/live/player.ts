@@ -3,7 +3,7 @@
  * pitch (or skips them in the highlight modes) and tells the screen what has been shown.
  */
 import { lineupAfter, stepPoses, type LiveChunk, type LiveSnapshot, type Lineup, type MatchEvent, type PlayStep, type StepPoses, type Vec } from "@ovalie/engine";
-import type { Frame } from "./renderer";
+import type { Frame, FrameAction } from "./renderer";
 import { clockAt, isHighlight, LEAD_UP, smooth, stepTiming, type ViewMode } from "./timeline";
 
 export interface PlaybackView {
@@ -162,7 +162,7 @@ export class LivePlayer {
     const poses = this.poses(i, this.lineup);
     this.lastPlayers = poses.end.players;
     this.lastBall = poses.end.ball;
-    this.frame = { players: poses.end.players, ball: poses.end.ball, height: 0 };
+    this.frame = { players: poses.end.players, ball: poses.end.ball, height: 0, action: actionOf(step, poses, "done", 1) };
     this.finishStep(i);
   }
 
@@ -173,7 +173,7 @@ export class LivePlayer {
     const t = total > 0 ? Math.min(1, this.elapsed / total) : 1;
     if (this.phase === "setup") {
       const s = smooth(t);
-      this.frame = { players: lerpPlayers(c.start, poses.setup!.players, s), ball: lerpVec(c.startBall, poses.ball.from, s), height: 0 };
+      this.frame = { players: lerpPlayers(c.start, poses.setup!.players, s), ball: lerpVec(c.startBall, poses.ball.from, s), height: 0, action: actionOf(this.steps[this.cursor]!, poses, "setup", t) };
     } else {
       const from = poses.setup?.players ?? c.start;
       const s = smooth(t);
@@ -188,7 +188,8 @@ export class LivePlayer {
         const list = players[poses.carrier.side];
         if (list[poses.carrier.slot - 1]) list[poses.carrier.slot - 1] = poses.inAir ? lerpVec(b.from, poses.end.players[poses.carrier.side][poses.carrier.slot - 1] ?? b.from, smooth(Math.max(0, t - 0.25) / 0.75)) : ball;
       }
-      this.frame = poses.carrier ? { players, ball, height, carrier: poses.carrier } : { players, ball, height };
+      const action = actionOf(this.steps[this.cursor]!, poses, "action", t);
+      this.frame = poses.carrier ? { players, ball, height, carrier: poses.carrier, action } : { players, ball, height, action };
     }
     const step = this.steps[this.cursor]!;
     const fullT = this.phase === "setup" ? 0 : t;
@@ -201,6 +202,7 @@ export class LivePlayer {
 
   private complete(): void {
     const c = this.current!;
+    if (this.frame.action) this.frame = { ...this.frame, action: { ...this.frame.action, phase: "done", t: 1 } };
     this.lastPlayers = c.poses.end.players;
     this.lastBall = c.poses.end.ball;
     this.current = null;
@@ -233,4 +235,10 @@ export class LivePlayer {
     }
     this.notify();
   }
+}
+
+function actionOf(step: PlayStep, poses: StepPoses, phase: FrameAction["phase"], t: number): FrameAction {
+  const a: FrameAction = { kind: step.kind, side: step.side, phase, t, from: poses.ball.from, to: poses.ball.to, inAir: poses.inAir, apex: poses.ball.height };
+  if (step.detail) a.detail = step.detail;
+  return a;
 }

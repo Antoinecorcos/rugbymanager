@@ -513,3 +513,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 3D view (M7): caption above the ball carrier, compact camera selector. */
+.live3d-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(10, 13, 18, 0.78);
+  color: #fff;
+  font: 600 13px/1.4 "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-left: 3px solid var(--accent);
+}
+.live3d-tag[data-side="1"] { border-left-color: var(--warning); }
+.select--sm { height: 30px; padding-top: 0; padding-bottom: 0; font-size: var(--fs-sm, 13px); }
