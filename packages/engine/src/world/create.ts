@@ -29,11 +29,12 @@ export function createWorld(setup: WorldSetup): World {
   };
   for (const c of setup.clubs) {
     const { squad, ...club } = c;
-    w.clubs[c.id] = club;
+    w.clubs[c.id] = structuredClone(club);
     w.squads[c.id] = squad.map((e) => e.player.id);
     for (const e of squad) {
-      const ps = newPlayerState(e.player, c.id, e.caps);
-      if (e.profile) ps.profile = e.profile;
+      // The world owns its players: the database stays untouched (a second career starts afresh).
+      const ps = newPlayerState(structuredClone(e.player), c.id, e.caps);
+      if (e.profile) ps.profile = structuredClone(e.profile);
       w.players[e.player.id] = ps;
     }
   }

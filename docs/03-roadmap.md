@@ -16,7 +16,7 @@ Monorepo **pnpm** :
 packages/engine   → simulation (match, saison, transferts, finances)
 packages/data     → schémas + base réelle + pipeline de notation
 apps/game         → interface React + rendus 2D/3D
-apps/desktop      → wrapper Tauri (plus tard)
+apps/desktop      → application de bureau Tauri (M8)
 docs/             → recherche, GDD, roadmap
 ```
 
@@ -33,7 +33,7 @@ docs/             → recherche, GDD, roadmap
 | **M6b** ✅ | Argent et marché | Contrats estimés, salary cap et JIFF, finances, président (objectifs, confiance, licenciement), marché à la française (pré-contrats, rachats, joker médical, prolongations, IA), supervision, presse, recrutement du staff (voir `docs/10-argent-et-marche.md`) |
 | **M6c** ✅ | Saison suivante | Passage à 2027-2028 et au-delà : verdict du président, sanction JIFF, arrivées et départs du 1er juillet, fins de contrat, retraites, centres de formation, montées et descentes (Nationale 2 fictive), calendrier généré avec la Coupe du monde 2027 et ses jokers, nouveaux objectifs, offres d'emploi (voir `docs/11-saison-suivante.md`) |
 | **M7** ✅ | Match en 3D | Three.js : stade, public, joueurs articulés aux couleurs des clubs, gestes (mêlée, touche, ruck, plaquage, coup de pied, essai), arbitre, météo, réalisation TV automatique, caméra haute, bascule 2D/3D (voir `docs/12-match-3d.md`) |
-| **M8** | Finitions | Sauvegardes, éditeur, application desktop Tauri, équilibrage |
+| **M8** ✅ | Finitions | Sauvegardes multiples et fichiers `.ovalie`, éditeur de joueurs et de clubs (corrections réinjectables dans la base), application de bureau Tauri, équilibrage sur plusieurs saisons (voir `docs/13-finitions.md`) |
 | Plus tard | Extensions | Mode international, PREM et URC jouables, rugby féminin |
 
 Le **moteur de match passe avant les données** : on le calibre sur des équipes réalistes générées, puis la vraie base vient se brancher dessus.

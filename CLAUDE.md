@@ -15,6 +15,7 @@ Avant toute tâche, lire :
 - `docs/10-argent-et-marche.md` — argent et marché (M6b) : contrats estimés, salary cap, JIFF, finances, président, transferts, supervision, presse
 - `docs/11-saison-suivante.md` — saison suivante (M6c) : bilan et verdict du président, passage au 1er juillet, montées et descentes, calendrier généré (Coupe du monde 2027), offres d'emploi
 - `docs/12-match-3d.md` — match en 3D (M7) : rendu Three.js, gestes, réalisation TV, stade procédural
+- `docs/13-finitions.md` — finitions (M8) : sauvegardes et fichiers .ovalie, éditeur, application de bureau Tauri, équilibrage
 
 Conventions :
 - Documentation et textes du jeu en français ; code et identifiants en anglais.
@@ -24,6 +25,7 @@ Conventions :
 - Monde : toute nouvelle partie de l'état du monde doit être complétée par `ensureWorldExtensions` (migration des sauvegardes, idempotente).
 - Données : `packages/data/raw` = faits importés, `overrides/` = corrections manuelles, `db/` = base générée (ne pas l'éditer à la main : `build-db`).
 
-Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`,
+Commandes : `pnpm install`, `pnpm test`, `pnpm typecheck`, `pnpm sim <graine>`, `pnpm calibrate 1000`, `pnpm equilibrage [graines] [saisons] [club]`,
 `pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club id] [--saisons N]`, `pnpm jeu` (interface), `pnpm build`, `pnpm --filter @ovalie/game smoke`, `smoke:live`, `smoke:club`, `smoke:market` et `smoke:season` (parcours Chromium, après build), `pnpm --filter @ovalie/data build-db`, `pnpm --filter @ovalie/data season TOP14 5`,
-imports : `import:fr`, `import:en`, `import:nationale`, `import:calendar`.
+imports : `import:fr`, `import:en`, `import:nationale`, `import:calendar` ; corrections de l'éditeur : `pnpm --filter @ovalie/data import-edits <fichier>`.
+Application de bureau (Tauri 2, `apps/desktop`) : `pnpm bureau` (développement), `pnpm bureau:build` (installeurs ; Rust et, sous Linux, WebKitGTK 4.1 requis).

@@ -11,7 +11,10 @@
     "calibrate": "pnpm --filter @ovalie/engine calibrate",
     "saison": "pnpm --filter @ovalie/data saison",
     "jeu": "pnpm --filter @ovalie/game dev",
-    "build": "pnpm --filter @ovalie/game build"
+    "build": "pnpm --filter @ovalie/game build",
+    "equilibrage": "pnpm --filter @ovalie/data equilibrage",
+    "bureau": "pnpm --filter @ovalie/desktop dev",
+    "bureau:build": "pnpm --filter @ovalie/desktop build"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

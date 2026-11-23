@@ -67,7 +67,7 @@ L'effet sur le moral du match va de −0,05 à +0,08 et dépend du contexte : fa
 
 ## Centre de formation (GDD §6.7) — `world/academy.ts`
 - **Composition** : chaque club de Top 14, Pro D2 et Nationale a 9 à 12 espoirs **fictifs** de 17 à 20 ans, tous JIFF, français à 90 %.
-- **Potentiel** : la plupart plafonneront en Pro D2 ou en Nationale ; environ 2 par club ont un potentiel de Top 14.
+- **Potentiel** : la plupart plafonneront en Pro D2 ou en Nationale ; environ 2 par club ont un potentiel de Top 14. Depuis M8, les centres de Pro D2 et surtout de Nationale forment des espoirs au potentiel plus modeste.
 - **Journée des espoirs** (16 mars) : 3 à 6 jeunes de 17 ans arrivent, avec l'avis du responsable de la formation.
 - **Décisions du manager** : **intégrer un jeune à l'effectif** (statut Espoir, moral en hausse) ou le libérer.
 

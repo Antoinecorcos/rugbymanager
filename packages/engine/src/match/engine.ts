@@ -127,6 +127,9 @@ export interface MatchOptions {
   trace?: boolean;
 }
 
+/** Spread of a team's collective form of the day (share of its attributes). */
+export const TEAM_FORM_SD = 0.028;
+
 export class MatchSimulation {
   readonly setup: MatchSetup;
   private rng: Rng;
@@ -165,6 +168,12 @@ export class MatchSimulation {
   private lineupSig = "";
   private pendingSubs: { side: Side; offId: string; onId: string }[] = [];
   private autoSubs: [boolean, boolean] = [true, true];
+  /**
+   * Collective form of the day for each team (M8 balancing): rugby has "days without" for a whole
+   * team, which per-player form alone averages out. In knock-out matches, the starters' composure
+   * in big matches adds to it.
+   */
+  private teamForm: [number, number] = [0, 0];
 
   constructor(setup: MatchSetup, options: MatchOptions = {}) {
     this.setup = setup;
@@ -172,6 +181,11 @@ export class MatchSimulation {
     this.rng = new Rng(setup.seed);
     this.teams = [this.initTeam(0, setup.home), this.initTeam(1, setup.away)];
     this.firstKicker = this.rng.chance(0.5) ? 0 : 1;
+    for (const side of [0, 1] as const) {
+      const xv = this.teams[side].slots.filter((fp): fp is FieldPlayer => !!fp);
+      const bigMatches = xv.reduce((s, fp) => s + fp.p.hidden.bigMatches, 0) / Math.max(1, xv.length);
+      this.teamForm[side] = clamp(this.rng.normal(0, TEAM_FORM_SD), -0.07, 0.07) + (setup.knockout ? (bigMatches - 10) * 0.004 : 0);
+    }
     this.next = { kind: "kickoff", side: this.firstKicker };
     this.emit("kickoff", { side: this.firstKicker, importance: 2, detail: { start: true } });
   }
@@ -570,7 +584,7 @@ export class MatchSimulation {
     const famF = 0.82 + 0.18 * (fam / 20);
     const side = this.sideOf(fp);
     const team = this.teams[side].team;
-    const home = side === 0 && !this.setup.neutral ? 1.035 : 1;
+    const home = side === 0 && !this.setup.neutral ? 1.042 : 1;
     const morale = 1 + ((team.morale ?? 0.5) - 0.5) * 0.1;
     const unit = UNIT_OF[key];
     const sharp = unit && team.sharpness?.[unit] !== undefined ? 1 + (team.sharpness[unit]! - 0.5) * 0.1 : 1;
@@ -579,7 +593,7 @@ export class MatchSimulation {
     let scoreF = lead > 12 ? 1 - Math.min(0.05, (lead - 12) * 0.004) : lead < -12 ? 1 + Math.min(0.025, (-lead - 12) * 0.002) : 1;
     // Last quarter of a close game: the trailing side chases the win (or the losing bonus), the leader manages.
     if (this.period === 2 && this.clock > LATE_GAME && lead !== 0 && Math.abs(lead) <= 12) scoreF *= lead < 0 ? 1 + CLOSE_GAME_PUSH : 1 - CLOSE_GAME_PUSH / 2;
-    return base * fatigue * (1 + fp.form) * famF * home * morale * sharp * scoreF;
+    return base * fatigue * (1 + fp.form + this.teamForm[side]) * famF * home * morale * sharp * scoreF;
   }
 
   private sideOf(fp: FieldPlayer): Side {

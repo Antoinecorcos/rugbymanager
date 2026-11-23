@@ -16,6 +16,8 @@ import type { PlayerState, World } from "./types.js";
 
 /** Leagues with an academy, and the starting level (1–20) of their youngsters. */
 const ACADEMY_LEVEL: Record<string, number> = { TOP14: 9.2, PROD2: 8.6, NATIONALE: 8.0 };
+/** Average potential above the starting level, per league. */
+const ACADEMY_HEADROOM: Record<string, number> = { TOP14: 2.5, PROD2: 1.9, NATIONALE: 1.1 };
 
 const POSITIONS: Position[] = ["LH", "HK", "TH", "LO", "LO", "BF", "OF", "N8", "SH", "FH", "IC", "OC", "WG", "WG", "FB"];
 
@@ -39,7 +41,10 @@ function makeYouth(w: World, clubId: string, n: number, rng: Rng, age?: number):
   });
   // Potential: most youngsters stay at Pro D2 / Nationale level, a few become internationals.
   const talent = rng.normal(0, 1) + (quality - 10) * 0.08;
-  const potentialLevel = clamp(level + 2.5 + talent * 1.6 + (youthAge <= 18 ? 0.8 : 0), level + 0.5, 18.5);
+  // Smaller clubs rarely train top-level players (M8 balancing: Nationale academies made the
+  // league stronger every season).
+  const headroom = ACADEMY_HEADROOM[club.league] ?? 2;
+  const potentialLevel = clamp(level + headroom + talent * 1.6 + (youthAge <= 18 ? 0.8 : 0), level + 0.5, 18.5);
   player.currentAbility = Math.round(clamp(level * 10, 40, 200));
   player.potentialAbility = Math.round(potentialLevel * 10);
   const ps = newPlayerState(player, clubId, 0);

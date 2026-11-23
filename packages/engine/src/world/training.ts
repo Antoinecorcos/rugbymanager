@@ -148,8 +148,11 @@ export function weeklyAbilityChange(ps: PlayerState, d: IsoDate, club: WorldClub
   const intensity = plan.intensity === "intense" ? 1.15 : plan.intensity === "light" ? 0.85 : 1;
   const coach = 0.8 + (unitCoachQuality(club, "development") / 20) * 0.4;
   const pro = 0.75 + (p.hidden.professionalism / 20) * 0.5;
+  // Elite level (14.5+ on the 1–20 scale): every tenth of a point is harder to gain (M8 balancing,
+  // otherwise most young internationals reached their estimated potential within three seasons).
+  const elite = ca > 145 ? clamp(1 - (ca - 145) / 20, 0.15, 1) : 1;
   // Academy players: the academy manager matters more than the first-team staff.
-  return gap * rate * experience * intensity * coach * pro;
+  return gap * rate * experience * intensity * coach * pro * elite;
 }
 
 /** Spreads a change of ability over the attributes (key attributes and the training focus first). */

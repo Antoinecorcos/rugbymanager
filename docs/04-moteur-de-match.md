@@ -14,6 +14,7 @@ faute → pénalité → décision (points / touche / mêlée / jouer vite) → 
 
 ## Ce qui décide d'une action
 - **Attributs effectifs** = note × fatigue × forme du jour × familiarité au poste × domicile (sauf terrain neutre) × moral × effet du score (relâchement quand on mène largement, rage quand on est mené ; dans le dernier quart d'heure d'un match serré, l'équipe menée pousse et celle qui mène gère).
+- **Forme du jour** (M8) : celle de chaque joueur (selon sa régularité), plus une **forme collective** de l'équipe (écart type 2,8 %), et en phase finale le **sang-froid dans les grands matchs** des titulaires. L'avantage du terrain vaut +4,2 % sur les attributs. Le favori peut donc passer à travers : sans forme collective, Toulouse gagnait le Top 14 à chaque saison.
 - **Morphologie** : le poids et la taille entrent dans la mêlée, le maul, la touche et les contacts.
 - **Organisation défensive** (0 à 1) : chute après un ruck rapide ou un franchissement, remonte sur un ballon lent ou une phase statique. C'est elle qui crée les brèches.
 - **Tactiques** : forme d'attaque, jeu au pied, tempo, offloads, défense (glissée ou rush), contestation des rucks, touche (maul ou ballon rapide), intention en mêlée.

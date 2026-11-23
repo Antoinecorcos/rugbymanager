@@ -74,7 +74,9 @@ try {
   await page.getByRole("radio", { name: "×4" }).click().catch(() => page.getByText("×4", { exact: true }).click());
   await page.locator(".decision").waitFor({ timeout: 240000 });
   await shot("22-direct-decision-penalite");
-  await page.locator(".decision__option").first().click();
+  // Keyboard shortcut (keys 1 to 4): under software WebGL, Playwright never sees the button "stable".
+  await page.keyboard.press("1");
+  await page.locator(".decision").waitFor({ state: "detached", timeout: 30000 });
   step("décision de pénalité");
 
   // Substitution + live tactics.
@@ -102,7 +104,7 @@ try {
       if (!countdownSeen) {
         countdownSeen = true;
         await page.waitForTimeout(11000); // let the 10 s countdown apply the staff's advice
-      } else await page.locator(".decision__option").first().click();
+      } else await page.keyboard.press("1");
     }
     await page.waitForTimeout(250);
   }

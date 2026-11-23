@@ -286,7 +286,8 @@ function completeSquad(w: World, clubId: string, rng: Rng, size: number, year: n
     const pos = needs[0]![0];
     const fa = (w.freeAgents ?? [])
       .map((id) => w.players[id]!)
-      .filter((ps) => ps && bestPosition(ps) === pos && Math.abs(playerLevel(ps.player) - bar) <= 1.5 && ageOn(ps.player.birthDate, `${year}-07-01`) <= 33)
+      // A club signs free agents of its own standing (better ones look for a bigger club).
+      .filter((ps) => ps && bestPosition(ps) === pos && playerLevel(ps.player) >= bar - 1.5 && playerLevel(ps.player) <= bar + 0.6 && ageOn(ps.player.birthDate, `${year}-07-01`) <= 33)
       .sort((a, b) => playerLevel(b.player) - playerLevel(a.player))[0];
     if (fa) {
       const contract: Contract = { clubId, salary: Math.round((marketSalary(fa, club.league, `${year}-07-01`) * 0.9) / 1000) * 1000, expires: year + 1 + rng.int(0, 1), estimated: true };
@@ -340,6 +341,21 @@ export function startNextSeason(w: World): RolloverReport {
     if (mv.club === mine) news.push({ clubs: [mv.club], importance: 3, text: up ? `${club.name} évolue désormais en ${leagueName(mv.to)} (${mv.reason}) !` : `${club.name} est relégué en ${leagueName(mv.to)} (${mv.reason}).` });
   }
   record.movements = moves.movements;
+  // Relegation clauses: an AI club that goes down loses some of its best players (M8 balancing).
+  for (const mv of moves.movements) {
+    if (mv.club === mine || LEVELS.indexOf(mv.to) <= LEVELS.indexOf(mv.from)) continue;
+    const ids = [...(w.squads[mv.club] ?? [])].sort((a, b) => playerLevel(w.players[b]!.player) - playerLevel(w.players[a]!.player)).slice(0, 8);
+    for (const id of ids) {
+      if (!rng.chance(0.5)) continue;
+      const ps = w.players[id]!;
+      const sq = w.squads[mv.club]!;
+      sq.splice(sq.indexOf(id), 1);
+      delete ps.clubId;
+      delete ps.contract;
+      (w.freeAgents ??= []).push(id);
+      report.released++;
+    }
+  }
   report.movements = moves.movements;
 
   // 3a. Retirements (players with an agreed move keep playing).

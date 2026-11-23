@@ -76,3 +76,23 @@ describe("editor", () => {
     expect(out.players["gen-a-5"]).toBeUndefined();
   });
 });
+
+describe("world creation", () => {
+  it("copies the database players: playing a career never changes the next one", () => {
+    const rng = new Rng("copy");
+    const players = generateMatchTeam(rng, { id: "a", name: "a", level: 12 }).players;
+    const setup = (seed: string) => ({
+      seed,
+      calendar: { season: "2026-2027", start: "2026-07-01", end: "2027-06-30", leagues: [], cups: [], internationals: [], windows: [] },
+      clubs: [{ id: "a", name: "A", shortName: "A", league: "TOP14", country: "FRA", reputation: 100, squad: players.map((player) => ({ player, caps: 0 })) }],
+    });
+    const w1 = createWorld(setup("one"));
+    const id = players[0]!.id;
+    w1.players[id]!.player.attributes.passing = 1;
+    w1.clubs.a!.name = "Changé";
+    const w2 = createWorld(setup("two"));
+    expect(players[0]!.attributes.passing).not.toBe(1);
+    expect(w2.players[id]!.player.attributes.passing).toBe(players[0]!.attributes.passing);
+    expect(w2.clubs.a!.name).toBe("A");
+  });
+});

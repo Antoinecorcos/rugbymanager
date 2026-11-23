@@ -234,6 +234,18 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
   }, [player, colours, info, view3d]);
 
   useEffect(() => rendererRef.current?.setFollow(follow), [follow]);
+  // Half-time talk: keys 1 to 5, like the numbers shown on the options.
+  useEffect(() => {
+    if (!halfTime) return;
+    const talks = Object.keys(TEAM_TALK_FR) as TeamTalk[];
+    const onKey = (e: KeyboardEvent) => {
+      const t = talks[Number(e.key) - 1];
+      if (t) void halfTimeTalk(t);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [halfTime]);
   useEffect(() => {
     const r = rendererRef.current as (LiveView & { setCamera?: (m: CameraMode) => void }) | null;
     r?.setCamera?.(camera);
