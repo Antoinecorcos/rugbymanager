@@ -21,7 +21,8 @@
     "cross-league": "tsx scripts/cross-league.ts",
     "match": "tsx scripts/match.ts",
     "import:calendar": "NODE_USE_ENV_PROXY=1 NODE_NO_WARNINGS=1 tsx scripts/import/import-calendar.ts",
-    "saison": "tsx scripts/saison.ts"
+    "saison": "tsx scripts/saison.ts",
+    "import-edits": "tsx scripts/import-edits.ts"
   },
   "dependencies": {
     "@ovalie/engine": "workspace:*",

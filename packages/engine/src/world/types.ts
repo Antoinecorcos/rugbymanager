@@ -443,6 +443,10 @@ export interface World {
   history?: SeasonRecord[];
   /** Season whose end has been processed (verdict, job offers) — see `closeSeason`. */
   closedSeason?: string;
+  /** The world was changed with the editor (M8): shown on the save. */
+  edited?: boolean;
+  /** Corrections made with the editor to real players and clubs (database override format). */
+  edits?: import("./editor.js").EditLog;
   /** Version of the world extensions (save migration). */
   version?: number;
 }

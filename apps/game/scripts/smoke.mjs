@@ -96,8 +96,21 @@ try {
     step(hash);
   }
 
+  // Save games (M8): a named copy, then the export of the career to a file.
+  await page.getByRole("button", { name: "Sauvegarder" }).click();
+  await page.fill("#save-name", "Avant le derby");
+  await page.getByRole("button", { name: "Enregistrer une copie" }).click();
+  await page.getByText(/Copie « Avant le derby » enregistrée/).waitFor();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Exporter un fichier" }).click();
+  if (!(await download).suggestedFilename().endsWith(".ovalie")) throw new Error("Export : mauvais nom de fichier");
+  await page.locator(".dialog .icon-btn").click();
+  step("copie et export de la sauvegarde");
+
   // Reload: the autosave brings the career back.
   await page.reload();
+  await page.getByText("Avant le derby").waitFor();
+  await shot("70-menu-sauvegardes");
   await page.getByRole("button", { name: "Reprendre" }).click();
   await page.locator(".topbar__club-name").waitFor();
   step("reprise de la sauvegarde");

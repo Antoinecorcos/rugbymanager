@@ -134,7 +134,7 @@ export function OfferDialog({ w, playerId, onClose }: { w: World; playerId: stri
   );
 }
 
-function Shell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+export function Shell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
       <div className="dialog" onClick={(e) => e.stopPropagation()}>

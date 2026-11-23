@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Flag, GraduationCap, Landmark, Play, Trash2 } from "lucide-react";
+import { Download, Flag, FolderOpen, GraduationCap, Landmark, Play, Trash2 } from "lucide-react";
 import type { CareerStart } from "@ovalie/engine";
 import { game } from "../game/client";
 import { clubAccent, dateMedium, ordinal, formatMoney, LEAGUE_LABEL, levelStars, nationName } from "../game/format";
 import type { CatalogueClub, SaveInfo } from "../game/protocol";
 import { navigate } from "../game/router";
+import { openFile, saveFile } from "../game/files";
 import { Button, ClubCrest, Segmented, Stars } from "../ui/components";
 
 const NATIONALITIES = ["FRA", "ENG", "IRL", "SCO", "WAL", "ITA", "NZL", "RSA", "AUS", "ARG", "FIJ", "GEO", "SAM", "TGA", "ESP", "POR", "ROU", "URU", "USA", "CAN", "JPN"];
@@ -17,9 +18,15 @@ export function expectation(c: CatalogueClub, rank: number): string {
   return rank <= 2 ? "Montée en Pro D2" : rank <= 6 ? "Phases finales" : "Progresser";
 }
 
+/** The latest career first ("Reprendre"), then the other saves, most recent first. */
+function ordered(saves: SaveInfo[]): SaveInfo[] {
+  const latest = saves.find((s) => s.kind === "auto");
+  return latest ? [latest, ...saves.filter((s) => s !== latest)] : saves;
+}
+
 export function TitleScreen() {
   const [clubs, setClubs] = useState<CatalogueClub[] | null>(null);
-  const [save, setSave] = useState<SaveInfo | null | undefined>(undefined);
+  const [saves, setSaves] = useState<SaveInfo[]>([]);
   const [name, setName] = useState("");
   const [nationality, setNationality] = useState("FRA");
   const [start, setStart] = useState<CareerStart>("bigClub");
@@ -31,7 +38,7 @@ export function TitleScreen() {
 
   useEffect(() => {
     game.catalogue().then(setClubs, (e) => setError(String(e)));
-    game.saveInfo().then(setSave, () => setSave(null));
+    game.saves().then(setSaves, () => setSaves([]));
   }, []);
   useEffect(() => setLeague(start === "bigClub" ? "TOP14" : "PROD2"), [start]);
 
@@ -53,11 +60,35 @@ export function TitleScreen() {
       setLoading(false);
     }
   };
-  const resume = async () => {
+  const resume = async (slot: string) => {
     setLoading(true);
-    await game.load().catch((e) => setError(String(e)));
+    try {
+      await game.load(slot);
+      navigate("accueil");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
     setLoading(false);
-    navigate("accueil");
+  };
+  const importFile = async () => {
+    const data = await openFile({ name: "Sauvegarde Ovalie Manager", extensions: ["ovalie", "json"] });
+    if (!data) return;
+    setLoading(true);
+    try {
+      await game.importSave(data);
+      navigate("accueil");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+    setLoading(false);
+  };
+  const exportSlot = async (slot: string) => {
+    try {
+      const f = await game.exportSave(slot);
+      await saveFile(f.name, f.data, { name: "Sauvegarde Ovalie Manager", extensions: ["ovalie"] });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   };
 
   return (
@@ -72,35 +103,53 @@ export function TitleScreen() {
         <p className="title__pitch">
           Top 14, Pro D2, Nationale et coupes d'Europe. Les vrais effectifs 2026-2027, le vrai calendrier, les doublons. La partie commence le <b>mercredi 1er juillet 2026</b>.
         </p>
-        {save && (
-          <div className="title__save">
-            <div>
-              <div className="faint">Partie en cours</div>
-              <div className="title__save-club">{save.clubName}</div>
-              <div className="muted">
-                {save.managerName} · {dateMedium(save.date)}
+        <div className="title__saves">
+          <div className="row title__saves-head">
+            <span className="faint">{saves.length ? `Parties sauvegardées (${saves.length})` : "Aucune partie sauvegardée"}</span>
+            <Button size="sm" variant="ghost" onClick={() => void importFile()} disabled={loading} icon={<FolderOpen size={14} />} title="Charger un fichier de sauvegarde (.ovalie)">
+              Importer
+            </Button>
+          </div>
+          {ordered(saves).slice(0, 8).map((sv, i) => (
+            <div key={sv.slot} className="title__save">
+              <ClubCrest colors={sv.colors} label={sv.clubShort ?? sv.clubName.slice(0, 2)} size={36} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="title__save-club">
+                  {sv.kind === "manual" ? sv.name : sv.clubName}
+                  {sv.kind === "manual" && <span className="badge badge--outline" style={{ marginLeft: 8 }}>Copie</span>}
+                  {sv.edited && <span className="badge badge--warning" style={{ marginLeft: 8 }} title="Partie modifiée avec l'éditeur">✎ Éditée</span>}
+                </div>
+                <div className="muted">
+                  {sv.kind === "manual" ? `${sv.clubName} · ` : ""}
+                  {sv.managerName} · {dateMedium(sv.date)}
+                  {sv.season ? ` · saison ${sv.season}` : ""}
+                </div>
+              </div>
+              <div className="row">
+                <Button variant={i === 0 && sv.kind === "auto" ? "primary" : "secondary"} size={i === 0 && sv.kind === "auto" ? "lg" : "md"} onClick={() => void resume(sv.slot)} disabled={loading} icon={<Play size={16} />}>
+                  {i === 0 && sv.kind === "auto" ? "Reprendre" : "Charger"}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => void exportSlot(sv.slot)} icon={<Download size={14} />} title="Exporter dans un fichier">
+                  Exporter
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    if (confirm(`Supprimer la sauvegarde « ${sv.kind === "manual" ? sv.name : sv.clubName} » ?`)) {
+                      await game.deleteSave(sv.slot);
+                      setSaves(await game.saves());
+                    }
+                  }}
+                  icon={<Trash2 size={14} />}
+                  title="Supprimer la sauvegarde"
+                >
+                  Supprimer
+                </Button>
               </div>
             </div>
-            <div className="row">
-              <Button variant="primary" size="lg" onClick={resume} disabled={loading} icon={<Play size={18} />}>
-                Reprendre
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={async () => {
-                  if (confirm("Supprimer la partie sauvegardée ?")) {
-                    await game.deleteSave();
-                    setSave(null);
-                  }
-                }}
-                icon={<Trash2 size={16} />}
-                title="Supprimer la sauvegarde"
-              >
-                Supprimer
-              </Button>
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
         <p className="faint title__note">Jeu non commercial. Données réelles collectées en novembre 2026, notes estimées par le pipeline de notation (voir la fiche de chaque joueur).</p>
       </section>
 

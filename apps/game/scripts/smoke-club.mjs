@@ -99,6 +99,32 @@ try {
   await title("Entraînement");
   await shot("38-entrainement-semaines");
   step("vestiaire, infirmerie et automatismes après quelques semaines");
+
+  // Editor (M8): correct a player and a club, export the corrections.
+  await page.goto(`${url}#/editeur`);
+  await page.locator(".page-head__title", { hasText: "Éditeur" }).waitFor();
+  await page.getByLabel("Rechercher un joueur").fill("Ntamack");
+  await page.getByRole("button", { name: "Modifier" }).first().click();
+  await page.locator(".editor").waitFor();
+  await page.fill("#ed-level", "16.4");
+  await page.fill("#ed-h", "184");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await page.getByText(/modifications enregistrées/).waitFor();
+  await shot("71-editeur-joueur");
+  await page.locator(".dialog .icon-btn").click();
+  await page.goto(`${url}#/club`);
+  await page.getByRole("button", { name: "Modifier" }).click();
+  await page.fill("#ec-rep", "160");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await page.getByText(/modifications enregistrées/).waitFor();
+  await page.locator(".dialog .icon-btn").click();
+  await page.goto(`${url}#/editeur`);
+  await page.getByText(/1 joueur et 1 club corrigés/).waitFor();
+  await shot("72-editeur");
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Exporter les corrections" }).click();
+  if (!(await download).suggestedFilename().startsWith("ovalie-corrections")) throw new Error("Export des corrections : mauvais fichier");
+  step("éditeur : joueur, club et export des corrections");
 } catch (e) {
   await shot("echec-club").catch(() => {});
   errors.push(String(e));

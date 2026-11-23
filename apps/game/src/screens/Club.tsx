@@ -4,7 +4,10 @@ import { useWorld } from "../game/client";
 import { fmt1, formatMoney, ordinal, LEAGUE_LABEL, levelStars, nationName } from "../game/format";
 import { href } from "../game/router";
 import { manager, myClubId, squadOf, teamName } from "../game/selectors";
-import { Badge, ClubCrest, KeyValues, PageHeader, Panel, ResultChip, Stars } from "../ui/components";
+import { Badge, Button, ClubCrest, KeyValues, PageHeader, Panel, ResultChip, Stars } from "../ui/components";
+import { ClubEditor } from "../ui/editor";
+import { Pencil } from "lucide-react";
+import { useState } from "react";
 import { ClubLink, FixtureRow, PlayerLink } from "../ui/widgets";
 
 /** Indicative board objective from the club's strength rank in its league (the real board arrives with M6). */
@@ -30,6 +33,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
   const c = w.clubs[id]!;
   const mine = id === myClubId(w);
   const squad = squadOf(w, id);
+  const [editing, setEditing] = useState(false);
   const best = [...squad].sort((a, b) => playerLevel(b.player) - playerLevel(a.player)).slice(0, 5);
   const lv = squad.map((ps) => playerLevel(ps.player)).sort((a, b) => b - a).slice(0, 23);
   const strength = lv.reduce((a, b) => a + b, 0) / Math.max(1, lv.length);
@@ -41,7 +45,17 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
   const foreign = squad.filter((ps) => ps.player.nationality !== c.country).length;
   return (
     <>
-      <PageHeader kicker={LEAGUE_LABEL[c.league] ?? c.league} title={c.name} actions={<a className="btn btn--secondary btn--md" href={href("effectif", ...(mine ? [] : [id]))}>Voir l'effectif</a>}>
+      <PageHeader kicker={LEAGUE_LABEL[c.league] ?? c.league} title={c.name} actions={
+          <div className="row">
+            <Button variant="ghost" icon={<Pencil size={14} />} onClick={() => setEditing(true)} title="Corriger ce club avec l'éditeur">
+              Modifier
+            </Button>
+            <a className="btn btn--secondary btn--md" href={href("effectif", ...(mine ? [] : [id]))}>
+              Voir l'effectif
+            </a>
+          </div>
+        }
+      >
         <div className="row muted" style={{ marginTop: 4 }}>
           <ClubCrest colors={c.colors} label={c.shortName} size={22} />
           {c.city && <span>{c.city}</span>}
@@ -98,6 +112,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
         </Panel>
       </div>
       {mine && <CareerPanel w={w} />}
+      {editing && <ClubEditor w={w} clubId={id} onClose={() => setEditing(false)} />}
       <Panel title="Matchs de la saison">
         {mine
           ? fixtures.map((f) => <FixtureRow key={f.id} w={w} f={f} />)

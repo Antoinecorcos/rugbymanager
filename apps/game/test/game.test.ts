@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { readCalendar, readDatabase } from "@ovalie/data/node";
 import { applyPatch, buildCatalogue, continueWithProgress, newCareer, playToday, saveInfoOf } from "../src/game/session";
 import { clubAccent, contrast, levelStars, ordinal, stageFr } from "../src/game/format";
-import { readSave, readSaveInfo, writeSave, deleteSave } from "../src/worker/save";
+import { decodeSaveFile, deleteSave, encodeSaveFile, LEGACY_SLOT, listSaves, readSave, writeSave } from "../src/worker/save";
 
 const db = readDatabase();
 const calendar = readCalendar();
@@ -45,7 +45,7 @@ describe("career session", () => {
     applyPatch(w, { selection: { ...w.manager!.selection, bench: "6-2" } });
     const id = playToday(w)!;
     expect(w.reports![id]!.teams.find((t) => t.id === "toulouse")!.lineup.slice(15).length).toBe(8);
-    expect(saveInfoOf(w)).toMatchObject({ clubName: "Stade toulousain", date: "2026-09-07" });
+    expect(saveInfoOf(w, "x")).toMatchObject({ slot: "x", kind: "auto", clubName: "Stade toulousain", date: "2026-09-07", season: "2026-2027" });
   });
 
   it("reports progress day by day and stops after maxDays", () => {
@@ -59,14 +59,53 @@ describe("career session", () => {
   });
 });
 
-describe("autosave", () => {
-  it("writes, reads and deletes the save slot", async () => {
-    const w = newCareer(db, calendar, PROFILE, "pau", "save");
-    await writeSave(saveInfoOf(w)!, w);
-    expect((await readSaveInfo())?.clubName).toBe("Section paloise");
-    expect((await readSave())!.world.manager!.clubId).toBe("pau");
-    await deleteSave();
-    expect(await readSaveInfo()).toBeNull();
+describe("save games", () => {
+  it("migrates the single autosave of version 1 into a slot", async () => {
+    await new Promise((r) => {
+      const del = indexedDB.deleteDatabase("ovalie-manager");
+      del.onsuccess = del.onerror = r;
+    });
+    const w = newCareer(db, calendar, PROFILE, "albi", "legacy");
+    await new Promise<void>((resolve, reject) => {
+      const req = indexedDB.open("ovalie-manager", 1);
+      req.onupgradeneeded = () => req.result.createObjectStore("saves");
+      req.onsuccess = () => {
+        const t = req.result.transaction("saves", "readwrite");
+        t.objectStore("saves").put({ info: { clubName: "SC Albi", managerName: "Test", date: w.date, savedAt: "2026-11-01T10:00:00Z" }, world: w }, "autosave");
+        t.oncomplete = () => (req.result.close(), resolve());
+        t.onerror = () => reject(t.error);
+      };
+    });
+    const saves = await listSaves();
+    expect(saves).toHaveLength(1);
+    expect(saves[0]).toMatchObject({ slot: LEGACY_SLOT, kind: "auto", clubName: "SC Albi" });
+    expect((await readSave(LEGACY_SLOT))!.world.manager!.clubId).toBe("albi");
+    await deleteSave(LEGACY_SLOT);
+  });
+
+  it("keeps several slots, most recent first, and deletes one", async () => {
+    const pau = newCareer(db, calendar, PROFILE, "pau", "save");
+    const albi = newCareer(db, calendar, { ...PROFILE, start: "noDiploma" }, "albi", "save");
+    await writeSave({ ...saveInfoOf(pau, "carriere-1")!, savedAt: "2026-11-01T10:00:00Z" }, pau);
+    await writeSave({ ...saveInfoOf(albi, "copie-2", "manual", "Avant la finale")!, savedAt: "2026-11-02T10:00:00Z" }, albi);
+    const saves = await listSaves();
+    expect(saves.map((x) => x.slot)).toEqual(["copie-2", "carriere-1"]);
+    expect(saves[0]).toMatchObject({ kind: "manual", name: "Avant la finale", clubName: "SC Albi" });
+    expect((await readSave("carriere-1"))!.world.manager!.clubId).toBe("pau");
+    await deleteSave("copie-2");
+    expect((await listSaves()).map((x) => x.slot)).toEqual(["carriere-1"]);
+    await deleteSave("carriere-1");
+  });
+
+  it("exports a compressed file and reads it back, refusing other files", async () => {
+    const w = newCareer(db, calendar, PROFILE, "toulouse", "file");
+    const data = await encodeSaveFile(saveInfoOf(w, "s")!, w);
+    const json = JSON.stringify(w).length;
+    expect(data.byteLength).toBeLessThan(json / 4);
+    const back = await decodeSaveFile(data);
+    expect(back.world.manager!.clubId).toBe("toulouse");
+    expect(back.world.players["antoine-dupont"]!.contract!.salary).toBe(w.players["antoine-dupont"]!.contract!.salary);
+    await expect(decodeSaveFile(new TextEncoder().encode("{}").buffer as ArrayBuffer)).rejects.toThrow(/pas une sauvegarde/);
   });
 });
 

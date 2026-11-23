@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Building2,
   CalendarDays,
@@ -6,6 +6,7 @@ import {
   Crosshair,
   Dumbbell,
   Euro,
+  PencilRuler,
   Home,
   Inbox,
   Search,
@@ -37,6 +38,8 @@ import { CalendarScreen } from "./screens/Calendar";
 import { CompetitionsScreen } from "./screens/Competitions";
 import { ClubScreen } from "./screens/Club";
 import { JobOffers, SeasonEndScreen } from "./screens/SeasonEnd";
+import { SaveDialog } from "./ui/save";
+import { EditorScreen } from "./screens/Editor";
 import { LiveMatchScreen } from "./screens/LiveMatch";
 import { TrainingScreen } from "./screens/Training";
 import { MedicalScreen } from "./screens/Medical";
@@ -119,6 +122,8 @@ function Screen() {
       return <RecruitmentScreen />;
     case "finances":
       return <FinancesScreen />;
+    case "editeur":
+      return <EditorScreen />;
     default:
       return <HomeScreen />;
   }
@@ -145,6 +150,7 @@ const NAV: NavDef[] = [
   { screen: "staff", label: "Staff", icon: <UserCog size={18} /> },
   { screen: "recrutement", label: "Recrutement", icon: <Search size={18} /> },
   { screen: "finances", label: "Finances", icon: <Euro size={18} /> },
+  { screen: "editeur", label: "Éditeur", icon: <PencilRuler size={18} /> },
 ];
 const NAV_LATER: NavDef[] = [
 
@@ -154,6 +160,7 @@ function Sidebar({ world }: { world: World }) {
   const { screen } = useRoute();
   const unread = unreadCount(world);
   const active = screen === "joueur" ? "effectif" : screen === "match" ? "calendrier" : screen;
+  const [saving, setSaving] = useState(false);
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
@@ -181,10 +188,15 @@ function Sidebar({ world }: { world: World }) {
       </nav>
       <div className="sidebar__foot">
         Saison {world.season.replace("-", "-")} ·{" "}
+        <button className="btn btn--ghost btn--sm" onClick={() => setSaving(true)} style={{ padding: 0, height: "auto" }}>
+          Sauvegarder
+        </button>{" "}
+        ·{" "}
         <button className="btn btn--ghost btn--sm" onClick={() => game.quit()} style={{ padding: 0, height: "auto" }}>
           Menu principal
         </button>
       </div>
+      {saving && <SaveDialog w={world} onClose={() => setSaving(false)} />}
     </aside>
   );
 }

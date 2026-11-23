@@ -73,10 +73,21 @@ class GameClient {
   async catalogue(): Promise<CatalogueClub[]> {
     return ((await this.call({ kind: "catalogue" })) as Extract<Response, { kind: "catalogue" }>).clubs;
   }
-  async saveInfo(): Promise<SaveInfo | null> {
-    return ((await this.call({ kind: "saveInfo" })) as Extract<Response, { kind: "saveInfo" }>).info;
+  /** Saved games, most recent first. */
+  async saves(): Promise<SaveInfo[]> {
+    return ((await this.call({ kind: "saves" })) as Extract<Response, { kind: "saves" }>).saves;
   }
-  load = () => this.worldCall({ kind: "load" });
+  load = (slot: string) => this.worldCall({ kind: "load", slot });
+  /** Named copy of the running career. */
+  async saveAs(name: string): Promise<SaveInfo[]> {
+    return ((await this.call({ kind: "saveAs", name })) as Extract<Response, { kind: "saves" }>).saves;
+  }
+  /** Save file of a slot (or of the running career). */
+  async exportSave(slot?: string): Promise<{ name: string; data: ArrayBuffer }> {
+    const r = (await this.call(slot ? { kind: "exportSave", slot } : { kind: "exportSave" })) as Extract<Response, { kind: "file" }>;
+    return { name: r.name, data: r.data };
+  }
+  importSave = (data: ArrayBuffer) => this.worldCall({ kind: "importSave", data });
   newGame = (profile: ManagerProfile, clubId: string, seed: string) => this.worldCall({ kind: "newGame", profile, clubId, seed });
   continue = () => this.worldCall({ kind: "continue" });
   playMatch = () => this.worldCall({ kind: "playMatch" });
@@ -122,8 +133,8 @@ class GameClient {
     return ((await this.call({ kind: "liveHalfTime", talk })) as Extract<Response, { kind: "liveHalfTime" }>).reaction;
   }
 
-  async deleteSave(): Promise<void> {
-    await this.call({ kind: "deleteSave" });
+  async deleteSave(slot: string): Promise<void> {
+    await this.call({ kind: "deleteSave", slot });
   }
   quit(): void {
     this.set({ world: null, lastStop: undefined });

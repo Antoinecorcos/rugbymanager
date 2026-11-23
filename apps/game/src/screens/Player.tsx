@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Pencil } from "lucide-react";
 import {
   ATTRIBUTE_LABEL_FR,
   availability,
@@ -42,6 +43,7 @@ import { useWorld } from "../game/client";
 import { ageIn, dateMedium, fmt1, fullName, nationName, playerStars, POSITION_SHORT_FR } from "../game/format";
 import { href } from "../game/router";
 import { competitionName, myClubId } from "../game/selectors";
+import { PlayerEditor } from "../ui/editor";
 import { AttrValue, Badge, ClubCrest, Empty, Freshness, KeyValues, PageHeader, Panel, Radar, Stars, StatusPill } from "../ui/components";
 import { Pitch, PitchSlot } from "../ui/pitch";
 import { clubTotals } from "./Squad";
@@ -140,6 +142,7 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
   const pos = ps ? naturalPosition(ps.player) : "FH";
   const avg = useMemo(() => averageMorph(w, pos), [w.date, pos]);
   const [offer, setOffer] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [scoutMsg, setScoutMsg] = useState<string | null>(null);
   if (!ps) return <Empty>Joueur introuvable.</Empty>;
   const p = ps.player;
@@ -183,6 +186,13 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
           )
         }
         title={fullName(p)}
+        actions={
+          !ps.virtual && (
+            <Button size="sm" variant="ghost" icon={<Pencil size={14} />} onClick={() => setEditing(true)} title="Corriger ce joueur avec l'éditeur">
+              Modifier
+            </Button>
+          )
+        }
       >
         <div className="player-head">
           <Badge tone="accent">{POSITION_LABEL_FR[pos]}</Badge>
@@ -364,6 +374,7 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
           {unknown ? <Empty>Détail connu une fois le joueur supervisé.</Empty> : <RatingExplain ps={ps} />}
         </Panel>
         {offer && <OfferDialog w={w} playerId={playerId} onClose={() => setOffer(false)} />}
+        {editing && <PlayerEditor w={w} playerId={playerId} onClose={() => setEditing(false)} />}
       </div>
     </>
   );

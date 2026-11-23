@@ -1,5 +1,5 @@
 /** Messages between the interface (main thread) and the game worker, which owns the world. */
-import type { NegotiationResult, Offer, ContinueResult, IndividualFocus, Position, SquadStatus, TalkKind, TalkResult, TeamTalk, TrainingPlan, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
+import type { ClubEdit, PlayerEdit, NegotiationResult, Offer, ContinueResult, IndividualFocus, Position, SquadStatus, TalkKind, TalkResult, TeamTalk, TrainingPlan, PenaltyRule, LiveChunk, LiveInfo, LiveSnapshot, ManagerProfile, ManagerState, PenaltyOption, Tactics, TargetedInstructions, World } from "@ovalie/engine";
 
 /** Club shown on the new-game screen. */
 export interface CatalogueClub {
@@ -20,10 +20,20 @@ export interface CatalogueClub {
 }
 
 export interface SaveInfo {
+  /** Storage key: one per career (autosaved), plus the manager's named copies. */
+  slot: string;
+  kind: "auto" | "manual";
+  /** Name of a manual copy. */
+  name?: string;
   clubName: string;
+  clubShort?: string;
+  colors?: [string, string];
   managerName: string;
+  season?: string;
   date: string;
   savedAt: string;
+  /** The world was changed with the editor (M8). */
+  edited?: boolean;
 }
 
 /** Fields of the manager state the interface may change. */
@@ -45,17 +55,24 @@ export type GameAction =
   | { type: "hireStaff"; staffId: string }
   // M6c: job offers and the next season.
   | { type: "acceptJob"; clubId: string }
-  | { type: "nextSeason" };
+  | { type: "nextSeason" }
+  // M8: editor.
+  | { type: "editPlayer"; playerId: string; edit: PlayerEdit }
+  | { type: "editClub"; clubId: string; edit: ClubEdit };
 
 export type Request =
   | { kind: "catalogue" }
-  | { kind: "saveInfo" }
-  | { kind: "load" }
+  | { kind: "saves" }
+  | { kind: "load"; slot: string }
   | { kind: "newGame"; profile: ManagerProfile; clubId: string; seed: string }
   | { kind: "continue" }
   | { kind: "playMatch" }
   | { kind: "updateManager"; patch: ManagerPatch }
-  | { kind: "deleteSave" }
+  | { kind: "deleteSave"; slot: string }
+  // Save games (M8): a named copy of the current career, file export and import.
+  | { kind: "saveAs"; name: string }
+  | { kind: "exportSave"; slot?: string }
+  | { kind: "importSave"; data: ArrayBuffer }
   // Live match (M5): the worker owns the running match.
   | { kind: "liveStart" }
   | { kind: "liveNext"; seconds?: number }
@@ -73,7 +90,8 @@ export type Request =
 
 export type Response =
   | { kind: "catalogue"; clubs: CatalogueClub[] }
-  | { kind: "saveInfo"; info: SaveInfo | null }
+  | { kind: "saves"; saves: SaveInfo[] }
+  | { kind: "file"; name: string; data: ArrayBuffer }
   | { kind: "world"; world: World | null; stop?: ContinueResult; playedFixtureId?: string }
   | { kind: "ok" }
   | { kind: "liveStart"; info: LiveInfo; snapshot: LiveSnapshot }

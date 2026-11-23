@@ -70,8 +70,13 @@ export function playToday(w: World): string | undefined {
   return playMatchDay(w)?.id;
 }
 
-export function saveInfoOf(w: World): SaveInfo | null {
+export function saveInfoOf(w: World, slot: string, kind: SaveInfo["kind"] = "auto", name?: string): SaveInfo | null {
   const m = w.manager;
   if (!m) return null;
-  return { clubName: w.clubs[m.clubId]!.name, managerName: m.profile.name, date: w.date, savedAt: new Date().toISOString() };
+  const club = w.clubs[m.clubId]!;
+  const info: SaveInfo = { slot, kind, clubName: club.name, clubShort: club.shortName, managerName: m.profile.name, season: w.season, date: w.date, savedAt: new Date().toISOString() };
+  if (club.colors) info.colors = club.colors;
+  if (name) info.name = name;
+  if (w.edited) info.edited = true;
+  return info;
 }
