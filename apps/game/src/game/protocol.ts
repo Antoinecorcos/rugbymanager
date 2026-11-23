@@ -42,7 +42,10 @@ export type GameAction =
   | { type: "offer"; playerId: string; offer: Offer }
   | { type: "boardRequest"; kind: "wages" | "transfers" }
   | { type: "press"; fixtureId: string; answers: Record<string, string> }
-  | { type: "hireStaff"; staffId: string };
+  | { type: "hireStaff"; staffId: string }
+  // M6c: job offers and the next season.
+  | { type: "acceptJob"; clubId: string }
+  | { type: "nextSeason" };
 
 export type Request =
   | { kind: "catalogue" }

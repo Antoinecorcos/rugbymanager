@@ -12,7 +12,7 @@ import { initBoard } from "./board.js";
 import { initFreeAgents } from "./market.js";
 import type { World } from "./types.js";
 
-export const WORLD_VERSION = 3;
+export const WORLD_VERSION = 4;
 
 export function ensureWorldExtensions(w: World): World {
   initStaff(w);
@@ -22,7 +22,10 @@ export function ensureWorldExtensions(w: World): World {
   initContracts(w);
   initFreeAgents(w);
   initStaffMarket(w);
+  // M6c: season archive and the manager's clubs.
+  w.history ??= [];
   if (w.manager) {
+    w.manager.spells ??= [{ clubId: w.manager.clubId, from: w.manager.since }];
     w.manager.reputation ??= w.manager.profile.start === "bigClub" ? 65 : 30;
     initFinances(w);
     initBoard(w);

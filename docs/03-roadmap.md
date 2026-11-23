@@ -31,7 +31,7 @@ docs/             → recherche, GDD, roadmap
 | **M5** ✅ | Match en 2D en direct | Vue PixiJS, consignes, remplacements, **décisions de pénalité (10 s) + règles automatiques**, consignes ciblées, arbitres réels (voir `docs/08-match-en-direct.md`) |
 | **M6a** ✅ | Effectif et humain | Moral, confiance, statuts, discussions, promesses, causeries (avant-match et mi-temps), entraînement et automatismes, progression des joueurs, médical, staff, centre de formation (voir `docs/09-effectif-et-humain.md`) |
 | **M6b** ✅ | Argent et marché | Contrats estimés, salary cap et JIFF, finances, président (objectifs, confiance, licenciement), marché à la française (pré-contrats, rachats, joker médical, prolongations, IA), supervision, presse, recrutement du staff (voir `docs/10-argent-et-marche.md`) |
-| **M6c** | Saison suivante | Passage à 2027-2028 : arrivées et départs du 1er juillet, fins de contrat, vieillissement et retraites, montées et descentes, sanction JIFF, nouveau calendrier (Coupe du monde 2027), nouveaux objectifs, offres d'emploi |
+| **M6c** ✅ | Saison suivante | Passage à 2027-2028 et au-delà : verdict du président, sanction JIFF, arrivées et départs du 1er juillet, fins de contrat, retraites, centres de formation, montées et descentes (Nationale 2 fictive), calendrier généré avec la Coupe du monde 2027 et ses jokers, nouveaux objectifs, offres d'emploi (voir `docs/11-saison-suivante.md`) |
 | **M7** | Match en 3D | Three.js, modèles et animations, caméras TV |
 | **M8** | Finitions | Sauvegardes, éditeur, application desktop Tauri, équilibrage |
 | Plus tard | Extensions | Mode international, PREM et URC jouables, rugby féminin |

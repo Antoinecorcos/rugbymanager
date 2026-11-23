@@ -1,7 +1,7 @@
 # Argent et marché (M6b)
 
 Seconde moitié du management en profondeur. Elle couvre les contrats, le salary cap et le JIFF, les finances, le président, le marché des transferts à la française, la presse et le recrutement du staff.
-**M6c** traitera du passage à la saison 2027-2028. Les arrivées convenues pendant la saison (pré-contrats, rachats) y prendront effet le 1er juillet.
+Le passage à la saison 2027-2028 est décrit dans `docs/11-saison-suivante.md` (M6c) : les arrivées convenues pendant la saison (pré-contrats, rachats) y prennent effet le 1er juillet.
 
 Captures : `docs/captures/m6b-*.png`.
 
@@ -47,7 +47,7 @@ Captures : `docs/captures/m6b-*.png`.
 ## Marché à la française — `world/market.ts`
 | Accord | Quand | Effet |
 |---|---|---|
-| **Pré-contrat** | Joueur en fin de contrat en juin, ou libre | Il arrive le **1er juillet** (M6c) |
+| **Pré-contrat** | Joueur en fin de contrat en juin, ou libre | Il arrive le **1er juillet** |
 | **Rachat de contrat** | Joueur sous contrat au-delà de juin | Indemnité d'environ la moitié du salaire restant (×1,6 pour un titulaire, ×2,5 pour un cadre) ; les cadres du Top 14 et de la PREM sont intransférables ; arrivée le 1er juillet |
 | **Joker médical** | Un de tes joueurs est absent 10 semaines ou plus | **Arrivée immédiate**, contrat jusqu'à la fin de la saison |
 | **Prolongation** | Tes propres joueurs | Nouveau contrat ; moral et confiance en hausse |
@@ -105,6 +105,6 @@ Les réponses agissent aussi sur le moral du joueur cité et produisent un titre
 
 ## Limites et suites
 - **Les salaires, les budgets par poste, les affluences et les prix sont estimés.** Les budgets PREM et URC ne sont pas connus : ils sont tirés de la réputation.
-- **Les arrivées et départs convenus ne prennent effet qu'en M6c**, le 1er juillet. M6c traitera aussi les fins de contrat sans accord (prolongation ou départ), le vieillissement et les retraites, la sanction JIFF et les objectifs de la saison suivante.
+- **Les arrivées et départs convenus prennent effet le 1er juillet**, avec les fins de contrat, les retraites, la sanction JIFF et les nouveaux objectifs (voir docs/11).
 - **Pas d'agents nommés, de clauses ni de primes de match.** Pas de prêts, rares en rugby.
-- **Une seule offre de poste** : une fois licencié, on recommence une carrière depuis le menu ; les offres d'autres clubs viendront avec M6c.
+- **Offres d'emploi** : après un licenciement ou en fin de saison, d'autres clubs peuvent proposer un poste (voir docs/11).

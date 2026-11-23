@@ -160,3 +160,28 @@ function monthsElapsed(w: World): number {
   // Months already booked (the 1st of the current month included).
   return clamp((y1 - y0) * 12 + (m1 - m0) + 1, 0, 12);
 }
+
+/**
+ * New season (M6c): the cash is carried over, the season totals start again, and the president
+ * sets the new wage budget (cap respected) and a recruitment budget that grows with last
+ * season's profit.
+ */
+export function newSeasonFinances(w: World, lastResult = 0): void {
+  const m = w.manager;
+  if (!m) return;
+  const club = w.clubs[m.clubId]!;
+  if (!club.finances) return initFinances(w);
+  const f = club.finances;
+  const b = budgetOf(club);
+  const pay = payroll(w, club.id);
+  const cap = salaryCap(w, club.id);
+  f.revenue = zero(["sponsors", "tv", "gate", "subsidies", "prizes", "other"] as const);
+  f.expense = zero(["wages", "staff", "operations", "travel", "transfers", "other"] as const);
+  f.ledger = [];
+  f.wageBudget = Math.round(Math.min(cap, Math.max(pay * 1.02, pay + b * 0.01, b * (club.league === "TOP14" ? 0.4 : 0.42))) / 1000) * 1000;
+  f.transferBudget = Math.round((b * 0.03 + Math.max(0, lastResult) * 0.25) / 1000) * 1000;
+}
+
+/** Net result of the season so far (income minus costs). */
+export const seasonResult = (f: ClubFinances): number =>
+  Object.values(f.revenue).reduce((a, x) => a + x, 0) - Object.values(f.expense).reduce((a, x) => a + x, 0);

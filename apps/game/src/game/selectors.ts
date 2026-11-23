@@ -13,7 +13,8 @@ export const competitionShort = (id: string): string => COMPETITION_SHORT[id] ??
 
 export const myFixtures = (w: World): Fixture[] => {
   const id = myClubId(w);
-  return w.fixtures.filter((f) => f.home === id || f.away === id);
+  // Knock-out fixtures are appended when generated: sort by date.
+  return w.fixtures.filter((f) => f.home === id || f.away === id).sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
 };
 export const myNextFixture = (w: World): Fixture | undefined => nextFixture(w, myClubId(w));
 export const isMatchToday = (w: World): Fixture | undefined => {

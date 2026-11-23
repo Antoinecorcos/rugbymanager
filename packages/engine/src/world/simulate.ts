@@ -19,7 +19,7 @@ import { dailyTrainingRecovery, logMinutes, planOf, weeklyTraining } from "./tra
 import { weekday } from "./dates.js";
 import { boardAfterMatch, weeklyBoard } from "./board.js";
 import { fixtureFinances, monthlyFinances } from "./finances.js";
-import { dailyScouting, jiffCount, weeklyMarket } from "./market.js";
+import { contractReminders, dailyScouting, jiffCount, releaseWorldCupJokers, weeklyMarket } from "./market.js";
 import type { Fixture, PlayerSeasonStats, PlayerState, World } from "./types.js";
 
 /**
@@ -53,10 +53,12 @@ export function advanceDay(w: World, played?: Record<string, PlayedFixture>): Fi
   // Mondays: training week (automatisms, training injuries, development) and the squad's morale.
   monthlyFinances(w);
   dailyScouting(w);
+  releaseWorldCupJokers(w);
   if (weekday(d) === 1) {
     weeklyTraining(w);
     weeklyHuman(w);
     weeklyMarket(w);
+    contractReminders(w);
     weeklyBoard(w);
   }
   if (d === intakeDate(w)) academyIntake(w);
@@ -337,7 +339,7 @@ export function recordFixtureResult(w: World, f: Fixture, prepared: PreparedFixt
 }
 
 export const stageLabel = (stage: string): string =>
-  ({ barrage: "barrage", demi: "demi-finale", finale: "finale", access: "match d'accession", huitieme: "huitième de finale", quart: "quart de finale" })[stage] ?? stage;
+  ({ barrage: "barrage", demi: "demi-finale", finale: "finale", access: "match d'accession", huitieme: "huitième de finale", quart: "quart de finale", "petite-finale": "match pour la 3e place" })[stage] ?? stage;
 
 export const fullName = (p: Pick<Player, "firstName" | "lastName">): string => `${p.firstName} ${p.lastName}`;
 

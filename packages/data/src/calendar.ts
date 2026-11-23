@@ -13,7 +13,7 @@ export const seasonCalendarSchema = z.object({
   leagues: z.array(z.object({ id: z.string(), rounds: z.array(round), knockout: z.record(z.string(), date) })),
   cups: z.array(z.object({ id: z.string(), pools: z.array(z.array(z.string())), rounds: z.array(round), knockout: z.record(z.string(), date), finalVenue: z.string().optional() })),
   internationals: z.array(
-    z.object({ id: z.string(), groups: z.array(z.array(z.string())), rounds: z.array(round), finals: z.array(date).optional(), finalsVenue: z.string().optional() }),
+    z.object({ id: z.string(), groups: z.array(z.array(z.string())), rounds: z.array(round), finals: z.array(date).optional(), finalsVenue: z.string().optional(), knockout: z.record(z.string(), date).optional() }),
   ),
   windows: z.array(z.object({ id: z.string(), name: z.string(), start: date, end: date, nations: z.union([z.array(z.string()), z.literal("*")]) })),
 }) satisfies z.ZodType<SeasonCalendar>;

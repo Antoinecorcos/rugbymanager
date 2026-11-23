@@ -82,7 +82,7 @@ export function nextSeasonPayroll(w: World, clubId: string): number {
     if (renewals.has(id)) total += renewals.get(id)!;
     else if (c.expires > next && !c.joker) total += c.salary;
   }
-  for (const t of w.transfers ?? []) if (!t.done && t.to === clubId && t.kind !== "renewal" && t.kind !== "medicalJoker") total += t.contract.salary;
+  for (const t of w.transfers ?? []) if (!t.done && t.to === clubId && t.kind !== "renewal" && t.kind !== "medicalJoker" && t.kind !== "worldCupJoker") total += t.contract.salary;
   return total;
 }
 

@@ -99,7 +99,7 @@ Le moteur de match a été retouché pour M3 : dans le dernier quart d'heure d'u
 Exemples de sortie : `docs/exemples/saison-2026-2027.txt` (saison complète) et `docs/exemples/saison-toulouse-novembre.txt` (Toulouse au 30 novembre).
 
 ## Limites et suites
-- **Une seule saison** : le passage à 2027-2028 (montées et descentes appliquées, vieillissement, calendrier généré, Coupe du monde 2027 en Australie) reste à faire.
+- **Saisons suivantes** : le passage à 2027-2028 et au-delà (montées et descentes, retraites, calendrier généré, Coupe du monde 2027 en Australie) est décrit dans `docs/11-saison-suivante.md`.
 - Le calendrier de la Nationale est généré ; les dates des phases finales européennes sont celles annoncées par l'EPCR, faute de matchs déjà programmés.
 - Les nations hors Nations Championship et Tournoi (Géorgie, Samoa, Tonga, Espagne…) convoquent leurs joueurs pendant les fenêtres, mais leurs matchs ne sont pas simulés.
 - La convention FFR-LNR est simplifiée (repos de 10 jours après chaque fenêtre) ; la liste des joueurs protégés et les quotas de minutes viendront avec la gestion du club (M6).

@@ -35,7 +35,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
   const strength = lv.reduce((a, b) => a + b, 0) / Math.max(1, lv.length);
   const league = c.league.toLowerCase();
   const table = w.competitions[league] ? leagueTable(w, league) : [];
-  const rank = table.findIndex((r) => r.team === id) + 1;
+  const rank = table.some((r) => r.played > 0) ? table.findIndex((r) => r.team === id) + 1 : 0;
   const fixtures = w.fixtures.filter((f) => f.home === id || f.away === id);
   const internationals = squad.filter((ps) => ps.caps > 0).length;
   const foreign = squad.filter((ps) => ps.player.nationality !== c.country).length;
@@ -47,6 +47,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
           {c.city && <span>{c.city}</span>}
           {c.founded && <span>· fondé en {c.founded}</span>}
           {mine && <Badge tone="accent">Votre club</Badge>}
+          {c.generated && <Badge title="Club fictif : la Nationale 2 n'est pas dans la base réelle">fictif</Badge>}
         </div>
       </PageHeader>
       {mine && <BoardPanel w={w} />}
@@ -59,7 +60,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
               ["Président", c.president ?? "—"],
               ["Manager", c.headCoach ?? "—"],
               ["Budget", c.budgetEur ? formatMoney(c.budgetEur) : "non publié"],
-              ["Saison 2025-26", c.previousRank ? `${ordinal(c.previousRank.rank)} de ${LEAGUE_LABEL[c.previousRank.league] ?? c.previousRank.league}` : "—"],
+              [`Saison ${Number(w.season.slice(0, 4)) - 1}-${w.season.slice(2, 4)}`, c.previousRank ? `${ordinal(c.previousRank.rank)} de ${LEAGUE_LABEL[c.previousRank.league] ?? c.previousRank.league}` : "—"],
             ]}
           />
         </Panel>
@@ -96,6 +97,7 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
           {mine && <p className="faint" style={{ marginBottom: 0 }}>Manager depuis le {manager(w).since.split("-").reverse().join("/")}.</p>}
         </Panel>
       </div>
+      {mine && <CareerPanel w={w} />}
       <Panel title="Matchs de la saison">
         {mine
           ? fixtures.map((f) => <FixtureRow key={f.id} w={w} f={f} />)
@@ -109,6 +111,45 @@ export function ClubScreen({ clubId }: { clubId?: string }) {
             ))}
       </Panel>
     </>
+  );
+}
+
+/** The manager's past seasons (M6c). */
+function CareerPanel({ w }: { w: World }) {
+  const seasons = (w.history ?? []).filter((h) => h.manager);
+  if (!seasons.length) return null;
+  return (
+    <Panel title="Votre carrière" flush subtitle={`Réputation actuelle : ${Math.round(manager(w).reputation ?? 0)}/100`}>
+      <div className="table-wrap">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Saison</th>
+              <th>Club</th>
+              <th>Classement</th>
+              <th>Objectif</th>
+              <th>Titres</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...seasons].reverse().map((h) => {
+              const r = h.manager!;
+              return (
+                <tr key={h.season}>
+                  <td>{h.season}</td>
+                  <td>{teamName(w, r.clubId)} <span className="faint">({LEAGUE_LABEL[r.league] ?? r.league})</span></td>
+                  <td>{r.rank ? ordinal(r.rank) : "—"}</td>
+                  <td>
+                    {r.met === undefined ? "—" : <Badge tone={r.met ? "good" : "critical"}>{r.met ? "✓ Atteint" : "✗ Manqué"}</Badge>} <span className="faint">{r.objective ?? ""}</span>
+                  </td>
+                  <td>{r.trophies.length ? r.trophies.join(", ") : "—"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
   );
 }
 

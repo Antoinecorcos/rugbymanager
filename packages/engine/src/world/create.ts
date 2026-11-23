@@ -38,6 +38,17 @@ export function createWorld(setup: WorldSetup): World {
     }
   }
 
+  installCalendar(w, cal);
+  buildNationPools(w, [...new Set(cal.internationals.flatMap((i) => i.groups.flat()))], setup.seed);
+  return ensureWorldExtensions(w);
+}
+
+/** Creates the competitions and the scheduled fixtures of a season calendar (new world, next season). */
+export function installCalendar(w: World, cal: SeasonCalendar): void {
+  w.calendar = cal;
+  w.season = cal.season;
+  w.competitions = {};
+  w.fixtures = [];
   const competition = (id: string, kind: CompetitionState["kind"], teams: string[], knockout: Record<string, string>, groups?: string[][]): CompetitionState => {
     const info = COMPETITION_INFO[id] ?? { name: id, bonus: { offensive: "tries4", defensiveMargin: 7 } as const };
     const c: CompetitionState = { id, name: info.name, kind, teams, bonus: info.bonus, knockout, generatedStages: [] };
@@ -52,17 +63,22 @@ export function createWorld(setup: WorldSetup): World {
     competition(l.id, "league", teams, l.knockout);
     for (const r of l.rounds) for (const m of r.matches) push({ id: `${l.id}:J${r.round}:${m.home}-${m.away}`, competitionId: l.id, stage: `J${r.round}`, ...m });
   }
+  const pooled = (id: string, pools: string[][], rounds: { round: number; matches: { home: string }[] }[]) => {
+    for (const r of rounds)
+      for (const m of r.matches as Fixture[]) {
+        const pool = pools.findIndex((p) => p.includes(m.home)) + 1;
+        push({ ...m, id: `${id}:poule-${pool}-J${r.round}:${m.home}-${m.away}`, competitionId: id, stage: `poule-${pool}-J${r.round}` });
+      }
+  };
   for (const cup of cal.cups) {
     competition(cup.id, "cup", cup.pools.flat(), cup.knockout, cup.pools);
-    for (const r of cup.rounds)
-      for (const m of r.matches) {
-        const pool = cup.pools.findIndex((p) => p.includes(m.home)) + 1;
-        push({ id: `${cup.id}:poule-${pool}-J${r.round}:${m.home}-${m.away}`, competitionId: cup.id, stage: `poule-${pool}-J${r.round}`, ...m });
-      }
+    pooled(cup.id, cup.pools, cup.rounds);
   }
   for (const i of cal.internationals) {
-    competition(i.id, "international", i.groups.flat(), {}, i.groups);
-    for (const r of i.rounds) for (const m of r.matches) push({ id: `${i.id}:J${r.round}:${m.home}-${m.away}`, competitionId: i.id, stage: `J${r.round}`, ...m });
+    competition(i.id, "international", i.groups.flat(), i.knockout ?? {}, i.groups);
+    // World Cup: pools then knock-out; other competitions: rounds.
+    if (i.knockout) pooled(i.id, i.groups, i.rounds);
+    else for (const r of i.rounds) for (const m of r.matches) push({ id: `${i.id}:J${r.round}:${m.home}-${m.away}`, competitionId: i.id, stage: `J${r.round}`, ...m });
   }
 
   // Every club fixture must reference a known club.
@@ -70,7 +86,5 @@ export function createWorld(setup: WorldSetup): World {
     if (w.competitions[f.competitionId]!.kind === "international") continue;
     for (const t of [f.home, f.away]) if (!w.clubs[t]) throw new Error(`Fixture ${f.id}: unknown club "${t}"`);
   }
-  buildNationPools(w, [...new Set(cal.internationals.flatMap((i) => i.groups.flat()))], setup.seed);
   w.fixtures.sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-  return ensureWorldExtensions(w);
 }

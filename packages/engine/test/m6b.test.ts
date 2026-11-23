@@ -105,6 +105,7 @@ describe("contracts and money", () => {
     }
     expect(reason).toBe("dismissed");
     expect(w.manager!.dismissed).toBeDefined();
+    expect(w.manager!.offers).toBeDefined();
     expect(w.news.some((n) => n.text.includes("Ultimatum"))).toBe(true);
   });
 });

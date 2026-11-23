@@ -1,8 +1,9 @@
 /**
  * Plays the 2026-27 season from the game's start date (1 July 2026).
- * Usage: pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club <id>]
+ * Usage: pnpm saison [graine] [--jusqua AAAA-MM-JJ] [--club <id>] [--saisons N]
  *   pnpm saison                       → whole season, honours and tables
  *   pnpm saison demo --jusqua 2026-11-30 --club toulouse
+ *   pnpm saison demo --saisons 3      → enchaîne 2026-27, 2027-28 et 2028-29 (bilan de la dernière)
  */
 import {
   advanceTo,
@@ -11,6 +12,7 @@ import {
   leagueTable,
   NATION_NAME_FR,
   seasonSummary,
+  startNextSeason,
   stageLabel,
   type World,
 } from "@ovalie/engine";
@@ -30,6 +32,13 @@ const t0 = Date.now();
 const w: World = worldFromDatabase(readDatabase(), readCalendar(), seed);
 console.log(`\n=== Saison ${w.season} — début de partie le ${formatDateFr(w.date)} (graine « ${seed} ») ===`);
 console.log(`${Object.keys(w.clubs).length} clubs, ${Object.values(w.players).filter((p) => !p.virtual).length} joueurs, ${w.fixtures.length} matchs au calendrier avant les phases finales.`);
+const seasons = Math.max(1, Number(opt("--saisons") ?? 1));
+for (let k = 1; k < seasons; k++) {
+  advanceTo(w, addDays(w.calendar.end, 1));
+  const champion = w.competitions.top14?.outcome?.champion;
+  const r = startNextSeason(w);
+  console.log(`Saison ${w.history!.at(-1)!.season} : champion du Top 14 ${champion ? w.clubs[champion]!.name : "?"} — passage à ${r.season} (${r.transfers} transferts, ${r.retired} retraites, ${r.movements.length} montées et descentes).`);
+}
 const end = until ?? addDays(w.calendar.end, 1);
 advanceTo(w, end);
 console.log(`Simulation jusqu'au ${formatDateFr(addDays(w.date, -1))} en ${((Date.now() - t0) / 1000).toFixed(1)} s.\n`);
@@ -57,7 +66,7 @@ if (finished.length) {
   console.log("");
 }
 if (summary.movements.length) {
-  console.log("=== Montées et descentes pour 2027-2028 ===");
+  console.log(`=== Montées et descentes pour ${Number(w.season.slice(0, 4)) + 1}-${Number(w.season.slice(0, 4)) + 2} ===`);
   for (const m of summary.movements) console.log(`${name(m.club).padEnd(28)} ${m.from} → ${m.to} (${m.reason})`);
   console.log("");
 }

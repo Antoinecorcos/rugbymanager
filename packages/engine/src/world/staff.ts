@@ -93,7 +93,8 @@ export function staffWage(s: StaffMember, league: string): number {
 /** Free staff looking for a club (idempotent): a few candidates per role, of every level. */
 export function initStaffMarket(w: World): void {
   if (w.staffMarket) return;
-  const rng = new Rng(`${w.seed}:staff-market`);
+  // A new market every season (the first season keeps the original seed).
+  const rng = new Rng(`${w.seed}:staff-market${w.season === "2026-2027" ? "" : `:${w.season}`}`);
   const out: StaffMember[] = [];
   for (const role of ROLES) {
     for (let i = 0; i < 4; i++) {

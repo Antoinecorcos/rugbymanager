@@ -13,7 +13,7 @@ import type { PlayerState, World, WorldClub } from "./types.js";
 /** Approximate level (1–20 scale) of each nation's best players, 2026 (World Rugby ranking order). */
 export const NATION_LEVEL: Record<string, number> = {
   RSA: 15.6, IRL: 15.4, NZL: 15.4, FRA: 15.3, ENG: 15.0, ARG: 14.6, SCO: 14.6, AUS: 14.3, ITA: 13.9, FIJ: 13.7, WAL: 13.4, JPN: 13.0,
-  GEO: 12.8, SAM: 12.2, TGA: 12.0, ESP: 11.6, POR: 11.8, URU: 11.6, USA: 11.4, ROU: 11.2, CHI: 11.0, CAN: 11.0, NAM: 10.6, BEL: 10.4, NED: 10.2,
+  GEO: 12.8, SAM: 12.2, TGA: 12.0, ESP: 11.6, POR: 11.8, URU: 11.6, USA: 11.4, ROU: 11.2, CHI: 11.0, CAN: 11.0, NAM: 10.6, BEL: 10.4, NED: 10.2, ZIM: 10.0, HKG: 9.6,
 };
 
 /**

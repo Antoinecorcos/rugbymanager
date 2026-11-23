@@ -23,6 +23,7 @@ export const LEAGUE_LABEL: Record<string, string> = {
   TOP14: "Top 14",
   PROD2: "Pro D2",
   NATIONALE: "Nationale",
+  NATIONALE2: "Nationale 2",
   PREM: "PREM",
   URC: "URC",
   OTHER: "Invité",
@@ -38,6 +39,7 @@ export const COMPETITION_SHORT: Record<string, string> = {
   "challenge-cup": "Challenge Cup",
   "nations-championship": "Nations Ch.",
   "six-nations": "Six Nations",
+  "world-cup": "Coupe du monde",
 };
 
 const MORE_NATIONS: Record<string, string> = {
@@ -119,7 +121,7 @@ export function clubAccent(colors: readonly [string, string] | undefined, surfac
   return { accent, ink };
 }
 
-const STAGE_FR: Record<string, string> = { barrage: "Barrage", demi: "Demi-finale", finale: "Finale", access: "Match d'accession", huitieme: "Huitième de finale", quart: "Quart de finale" };
+const STAGE_FR: Record<string, string> = { barrage: "Barrage", demi: "Demi-finale", finale: "Finale", access: "Match d'accession", huitieme: "Huitième de finale", quart: "Quart de finale", "petite-finale": "Match pour la 3e place", "place-3": "Match pour la 3e place" };
 /** "J12" → "12e journée", "poule-2-J3" → "Poule 2 · J3", "demi" → "Demi-finale". */
 export function stageFr(stage: string): string {
   const j = /^J(\d+)$/.exec(stage);

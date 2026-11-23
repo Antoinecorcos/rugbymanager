@@ -36,6 +36,10 @@ export interface WorldClub {
   morale?: number;
   /** Finances (M6b; the manager's club). */
   finances?: ClubFinances;
+  /** Fictional club (promoted from Nationale 2, which is not in the database). */
+  generated?: boolean;
+  /** Head coach replaced by the manager (back in charge when the manager leaves). */
+  formerHeadCoach?: string;
 }
 
 /* ------------------------------------------------------------------ M6b: money and market */
@@ -52,6 +56,8 @@ export interface Contract {
   status?: SquadStatus;
   /** Medical joker: contract until the end of the season. */
   joker?: boolean;
+  /** World Cup joker: contract ends on this date (end of the World Cup). */
+  until?: IsoDate;
 }
 
 export type RevenueKind = "sponsors" | "tv" | "gate" | "subsidies" | "prizes" | "other";
@@ -79,7 +85,7 @@ export interface ClubFinances {
   transferBudget: number;
 }
 
-export type TransferKind = "preContract" | "buyout" | "medicalJoker" | "renewal";
+export type TransferKind = "preContract" | "buyout" | "medicalJoker" | "worldCupJoker" | "renewal";
 
 export interface TransferDeal {
   id: string;
@@ -288,6 +294,43 @@ export interface PlayerState {
   dev?: PlayerDevelopment;
   /** Current contract (M6b, estimated for real players). */
   contract?: Contract;
+  /** Previous seasons (M6c). */
+  career?: CareerLine[];
+}
+
+/** One past season of a player. */
+export interface CareerLine {
+  season: string;
+  clubId?: string;
+  appearances: number;
+  tries: number;
+  points: number;
+  caps: number;
+}
+
+/** Archive of a finished season (M6c). */
+export interface SeasonRecord {
+  season: string;
+  /** Champion and runner-up of each competition. */
+  honours: { competitionId: string; name: string; champion?: string; runnerUp?: string }[];
+  /** Promotions and relegations applied for the next season. */
+  movements: { club: string; from: string; to: string; reason: string }[];
+  /** The manager's season. */
+  manager?: {
+    clubId: string;
+    league: string;
+    rank?: number;
+    objective?: string;
+    target?: number;
+    met?: boolean;
+    trophies: string[];
+    confidence?: number;
+    reputation?: number;
+    verdict?: string;
+    jiffAverage?: number;
+    /** JIFF sanction: points deducted next season. */
+    jiffPenalty?: number;
+  };
 }
 
 export interface FixtureResult {
@@ -337,6 +380,8 @@ export interface CompetitionState {
   seeds?: string[];
   /** Final outcome when finished. */
   outcome?: CompetitionOutcome;
+  /** Points added to (or deducted from) the league table, e.g. JIFF sanctions (team → points). */
+  adjustments?: Record<string, number>;
 }
 
 export interface CompetitionOutcome {
@@ -394,6 +439,10 @@ export interface World {
   staffMarket?: StaffMember[];
   /** AI clubs' approaches to the manager's players whose contract ends (player id → club, date). */
   approaches?: Record<string, { club: string; date: IsoDate }>;
+  /** Finished seasons, oldest first (M6c). */
+  history?: SeasonRecord[];
+  /** Season whose end has been processed (verdict, job offers) — see `closeSeason`. */
+  closedSeason?: string;
   /** Version of the world extensions (save migration). */
   version?: number;
 }

@@ -20,6 +20,7 @@ export const COMPETITION_INFO: Record<string, { name: string; bonus: BonusRules 
   "challenge-cup": { name: "Challenge Cup", bonus: { offensive: "margin3", defensiveMargin: 7 } },
   "nations-championship": { name: "Nations Championship", bonus: TRIES4_BONUS },
   "six-nations": { name: "Tournoi des Six Nations", bonus: TRIES4_BONUS },
+  "world-cup": { name: "Coupe du monde", bonus: TRIES4_BONUS },
 };
 
 /** Neutral venues of the finals. */
@@ -43,7 +44,7 @@ export const loserOf = (f: Fixture): string => (f.result!.winner === 1 ? f.home 
 /** Regular-season (or pool) table of a competition. */
 export function leagueTable(w: World, comp: string, teams?: string[], stage: (s: string) => boolean = isRound): TableRow[] {
   const c = w.competitions[comp]!;
-  return computeTable(teams ?? c.teams, fixturesOf(w, comp, stage));
+  return computeTable(teams ?? c.teams, fixturesOf(w, comp, stage), stage === isRound ? c.adjustments : undefined);
 }
 
 /** Adds a knock-out fixture (never in the past: a late stage is played on the current day). */
@@ -69,6 +70,7 @@ export const NATION_NAME_FR: Record<string, string> = {
   FRA: "France", ENG: "Angleterre", IRL: "Irlande", SCO: "Écosse", WAL: "Pays de Galles", ITA: "Italie", NZL: "Nouvelle-Zélande",
   RSA: "Afrique du Sud", AUS: "Australie", ARG: "Argentine", FIJ: "Fidji", JPN: "Japon", GEO: "Géorgie", SAM: "Samoa", TGA: "Tonga",
   ESP: "Espagne", POR: "Portugal", ROU: "Roumanie", URU: "Uruguay", USA: "États-Unis", CAN: "Canada", CHI: "Chili", NAM: "Namibie", BEL: "Belgique", NED: "Pays-Bas",
+  HKG: "Hong Kong", ZIM: "Zimbabwe",
 };
 
 // ------------------------------------------------------------------ progression
@@ -81,6 +83,7 @@ export function progressCompetitions(w: World): void {
   if (w.competitions["champions-cup"] && w.competitions["challenge-cup"]) progressEurope(w);
   if (w.competitions["nations-championship"]) progressNationsChampionship(w);
   if (w.competitions["six-nations"]) progressSixNations(w);
+  if (w.competitions["world-cup"]) progressWorldCup(w);
 }
 
 /** Top 14, Pro D2, Nationale: top 6 (barrages 3v6 / 4v5, semis, final) + access matches. */
@@ -123,14 +126,15 @@ function progressFrenchLeague(w: World, id: string): void {
   const accessDone = !lower || (access?.result !== undefined);
   if (final?.result && accessDone && !c.outcome) {
     const champion = winnerOf(final);
-    const relegated = id === "nationale" ? [] : [rank[rank.length - 1]!];
+    // Nationale: no relegation in 2026-27 (the league grows to 16 clubs), then the last two go down to Nationale 2.
+    const relegated = id !== "nationale" ? [rank[rank.length - 1]!] : w.season === "2026-2027" ? [] : rank.slice(-2);
     const notes: string[] = [];
     if (access) {
       const keep = winnerOf(access) === rank[accessRank];
       if (!keep) relegated.push(rank[accessRank]!);
       notes.push(`Access match : ${nameOf(w, access.home)} ${access.result!.score[0]}-${access.result!.score[1]} ${nameOf(w, access.away)}`);
     }
-    if (id === "nationale") notes.push("Pas de relégation en 2026-2027 (passage de la Nationale à 16 clubs).");
+    if (id === "nationale" && w.season === "2026-2027") notes.push("Pas de relégation en 2026-2027 (passage de la Nationale à 16 clubs).");
     c.outcome = { champion, runnerUp: loserOf(final), ranking: rank, relegated, notes };
     const label = id === "top14" ? "Champion de France ! Le Bouclier de Brennus" : `Champion de ${c.name}`;
     news(w, id, [champion], `${label} pour ${nameOf(w, champion)}, vainqueur de ${nameOf(w, loserOf(final))} en finale (${final.result.score[0]}-${final.result.score[1]}).`, 3);
@@ -201,7 +205,7 @@ const compareSeed = (a: TableRow, b: TableRow) =>
   b.points - a.points || b.pointsFor - b.pointsAgainst - (a.pointsFor - a.pointsAgainst) || b.triesFor - a.triesFor || a.team.localeCompare(b.team);
 
 /** Quarter-finals: W(1v16) v W(8v9), W(4v13) v W(5v12), W(2v15) v W(7v10), W(3v14) v W(6v11). */
-function progressBracket(w: World, c: CompetitionState): void {
+function progressBracket(w: World, c: CompetitionState, finalVenue?: string): void {
   const seeds = c.seeds!;
   const seedOf = (t: string) => seeds.indexOf(t);
   const order = (a: string, b: string): [string, string] => (seedOf(a) <= seedOf(b) ? [a, b] : [b, a]);
@@ -217,13 +221,14 @@ function progressBracket(w: World, c: CompetitionState): void {
   }
   const sf = fixturesOf(w, c.id, (s) => s === "demi");
   if (played(sf) && generate(c, "finale")) {
-    const venue = w.calendar.cups.find((x) => x.id === c.id)?.finalVenue;
+    const venue = finalVenue ?? w.calendar.cups.find((x) => x.id === c.id)?.finalVenue;
     addFixture(w, c, "finale", c.knockout.finale!, ...order(winnerOf(sf[0]!), winnerOf(sf[1]!)), { neutral: true, venue });
   }
   const final = fixturesOf(w, c.id, (s) => s === "finale")[0];
-  if (final?.result && !c.outcome) {
+  if (final?.result && !c.outcome && c.kind === "cup") {
     c.outcome = { champion: winnerOf(final), runnerUp: loserOf(final), ranking: seeds };
-    news(w, c.id, [winnerOf(final), loserOf(final)], `${nameOf(w, winnerOf(final))} remporte la ${c.name} à Lyon (${final.result.score[0]}-${final.result.score[1]} contre ${nameOf(w, loserOf(final))}) !`, 3);
+    const city = final.venue?.split(", ")[1] ?? "Lyon";
+    news(w, c.id, [winnerOf(final), loserOf(final)], `${nameOf(w, winnerOf(final))} remporte la ${c.name} à ${city} (${final.result.score[0]}-${final.result.score[1]} contre ${nameOf(w, loserOf(final))}) !`, 3);
   }
 }
 
@@ -263,4 +268,66 @@ function progressSixNations(w: World): void {
   notes.push(`Cuillère de bois : ${nameOf(w, ranking.at(-1)!)}`);
   c.outcome = { champion: ranking[0], runnerUp: ranking[1], ranking, notes };
   news(w, c.id, [], `${nameOf(w, ranking[0]!)} remporte le Tournoi des Six Nations${slam === ranking[0] ? " avec le Grand Chelem" : ""}.`, 3);
+}
+
+/**
+ * Rugby World Cup: six pools of four, the 12 first two and the four best thirds in the round of 16
+ * (no rematch of a pool), then a fixed bracket, a bronze final and the final. Players of
+ * eliminated nations go back to their clubs.
+ */
+function progressWorldCup(w: World): void {
+  const c = w.competitions["world-cup"]!;
+  const pools = fixturesOf(w, c.id, (s) => s.startsWith("poule"));
+  if (!played(pools)) return;
+  const poolOf = (t: string) => c.groups!.findIndex((g) => g.includes(t));
+  if (generate(c, "huitieme")) {
+    const tables = c.groups!.map((g) => leagueTable(w, c.id, g, (s) => s.startsWith("poule")));
+    const level = (k: number) => tables.map((t) => t[k]!).sort(compareSeed);
+    const thirds = level(2).slice(0, 4);
+    const seeds = [...level(0), ...level(1), ...thirds].map((r) => r.team);
+    // No rematch of a pool in the round of 16: swap opponents when needed.
+    for (let i = 0; i < 8; i++) {
+      if (poolOf(seeds[i]!) !== poolOf(seeds[15 - i]!)) continue;
+      for (let j = 0; j < 8; j++) {
+        if (j === i) continue;
+        const a = seeds[15 - i]!;
+        const b = seeds[15 - j]!;
+        if (poolOf(seeds[i]!) !== poolOf(b) && poolOf(seeds[j]!) !== poolOf(a)) {
+          seeds[15 - i] = b;
+          seeds[15 - j] = a;
+          break;
+        }
+      }
+    }
+    c.seeds = seeds;
+    for (let i = 0; i < 8; i++) addFixture(w, c, "huitieme", c.knockout.huitiemes!, seeds[i]!, seeds[15 - i]!, { neutral: true });
+    const out = c.teams.filter((t) => !seeds.includes(t));
+    for (const n of out) releaseNation(w, n);
+    news(w, c.id, [], `Coupe du monde : fin des poules. ${out.includes("FRA") ? "La France est éliminée." : `Qualifiés pour les huitièmes : ${seeds.map((t) => nameOf(w, t)).join(", ")}.`}`, out.includes("FRA") ? 3 : 2);
+  }
+  const venue = w.calendar.internationals.find((x) => x.id === c.id)?.finalsVenue;
+  const before = new Set(fixturesOf(w, c.id, (s) => !s.startsWith("poule")).map((f) => f.id));
+  progressBracket(w, c, venue);
+  for (const f of w.fixtures) if (f.competitionId === c.id && !before.has(f.id)) f.neutral = true;
+  // Losers of each knock-out round go home (semi-finalists play the bronze final).
+  for (const f of fixturesOf(w, c.id, (s) => s === "huitieme" || s === "quart")) if (f.result) releaseNation(w, loserOf(f));
+  const sf = fixturesOf(w, c.id, (s) => s === "demi");
+  if (played(sf) && generate(c, "petite-finale")) {
+    addFixture(w, c, "petite-finale", c.knockout.petiteFinale ?? c.knockout.finale!, loserOf(sf[0]!), loserOf(sf[1]!), { neutral: true, venue });
+  }
+  const bronze = fixturesOf(w, c.id, (s) => s === "petite-finale")[0];
+  const final = fixturesOf(w, c.id, (s) => s === "finale")[0];
+  if (bronze?.result) for (const t of [bronze.home, bronze.away]) releaseNation(w, t);
+  if (final?.result && bronze?.result && !c.outcome) {
+    const champion = winnerOf(final);
+    c.outcome = { champion, runnerUp: loserOf(final), ranking: [champion, loserOf(final), winnerOf(bronze), loserOf(bronze)], notes: [`Troisième : ${nameOf(w, winnerOf(bronze))}`] };
+    for (const t of [final.home, final.away]) releaseNation(w, t);
+    news(w, c.id, [], `${nameOf(w, champion)} est championne du monde ! Victoire ${Math.max(...final.result.score)}-${Math.min(...final.result.score)} contre ${nameOf(w, loserOf(final))} en finale.`, 3);
+  }
+}
+
+/** The players of an eliminated nation leave the national team today (once). */
+function releaseNation(w: World, nation: string): void {
+  if (!generate(w.competitions["world-cup"]!, `sortie-${nation}`)) return;
+  for (const ps of Object.values(w.players)) if (ps.duty?.nation === nation && ps.duty.until > w.date) ps.duty.until = w.date;
 }

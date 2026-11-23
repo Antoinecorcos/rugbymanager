@@ -36,7 +36,7 @@ import { MatchReportScreen } from "./screens/MatchReport";
 import { CalendarScreen } from "./screens/Calendar";
 import { CompetitionsScreen } from "./screens/Competitions";
 import { ClubScreen } from "./screens/Club";
-import { SeasonEndScreen } from "./screens/SeasonEnd";
+import { JobOffers, SeasonEndScreen } from "./screens/SeasonEnd";
 import { LiveMatchScreen } from "./screens/LiveMatch";
 import { TrainingScreen } from "./screens/Training";
 import { MedicalScreen } from "./screens/Medical";
@@ -237,10 +237,11 @@ function TopBar({ world, busy }: { world: World; busy: boolean }) {
 }
 
 
-/** The board has sacked the manager: the career is over (M6b). */
+/** The board has sacked the manager (M6b); other clubs may offer him a job (M6c). */
 function DismissedScreen({ world }: { world: World }) {
   const m = world.manager!;
   const club = world.clubs[m.clubId]!;
+  const offers = (m.offers ?? []).filter((o) => o.until >= world.date);
   return (
     <div className="dismissed">
       <div className="modal-card">
@@ -248,10 +249,11 @@ function DismissedScreen({ world }: { world: World }) {
         <div className="modal-card__kicker">{formatDateFr(m.dismissed!.date)}</div>
         <h1 className="display" style={{ margin: 0 }}>Vous êtes démis de vos fonctions</h1>
         <p className="muted">{m.dismissed!.reason}</p>
-        <p className="faint">
-          Bilan : réputation {Math.round(m.reputation ?? 50)}/100. Une nouvelle carrière vous attend peut-être ailleurs.
-        </p>
-        <Button variant="primary" size="lg" onClick={() => game.quit()}>
+        <div style={{ textAlign: "left" }}>
+          <JobOffers w={world} offers={offers} title={offers.length ? "Des clubs vous proposent un poste" : "Offres d'emploi"} />
+        </div>
+        <p className="faint">{offers.length ? "Acceptez une offre pour reprendre votre carrière, ou retournez au menu." : `Réputation ${Math.round(m.reputation ?? 50)}/100 : aucun club ne vous propose de poste pour l'instant.`}</p>
+        <Button variant={offers.length ? "secondary" : "primary"} size="lg" onClick={() => game.quit()}>
           Menu principal
         </Button>
       </div>

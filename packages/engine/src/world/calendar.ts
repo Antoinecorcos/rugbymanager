@@ -46,6 +46,8 @@ export interface InternationalSchedule {
   /** Placement finals (Nations Championship): one date per placement match, best first. */
   finals?: IsoDate[];
   finalsVenue?: string;
+  /** Knock-out stage dates (World Cup: huitiemes, quarts, demiFinales, petiteFinale, finale). */
+  knockout?: Record<string, IsoDate>;
 }
 
 /** International window: players of these nations leave their clubs. */

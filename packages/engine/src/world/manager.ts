@@ -16,6 +16,7 @@ import { playerLevel, selectionScore, selectMatchTeam } from "../squad/selection
 import { addDays, type IsoDate } from "./dates.js";
 import { advanceDay, clubPool, freshnessOf, fullName, isFit, isInjured, isOnDuty, isSuspended, type PlayedFixture } from "./simulate.js";
 import type { Fixture, PlayerState, World } from "./types.js";
+import { closeSeason } from "./rollover.js";
 
 export type CareerStart = "noDiploma" | "bigClub";
 
@@ -70,6 +71,19 @@ export interface ManagerState {
   dismissed?: { date: IsoDate; reason: string };
   /** Press conference answered before a fixture (fixture id → morale effect for the match). */
   press?: Record<string, number>;
+  /** Job offers from other clubs (end of season, after a dismissal). */
+  offers?: JobOffer[];
+  /** Clubs managed, oldest first. */
+  spells?: { clubId: string; from: IsoDate; to?: IsoDate }[];
+}
+
+export interface JobOffer {
+  clubId: string;
+  date: IsoDate;
+  /** The president's main objective for the coming season. */
+  objective: string;
+  /** Offer valid until this date. */
+  until: IsoDate;
 }
 
 export interface ReportTeam {
@@ -128,7 +142,9 @@ export function startCareer(w: World, profile: ManagerProfile, clubId: string): 
     newsRead: w.news.length,
   };
   w.manager = m;
+  if (club.headCoach) club.formerHeadCoach = club.headCoach;
   club.headCoach = profile.name;
+  m.spells = [{ clubId, from: w.date }];
   w.reports ??= {};
   w.news.push({ date: w.date, topic: "club", clubs: [clubId], text: `${profile.name} est nommé manager de ${club.name}. Bienvenue !`, importance: 3 });
   initSquadRelations(w);
@@ -165,7 +181,10 @@ export const canPlay = (ps: PlayerState | undefined, d: IsoDate): boolean => !!p
 
 /** Next unplayed fixture of a club (on or after the world date). */
 export function nextFixture(w: World, clubId: string): Fixture | undefined {
-  return w.fixtures.find((f) => !f.result && f.date >= w.date && (f.home === clubId || f.away === clubId));
+  // Knock-out fixtures are appended when generated: take the earliest date, not the first in the list.
+  let next: Fixture | undefined;
+  for (const f of w.fixtures) if (!f.result && f.date >= w.date && (f.home === clubId || f.away === clubId) && (!next || f.date < next.date)) next = f;
+  return next;
 }
 
 export const planFor = (m: ManagerState, fixtureId?: string): TacticalPlan => m.plans[(fixtureId !== undefined ? m.matchPlans[fixtureId] : undefined) ?? m.activePlan] ?? m.plans[0]!;
@@ -355,7 +374,11 @@ export function continueCareer(w: World, maxDays = 60): ContinueResult {
   let days = 0;
   for (;;) {
     if (m.dismissed) return { reason: "dismissed", days };
-    if (w.date >= end) return { reason: "seasonEnd", days };
+    if (w.date >= end) {
+      // The president's verdict and the job offers (idempotent).
+      closeSeason(w);
+      return m.dismissed ? { reason: "dismissed", days } : { reason: "seasonEnd", days };
+    }
     const today = w.fixtures.find((f) => f.date === w.date && !f.result && (f.home === m.clubId || f.away === m.clubId));
     if (today) return { reason: "matchDay", days, fixture: today };
     if (days >= maxDays) return { reason: "limit", days };

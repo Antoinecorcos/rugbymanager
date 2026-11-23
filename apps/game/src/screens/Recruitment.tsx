@@ -132,7 +132,7 @@ function SearchPanel({ w, onOffer, onScout }: { w: World; onOffer: (id: string) 
     },
   ];
   return (
-    <Panel flush title={`${rows.length} joueurs`} subtitle="Pré-contrats pour la saison prochaine, rachats de contrat, joker médical en cas de blessure longue">
+    <Panel flush title={`${rows.length} joueurs`} subtitle="Pré-contrats pour la saison prochaine, rachats de contrat, joker médical en cas de blessure longue, jokers Coupe du monde pendant le tournoi">
       <div className="filters">
         <label className="field">
           <span className="field__label">Nom</span>
@@ -249,7 +249,7 @@ function ContractsPanel({ w, onOffer }: { w: World; onOffer: (id: string) => voi
         const d = pendingDeal(w, ps.player.id);
         if (d) return <Badge tone="critical">Part à {w.clubs[d.to]?.shortName}</Badge>;
         const e = ps.contract?.expires ?? end;
-        return e <= end ? <Badge tone="warning">{ps.contract?.joker ? "Joker, fin de saison" : `Juin ${e}`}</Badge> : <span>Juin {e}</span>;
+        return e <= end ? <Badge tone="warning">{ps.contract?.until ? "Joker Coupe du monde" : ps.contract?.joker ? "Joker, fin de saison" : `Juin ${e}`}</Badge> : <span>Juin {e}</span>;
       },
       sort: (ps) => ps.contract?.expires ?? 0,
     },

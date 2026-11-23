@@ -14,9 +14,10 @@ const KO_LABEL: Record<string, string> = {
   finale: "Finale",
   quarts: "Quarts de finale",
   huitiemes: "Huitièmes de finale",
+  petiteFinale: "Match pour la 3e place",
 };
 
-const ORDER = ["top14", "prod2", "nationale", "champions-cup", "challenge-cup", "prem", "urc", "nations-championship", "six-nations"];
+const ORDER = ["top14", "prod2", "nationale", "champions-cup", "challenge-cup", "prem", "urc", "world-cup", "nations-championship", "six-nations"];
 
 function Scorers({ w, comp }: { w: World; comp: string }) {
   const [key, setKey] = useState<"tries" | "points">("tries");
@@ -148,6 +149,14 @@ export function CompetitionsScreen({ competitionId }: { competitionId?: string }
             {c.outcome.notes?.length ? ` — ${c.outcome.notes.join(" ; ")}` : ""}
           </div>
         )}
+        {c.adjustments && Object.keys(c.adjustments).length > 0 && (
+          <div className="muted" style={{ marginTop: 4 }}>
+            Pénalités au classement :{" "}
+            {Object.entries(c.adjustments)
+              .map(([t, pts]) => `${teamName(w, t)} ${pts > 0 ? "+" : ""}${pts} pts (règle JIFF)`)
+              .join(", ")}
+          </div>
+        )}
       </PageHeader>
       <Tabs value={id} onChange={(v) => navigate("competitions", v)} tabs={ids.map((x) => ({ value: x, label: competitionShort(x) }))} />
       <div className="grid grid--main-side">
@@ -155,13 +164,13 @@ export function CompetitionsScreen({ competitionId }: { competitionId?: string }
           {c.groups ? (
             <div className={c.groups.length > 2 ? "grid grid--2" : "stack"}>
               {c.groups.map((g, i) => (
-                <Panel key={i} title={c.kind === "international" ? `Conférence ${i + 1}` : `Poule ${i + 1}`} flush>
+                <Panel key={i} title={c.id === "world-cup" ? `Poule ${"ABCDEF"[i]}` : c.kind === "international" ? `Conférence ${i + 1}` : `Poule ${i + 1}`} flush>
                   <LeagueTable w={w} comp={c.id} rows={computeTable(g, fixturesOf(w, c.id, isRound))} highlight={me} compact={c.groups!.length > 2} />
                 </Panel>
               ))}
             </div>
           ) : (
-            <Panel title="Saison régulière" flush subtitle={c.id === "top14" ? "1-2 : demi-finales directes · 3-6 : barrages · 13e : access match · 14e : relégué" : c.id === "prod2" ? "1-2 : demi-finales · 3-6 : barrages · 15e : barrage d'accession · 16e : relégué" : undefined}>
+            <Panel title="Saison régulière" flush subtitle={c.id === "top14" ? "1-2 : demi-finales directes · 3-6 : barrages · 13e : access match · 14e : relégué" : c.id === "prod2" ? "1-2 : demi-finales · 3-6 : barrages · 15e : barrage d'accession · 16e : relégué" : c.id === "nationale" && w.season !== "2026-2027" ? "1-2 : demi-finales · 3-6 : barrages · 15e et 16e : relégués en Nationale 2" : undefined}>
               <LeagueTable w={w} comp={c.id} highlight={me} />
             </Panel>
           )}

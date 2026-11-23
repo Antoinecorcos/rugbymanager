@@ -21,6 +21,7 @@ export const DEAL_FR: Record<TransferKind, string> = {
   preContract: "Pré-contrat (arrivée le 1er juillet)",
   buyout: "Rachat de contrat (arrivée le 1er juillet)",
   medicalJoker: "Joker médical (arrivée immédiate, jusqu'à la fin de la saison)",
+  worldCupJoker: "Joker Coupe du monde (arrivée immédiate, jusqu'à la fin du tournoi)",
   renewal: "Prolongation de contrat",
 };
 
@@ -47,13 +48,14 @@ export function OfferDialog({ w, playerId, onClose }: { w: World; playerId: stri
       </Shell>
     );
 
+  const joker = terms.kind === "medicalJoker" || terms.kind === "worldCupJoker";
   const total = payrollWith(w, playerId, salary * 1000, terms.kind);
   const cap = salaryCap(w, m.clubId);
   const fin = club.finances;
   const agentFee = Math.round((salary * 1000 * 0.08) / 1000) * 1000;
   const submit = async () => {
     setBusy(true);
-    const r = await game.act({ type: "offer", playerId, offer: { salary: salary * 1000, years, status } });
+    const r = await game.act({ type: "offer", playerId, offer: { salary: salary * 1000, years: joker ? 1 : years, status } });
     setBusy(false);
     setError(r.error);
     setResult(r.negotiation ?? null);
@@ -90,9 +92,9 @@ export function OfferDialog({ w, playerId, onClose }: { w: World; playerId: stri
           <label className="field">
             <span className="field__label">Durée</span>
             <select className="select" value={years} onChange={(e) => setYears(Number(e.target.value))}>
-              {(terms.kind === "medicalJoker" ? [1] : [1, 2, 3, 4, 5]).map((y) => (
+              {(joker ? [1] : [1, 2, 3, 4, 5]).map((y) => (
                 <option key={y} value={y}>
-                  {terms.kind === "medicalJoker" ? "Fin de saison" : `${y} an${y > 1 ? "s" : ""}`}
+                  {terms.kind === "medicalJoker" ? "Fin de saison" : terms.kind === "worldCupJoker" ? "Fin de la Coupe du monde" : `${y} an${y > 1 ? "s" : ""}`}
                 </option>
               ))}
             </select>
@@ -110,7 +112,7 @@ export function OfferDialog({ w, playerId, onClose }: { w: World; playerId: stri
         </div>
         <KeyValues
           items={[
-            [terms.kind === "medicalJoker" ? "Masse salariale cette saison" : "Masse salariale la saison prochaine", <span key="p" className={total > (fin?.wageBudget ?? Infinity) || total > cap ? "text-critical" : undefined}>{formatMoney(total)}</span>],
+            [joker ? "Masse salariale cette saison" : "Masse salariale la saison prochaine", <span key="p" className={total > (fin?.wageBudget ?? Infinity) || total > cap ? "text-critical" : undefined}>{formatMoney(total)}</span>],
             ["Budget salarial / salary cap", `${fin ? formatMoney(fin.wageBudget) : "—"} / ${Number.isFinite(cap) ? formatMoney(cap) : "pas de plafond"}`],
             ["Indemnité et commission d'agent", `${formatMoney(terms.fee + agentFee)} (budget de recrutement : ${fin ? formatMoney(fin.transferBudget) : "—"})`],
           ]}

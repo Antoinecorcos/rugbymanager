@@ -327,11 +327,37 @@ export function PlayerScreen({ playerId }: { playerId: string }) {
               ["Arrivée au club", ps.profile?.arrivalYear ? String(ps.profile.arrivalYear) : "inconnue"],
               ["Club précédent", ps.profile?.previousClub ?? (ps.profile?.homegrown ? "formé au club" : "inconnu")],
               ["Statut JIFF", ps.profile?.jiff === undefined ? "inconnu" : ps.profile.jiff ? `oui${ps.profile.jiffEstimated ? " (estimé)" : ""}` : "non"],
-              ["Contrat", ps.contract ? `jusqu'en juin ${ps.contract.expires}${ps.contract.joker ? " (joker médical)" : ""}` : "sans club"],
+              ["Contrat", ps.contract ? (ps.contract.until ? `joker Coupe du monde, jusqu'au ${ps.contract.until.split("-").reverse().join("/")}` : `jusqu'en juin ${ps.contract.expires}${ps.contract.joker ? " (joker médical)" : ""}`) : "sans club"],
               ["Salaire annuel", ps.contract ? `${formatMoney(ps.contract.salary)}${ps.contract.estimated ? " (estimé)" : ""}` : "—"],
               ...(pendingDeal(w, playerId) ? [["Saison prochaine", `engagé avec ${w.clubs[pendingDeal(w, playerId)!.to]?.name ?? "?"}`] as [string, string]] : []),
             ]}
           />
+          {ps.career?.length ? (
+            <table className="table" style={{ marginTop: "var(--sp-3)" }}>
+              <thead>
+                <tr>
+                  <th>Saison</th>
+                  <th>Club</th>
+                  <th style={{ textAlign: "right" }}>Matchs</th>
+                  <th style={{ textAlign: "right" }}>Essais</th>
+                  <th style={{ textAlign: "right" }}>Points</th>
+                  <th style={{ textAlign: "right" }}>Sél.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...ps.career].reverse().map((c) => (
+                  <tr key={c.season}>
+                    <td>{c.season}</td>
+                    <td>{c.clubId ? (w.clubs[c.clubId]?.name ?? c.clubId) : "—"}</td>
+                    <td className="num" style={{ textAlign: "right" }}>{c.appearances}</td>
+                    <td className="num" style={{ textAlign: "right" }}>{c.tries}</td>
+                    <td className="num" style={{ textAlign: "right" }}>{c.points}</td>
+                    <td className="num" style={{ textAlign: "right" }}>{c.caps}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : null}
         </Panel>
 
         <Panel title="D'où vient sa note ?" subtitle="Le niveau est expliqué composante par composante">

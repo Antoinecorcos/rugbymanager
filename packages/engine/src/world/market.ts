@@ -204,6 +204,38 @@ export function medicalJokerAllowed(w: World): boolean {
   return longInjuries > jokers;
 }
 
+/**
+ * World Cup joker (M6c): during the World Cup, a club may sign a temporary player for each of its
+ * players away with his country, until the end of the tournament.
+ */
+export function worldCupJokerAllowed(w: World): { until: IsoDate } | undefined {
+  const m = w.manager;
+  const win = w.calendar.windows.find((x) => x.id === "coupe-du-monde" && x.start <= w.date && x.end >= w.date);
+  if (!m || !win) return undefined;
+  const away = (w.squads[m.clubId] ?? []).filter((id) => {
+    const d = w.players[id]?.duty;
+    return d && d.until >= w.date && w.competitions["world-cup"]?.teams.includes(d.nation);
+  }).length;
+  const jokers = (w.squads[m.clubId] ?? []).filter((id) => w.players[id]?.contract?.until).length;
+  return away > jokers ? { until: win.end } : undefined;
+}
+
+/** World Cup jokers whose contract has ended leave the club (daily). */
+export function releaseWorldCupJokers(w: World): void {
+  for (const [clubId, ids] of Object.entries(w.squads)) {
+    for (const id of [...ids]) {
+      const ps = w.players[id];
+      if (!ps?.contract?.until || ps.contract.until >= w.date) continue;
+      ids.splice(ids.indexOf(id), 1);
+      delete ps.clubId;
+      delete ps.contract;
+      delete ps.human;
+      (w.freeAgents ??= []).push(id);
+      if (clubId === w.manager?.clubId) w.news.push({ date: w.date, topic: "transfer", clubs: [clubId], text: `${nameOf(ps)}, joker Coupe du monde, quitte le club : son contrat est terminé.`, importance: 1 });
+    }
+  }
+}
+
 /** What kind of deal an offer to this player would be, and its fee. */
 export function dealTerms(w: World, playerId: string): DealTerms | { error: string } {
   const m = w.manager;
@@ -214,7 +246,11 @@ export function dealTerms(w: World, playerId: string): DealTerms | { error: stri
   if (pending) return { error: pending.to === m.clubId ? "Il a déjà signé chez vous pour la saison prochaine." : `Il s'est déjà engagé avec ${w.clubs[pending.to]?.name ?? pending.to} pour la saison prochaine.` };
   if (ps.academy) return { error: ps.clubId === m.clubId ? "Intégrez-le depuis le centre de formation." : "Les espoirs des autres centres de formation ne sont pas recrutables." };
   if (ps.clubId === m.clubId) return { kind: "renewal", fee: 0, effective: nextSeasonStart(w) };
-  if (!ps.clubId) return medicalJokerAllowed(w) ? { kind: "medicalJoker", fee: 0, effective: w.date } : { kind: "preContract", fee: 0, effective: nextSeasonStart(w) };
+  if (!ps.clubId) {
+    if (medicalJokerAllowed(w)) return { kind: "medicalJoker", fee: 0, effective: w.date };
+    if (worldCupJokerAllowed(w)) return { kind: "worldCupJoker", fee: 0, effective: w.date };
+    return { kind: "preContract", fee: 0, effective: nextSeasonStart(w) };
+  }
   const c = ps.contract;
   if (!c || c.expires <= end) return { kind: "preContract", fee: 0, effective: nextSeasonStart(w) };
   // Buyout: the club wants about half of the remaining salary, much more for a key player.
@@ -228,7 +264,7 @@ export function dealTerms(w: World, playerId: string): DealTerms | { error: stri
 /** Payroll a new contract would bring the manager's club to (this season for a joker, next season otherwise). */
 export function payrollWith(w: World, playerId: string, salary: number, kind: TransferKind): number {
   const m = w.manager!;
-  if (kind === "medicalJoker") return payroll(w, m.clubId) + salary;
+  if (kind === "medicalJoker" || kind === "worldCupJoker") return payroll(w, m.clubId) + salary;
   const ps = w.players[playerId];
   const base = nextSeasonPayroll(w, m.clubId);
   if (kind === "renewal" && ps?.contract && ps.contract.expires > seasonEndYear(w)) return base - ps.contract.salary + salary;
@@ -285,7 +321,7 @@ export function makeOffer(w: World, playerId: string, offer: Offer): Negotiation
   if (interest.score < 0.25) return fail(`${nameOf(ps)} n'est pas intéressé : ${interest.reasons[0] ?? "le projet ne le convainc pas"}.`, "rejected");
   const salaryOk = offer.salary >= demand.salary * (1 - (interest.score - 0.5) * 0.2);
   const statusOk = STATUS_RANK[offer.status] >= STATUS_RANK[demand.status] - (interest.score >= 0.7 ? 1 : 0);
-  const yearsOk = Math.abs(offer.years - demand.years) <= 1;
+  const yearsOk = terms.kind === "medicalJoker" || terms.kind === "worldCupJoker" || Math.abs(offer.years - demand.years) <= 1;
   if (!salaryOk || !statusOk || !yearsOk) {
     const why = !salaryOk ? `il demande ${Math.round(demand.salary / 1000).toLocaleString("fr-FR")} k€ par an` : !statusOk ? `il veut le statut « ${STATUS_FR[demand.status]} »` : `il souhaite un contrat de ${demand.years} an${demand.years > 1 ? "s" : ""}`;
     return fail(`L'agent de ${nameOf(ps)} refuse : ${why}.`, "countered");
@@ -297,11 +333,13 @@ export function makeOffer(w: World, playerId: string, offer: Offer): Negotiation
   const contract: Contract = {
     clubId: m.clubId,
     salary: Math.round(offer.salary / 1000) * 1000,
-    expires: terms.kind === "medicalJoker" ? end : (terms.kind === "renewal" ? Math.max(end, ps.contract?.expires ?? end) : end) + offer.years,
+    expires: terms.kind === "medicalJoker" || terms.kind === "worldCupJoker" ? end : (terms.kind === "renewal" ? Math.max(end, ps.contract?.expires ?? end) : end) + offer.years,
     estimated: false,
     status: offer.status,
-    ...(terms.kind === "medicalJoker" ? { joker: true } : {}),
+    ...(terms.kind === "medicalJoker" || terms.kind === "worldCupJoker" ? { joker: true } : {}),
   };
+  const wc = terms.kind === "worldCupJoker" ? worldCupJokerAllowed(w) : undefined;
+  if (wc) contract.until = wc.until;
   if (terms.kind === "renewal") contract.expires = end + offer.years;
   const deal: TransferDeal = {
     id: `${terms.kind}:${playerId}:${w.date}`,
@@ -334,6 +372,10 @@ export function makeOffer(w: World, playerId: string, offer: Offer): Negotiation
     joinClub(w, ps, m.clubId, contract);
     deal.done = true;
     text = `${nameOf(ps)} arrive comme joker médical jusqu'à la fin de la saison.`;
+  } else if (terms.kind === "worldCupJoker") {
+    joinClub(w, ps, m.clubId, contract);
+    deal.done = true;
+    text = `${nameOf(ps)} arrive comme joker Coupe du monde jusqu'au ${contract.until!.split("-").reverse().join("/")}.`;
   } else {
     text = `${nameOf(ps)} s'engage pour la saison prochaine (${offer.years} an${offer.years > 1 ? "s" : ""}, ${Math.round(contract.salary / 1000).toLocaleString("fr-FR")} k€ par an)${terms.fee ? ` ; indemnité de ${Math.round(terms.fee / 1000).toLocaleString("fr-FR")} k€` : ""}. Il arrivera le 1er juillet.`;
   }
@@ -406,7 +448,7 @@ export function weeklyMarket(w: World): void {
     const ref = levels[Math.min(20, levels.length - 1)] ?? 11;
     const candidates = pool
       .filter((ps) => ps.clubId !== clubId && best(ps) === pos && !pending.has(ps.player.id) && (ps.contract?.expires ?? 0) <= end)
-      .filter((ps) => Math.abs(playerLevel(ps.player) - ref) <= 1.6 && interestIn(w, ps, clubId).score >= 0.45)
+      .filter((ps) => Math.abs(playerLevel(ps.player) - ref) <= 1.6 && ageOn(ps.player.birthDate, w.date) <= 34 && interestIn(w, ps, clubId).score >= 0.45)
       .sort((a, b) => playerLevel(b.player) - playerLevel(a.player));
     const target = candidates[rng.int(0, Math.min(2, candidates.length - 1))];
     if (!target) continue;
@@ -456,3 +498,27 @@ export function initFreeAgents(w: World): void {
 
 /** JIFF count of a match sheet (for the JIFF rule). */
 export const jiffCount = (w: World, playerIds: readonly string[]): number => playerIds.filter((id) => isJiff(w.players[id])).length;
+
+/**
+ * Reminders (first Monday of January, March, May and June): the manager's players whose contract
+ * ends in June without a renewal or a move, best first.
+ */
+export function contractReminders(w: World): void {
+  const m = w.manager;
+  if (!m || Number(w.date.slice(8, 10)) > 7 || !["01", "03", "05", "06"].includes(w.date.slice(5, 7))) return;
+  const end = seasonEndYear(w);
+  const pending = new Set((w.transfers ?? []).filter((t) => !t.done).map((t) => t.playerId));
+  const expiring = (w.squads[m.clubId] ?? [])
+    .map((id) => w.players[id]!)
+    .filter((ps) => ps.contract && ps.contract.expires <= end && !ps.contract.joker && !pending.has(ps.player.id))
+    .sort((a, b) => playerLevel(b.player) - playerLevel(a.player));
+  if (!expiring.length) return;
+  const names = expiring.slice(0, 5).map(nameOf).join(", ");
+  w.news.push({
+    date: w.date,
+    topic: "transfer",
+    clubs: [m.clubId],
+    text: `Fins de contrat : ${expiring.length} joueur${expiring.length > 1 ? "s" : ""} de l'effectif ${expiring.length > 1 ? "seront libres" : "sera libre"} le 1er juillet sans prolongation (${names}${expiring.length > 5 ? "…" : ""}). Prolongez ceux que vous voulez garder depuis l'écran Recrutement.`,
+    importance: 2,
+  });
+}

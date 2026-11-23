@@ -14,6 +14,8 @@ import {
   boardRequest,
   hireStaff,
   makeOffer,
+  acceptJob,
+  startNextSeason,
   scoutPlayer,
   type World,
 } from "@ovalie/engine";
@@ -190,6 +192,23 @@ function act(w: World, a: GameAction): { error: string | null; talk?: Extract<Re
         return true;
       });
       return { error };
+    }
+    case "acceptJob": {
+      const error = acceptJob(w, a.clubId);
+      if (error) return { error };
+      const club = w.clubs[a.clubId]!;
+      // At the end of a season, the new job starts with the next season.
+      if (w.date > w.calendar.end) {
+        const r = startNextSeason(w);
+        return { error: null, message: `Vous prenez les rênes de ${club.name} pour la saison ${r.season}.` };
+      }
+      return { error: null, message: `Vous êtes le nouveau manager de ${club.name}.` };
+    }
+    case "nextSeason": {
+      if (w.date <= w.calendar.end) return { error: "La saison n'est pas terminée." };
+      if (w.manager?.dismissed) return { error: "Vous n'avez plus de club." };
+      const r = startNextSeason(w);
+      return { error: null, message: `Saison ${r.season} : ${r.transfers} transferts, ${r.retired} retraites.` };
     }
   }
 }
