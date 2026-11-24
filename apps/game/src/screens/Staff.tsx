@@ -7,6 +7,7 @@ import { Button } from "../ui/components";
 import { useWorld } from "../game/client";
 import { myClub } from "../game/selectors";
 import { Badge, Empty, PageHeader, Panel } from "../ui/components";
+import { askConfirm } from "../ui/confirm";
 
 const ROLE_EFFECT: Record<StaffRole, string> = {
   assistant: "Progression générale des joueurs.",
@@ -112,7 +113,7 @@ function StaffMarket() {
   const current = club.staff?.find((s) => s.role === role);
   const candidates = (w.staffMarket ?? []).filter((s) => s.role === role).sort((a, b) => staffQuality(b) - staffQuality(a));
   const hire = async (id: string, name: string) => {
-    if (!window.confirm(`Engager ${name} ? ${current ? `${current.name} quittera le club (indemnité : trois mois de salaire).` : ""}`)) return;
+    if (!(await askConfirm(`Engager ${name} ? ${current ? `${current.name} quittera le club (indemnité : trois mois de salaire).` : ""}`, "Engager"))) return;
     const r = await game.act({ type: "hireStaff", staffId: id });
     setMsg(r.error ?? `${name} rejoint votre staff.`);
   };

@@ -7,6 +7,7 @@ import type { CatalogueClub, SaveInfo } from "../game/protocol";
 import { navigate } from "../game/router";
 import { openFile, saveFile } from "../game/files";
 import { Button, ClubCrest, Segmented, Stars } from "../ui/components";
+import { askConfirm } from "../ui/confirm";
 
 const NATIONALITIES = ["FRA", "ENG", "IRL", "SCO", "WAL", "ITA", "NZL", "RSA", "AUS", "ARG", "FIJ", "GEO", "SAM", "TGA", "ESP", "POR", "ROU", "URU", "USA", "CAN", "JPN"];
 const SEED_WORDS = ["brennus", "ovalie", "mêlée", "essai", "chandelle", "drop", "touche", "maul", "grattage", "cadrage", "relance", "bouclier"];
@@ -136,7 +137,7 @@ export function TitleScreen() {
                   variant="ghost"
                   size="sm"
                   onClick={async () => {
-                    if (confirm(`Supprimer la sauvegarde « ${sv.kind === "manual" ? sv.name : sv.clubName} » ?`)) {
+                    if (await askConfirm(`Supprimer la sauvegarde « ${sv.kind === "manual" ? sv.name : sv.clubName} » ?`, "Supprimer")) {
                       await game.deleteSave(sv.slot);
                       setSaves(await game.saves());
                     }

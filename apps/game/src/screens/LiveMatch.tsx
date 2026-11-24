@@ -32,6 +32,7 @@ import { formatClock, VIEW_MODES, type ViewMode } from "../live/timeline";
 import { Badge, Button, ClubCrest, CompareLegend, CompareRow, Segmented, Tabs } from "../ui/components";
 import { PenaltyRulesEditor, rulesOf, TargetsEditor } from "../ui/instructions";
 import { TACTIC_INFO } from "./Tactics";
+import { askConfirm } from "../ui/confirm";
 
 const DECISION_SECONDS = 10;
 const CHOICE_FR: Record<PenaltyOption, string> = { goal: "Prendre les points", touch: "Jouer la touche", scrum: "Choisir la mêlée", tap: "Jouer vite (à la main)" };
@@ -306,7 +307,7 @@ function LiveMatch({ info, player, w }: { info: LiveInfo; player: LivePlayer; w:
   };
 
   const leave = async () => {
-    if (!finished && !window.confirm("Quitter le direct ? Le staff termine le match à votre place (ses choix sur pénalité, remplacements prévus).")) return;
+    if (!finished && !(await askConfirm("Quitter le direct ? Le staff termine le match à votre place (ses choix sur pénalité, remplacements prévus).", "Quitter le direct"))) return;
     await finish();
   };
 

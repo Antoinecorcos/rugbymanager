@@ -8,6 +8,7 @@ import { href } from "../game/router";
 import { myClub, myClubId, squadOf } from "../game/selectors";
 import { Badge, Button, DataTable, Empty, Freshness, KeyValues, PageHeader, Panel, type Column } from "../ui/components";
 import { RiskBadge } from "../ui/human";
+import { askConfirm } from "../ui/confirm";
 
 export function MedicalScreen() {
   const w = useWorld();
@@ -22,7 +23,7 @@ export function MedicalScreen() {
   const factor = medicalFactor(club);
 
   const rush = async (ps: PlayerState) => {
-    if (!window.confirm(`Accélérer le retour de ${fullName(ps.player)} ? Il reviendra plus tôt mais restera fragile (risque de blessure doublé) pendant 4 semaines.`)) return;
+    if (!(await askConfirm(`Accélérer le retour de ${fullName(ps.player)} ? Il reviendra plus tôt mais restera fragile (risque de blessure doublé) pendant 4 semaines.`, "Accélérer le retour"))) return;
     const r = await game.act({ type: "rushBack", playerId: ps.player.id });
     setMsg(r.error ?? `${fullName(ps.player)} : retour accéléré.`);
   };

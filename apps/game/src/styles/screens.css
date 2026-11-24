@@ -1016,3 +1016,8 @@
 .editor__group legend { padding: 0 6px; font-size: var(--fs-sm); color: var(--text-2); text-transform: uppercase; letter-spacing: 0.04em; }
 .editor__attr { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: 2px 0; font-size: var(--fs-sm); }
 .input--num { width: 64px; height: 28px; text-align: right; }
+
+/* In-game confirmation (M8) */
+.confirm-backdrop { z-index: 200; }
+.dialog.confirm { width: min(460px, 100%); }
+.confirm__text { margin: 0 0 var(--sp-4); line-height: 1.5; }

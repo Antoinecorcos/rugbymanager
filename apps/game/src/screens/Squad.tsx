@@ -7,6 +7,7 @@ import { manager, myClubId, squadOf } from "../game/selectors";
 import { game } from "../game/client";
 import { Badge, Button, DataTable, Empty, Freshness, PageHeader, Panel, Segmented, Stars, StatusPill, Tabs, type Column } from "../ui/components";
 import { MoraleBadge, Trend } from "../ui/human";
+import { askConfirm } from "../ui/confirm";
 
 /** Club-competition totals of a player this season (internationals counted apart). */
 export function clubTotals(w: World, ps: PlayerState) {
@@ -158,7 +159,7 @@ function AcademyPanel({ w, clubId }: { w: World; clubId: string }) {
   const [msg, setMsg] = useState<string | null>(null);
   const rows = (w.academies?.[clubId] ?? []).map((pid) => w.players[pid]!).filter(Boolean);
   const act = async (type: "promote" | "release", ps: PlayerState) => {
-    if (type === "release" && !window.confirm(`Libérer ${fullName(ps.player)} ? Il quittera le club.`)) return;
+    if (type === "release" && !(await askConfirm(`Libérer ${fullName(ps.player)} ? Il quittera le club.`, "Libérer"))) return;
     const r = await game.act({ type, playerId: ps.player.id });
     setMsg(r.error ?? (type === "promote" ? `${fullName(ps.player)} rejoint l'effectif professionnel.` : `${fullName(ps.player)} quitte le centre de formation.`));
   };

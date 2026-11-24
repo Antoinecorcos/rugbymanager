@@ -71,6 +71,7 @@ try {
   await page.getByText("Recruter un membre du staff").scrollIntoViewIfNeeded();
   await shot("45-staff-marche");
   await page.getByRole("button", { name: "Engager" }).first().click();
+  await page.locator(".dialog.confirm").getByRole("button", { name: "Engager" }).click();
   await page.getByText(/rejoint votre staff|insuffisant/).waitFor();
   step("staff");
 

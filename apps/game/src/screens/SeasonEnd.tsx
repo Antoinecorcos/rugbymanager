@@ -9,6 +9,7 @@ import { myClub, myClubId, myLeagueId, teamName } from "../game/selectors";
 import { Badge, Button, ClubCrest, Empty, KeyValues, PageHeader, Panel } from "../ui/components";
 import { LeagueTable } from "../ui/widgets";
 import { OfferDialog } from "../ui/offer";
+import { askConfirm } from "../ui/confirm";
 
 const TIERS = ["NATIONALE2", "NATIONALE", "PROD2", "TOP14"];
 
@@ -207,7 +208,7 @@ export function JobOffers({ w, offers, title = "Offres d'emploi" }: { w: World; 
   const [busy, setBusy] = useState(false);
   const accept = async (o: JobOffer) => {
     const club = w.clubs[o.clubId]!;
-    if (!window.confirm(`Accepter l'offre de ${club.name} ? Vous quitterez ${w.clubs[w.manager!.clubId]!.name}.`)) return;
+    if (!(await askConfirm(`Accepter l'offre de ${club.name} ? Vous quitterez ${w.clubs[w.manager!.clubId]!.name}.`, "Accepter l'offre"))) return;
     setBusy(true);
     const r = await game.act({ type: "acceptJob", clubId: o.clubId });
     setBusy(false);
