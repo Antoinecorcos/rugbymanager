@@ -57,6 +57,12 @@ Captures : `docs/captures/70-menu-sauvegardes.png`, `71-editeur-joueur.png`, `72
   - Les installeurs sont joints au run.
 - **Prérequis pour construire en local** : Rust stable et, sous Linux, WebKitGTK 4.1 (`libwebkit2gtk-4.1-dev` et les paquets listés dans le workflow).
 
+## Jeu en ligne — GitHub Pages
+- **Le workflow** `.github/workflows/pages.yml` construit le jeu et le publie sur GitHub Pages à chaque push sur la branche par défaut. On peut aussi le lancer à la main depuis l'onglet Actions.
+- **L'adresse** : https://antoinecorcos.github.io/rugbymanager/
+- **Réglage à faire une seule fois** : Settings → Pages → Build and deployment → Source : « GitHub Actions ».
+- **Le jeu est entièrement statique**. Le moteur tourne dans le navigateur et les sauvegardes restent dans le navigateur du joueur. Export et import de fichiers fonctionnent normalement.
+
 ## Équilibrage — `pnpm equilibrage [graines] [saisons] [club]`
 Le script joue plusieurs saisons sur la vraie base, pour plusieurs graines, avec un manager dont le staff compose l'équipe. Il mesure :
 - les matchs du Top 14 face aux moyennes réelles ;
