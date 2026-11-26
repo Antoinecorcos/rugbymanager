@@ -45,6 +45,10 @@ export function shotFor(mode: CameraMode, frame: Frame): Shot {
   // Cut to a set-piece camera once the players are (almost) in place.
   const settled = a.phase === "action" || (a.phase === "setup" && a.t > 0.55);
   switch (a.kind) {
+    case "ruck":
+      // A little tighter on the breakdown, without cutting: the main camera zooms in.
+      if (a.phase === "action") return { ...main(), fov: 18 };
+      break;
     case "scrum":
     case "maul":
       if (settled) return { name: "tight", position: [bx - d * 6, 6.5, bz + 15], target: [bx, 0.7, bz], fov: 38 };

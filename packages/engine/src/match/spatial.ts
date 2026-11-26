@@ -19,9 +19,44 @@ export interface Pose {
   ball: Vec;
 }
 
+/** A player of one side, by shirt slot (1..15). */
+export interface SlotRef {
+  side: Side;
+  slot: number;
+}
+
+/**
+ * Who does what at a tackle and a ruck (World Rugby law 15): the tackled player on the ground
+ * places the ball back, the tackler rolls away, the first defender on his feet over the ball
+ * contests it (jackal), the first attackers clean him out, and the scrum-half plays the ball
+ * from the base of the ruck.
+ */
+export interface BreakdownRoles {
+  tackled?: SlotRef;
+  tackler?: SlotRef;
+  cleaners: SlotRef[];
+  jackal?: SlotRef;
+  scrumHalf?: SlotRef;
+  /** Ruck: fast, normal, slow, turnover or penalty. */
+  outcome?: string;
+  /** Carry: the tackler was beaten (line break, defender beaten). */
+  missedTackle?: boolean;
+}
+
+/** Positions of some players at a moment inside the action (the others go straight to the end). */
+export interface MidPose {
+  /** Share of the action (0..1) when these positions are reached. */
+  at: number;
+  players: [(Vec | null)[], (Vec | null)[]];
+}
+
 export interface StepPoses {
   /** Formation taken during the dead time before the action (set pieces, restarts). */
   setup?: Pose;
+  /** Intermediate positions of the players who move twice (ruck: the jackal arrives, then is cleaned out). */
+  mid?: MidPose;
+  /** Tackle and ruck roles (carry, ruck). */
+  roles?: BreakdownRoles;
   /** Positions when the action ends. */
   end: Pose;
   /** Ball flight / run: from → (via) → to, with the apex height in metres (0 = on the ground / in hand). */
@@ -301,13 +336,21 @@ export function stepPoses(step: PlayStep, lineup: Lineup, index: number): StepPo
       const a = attackShape(att, to, false, seed, lineup[att]);
       if (carrierSlot) a[carrierSlot - 1] = to;
       const df = defenceShape(att, to, step.defOrg, seed, lineup[def], false);
+      // The tackler meets the carrier at the end of the carry.
+      const tacklerSlot = slotOf(lineup[def], step.tackler);
+      // Carry outcome (close/wide:break|beat|dominant|tackle): beaten defenders are left behind.
+      const missed = /:(break|beat)$/.test(step.detail ?? "");
+      if (tacklerSlot) df[tacklerSlot - 1] = missed ? v(to.x - d * 4, to.y + 1.3) : v(to.x + d * 0.75, to.y + 0.35);
       const via = wide ? v(from.x - d * 4, to.y) : undefined;
-      return withCarrier({ end: { players: both(att, a, df), ball: to }, ball: ground(from, to, via), inAir: false });
+      const roles: BreakdownRoles = { cleaners: [], ...(carrier && !missed ? { tackled: carrier } : {}), ...(tacklerSlot ? { tackler: { side: def, slot: tacklerSlot } } : {}) };
+      if (missed) roles.missedTackle = true;
+      return withCarrier({ end: { players: both(att, a, df), ball: to }, ball: ground(from, to, via), inAir: false, roles });
     }
     case "ruck":
+      return ruckPoses(step, lineup, seed, from, to, carrierSlot);
     case "tap":
     case "interception": {
-      const a = attackShape(att, to, step.kind === "ruck", seed, lineup[att]);
+      const a = attackShape(att, to, false, seed, lineup[att]);
       const df = defenceShape(att, to, step.defOrg, seed, lineup[def]);
       if (step.kind === "interception" && carrierSlot) a[carrierSlot - 1] = to;
       return withCarrier({ end: { players: both(att, a, df), ball: to }, ball: ground(from, to), inAir: false });
@@ -387,6 +430,82 @@ export function stepPoses(step: PlayStep, lineup: Lineup, index: number): StepPo
     }
   }
 }
+
+/** First slot of a list that is on the field and not excluded. */
+const firstOf = (lineup: (string | null)[], prefs: number[], not: (number | undefined)[]): number | undefined =>
+  prefs.find((s) => lineup[s - 1] && !not.includes(s));
+
+/**
+ * Ruck (law 15). The tackled player lies just ahead of the ball, which he has placed back towards
+ * his team; the tackler rolls away. The first defender on his feet is over the ball (jackal) when
+ * the first two attackers arrive: they drive over the ball and push him off — unless he wins the
+ * ball (turnover, holding-on penalty). The scrum-half reaches the base of the ruck to play the ball;
+ * the defence sets its line behind the offside line (hindmost point of the ruck).
+ */
+function ruckPoses(step: PlayStep, lineup: Lineup, seed: number, from: Vec, b: Vec, tackledSlot: number | undefined): StepPoses {
+  const att = step.side;
+  const def = otherSide(att);
+  const d = dirOf(att);
+  const o = openSign(b.y);
+  const a = attackShape(att, b, false, seed, lineup[att]);
+  const df = defenceShape(att, b, step.defOrg, seed, lineup[def]);
+  const won = step.detail !== "turnover" && step.detail !== "penalty";
+  const cleaners = (step.support ?? []).map((id) => slotOf(lineup[att], id)).filter((sl): sl is number => !!sl && sl !== tackledSlot);
+  for (const sl of [6, 7, 8, 4, 5, 1, 3, 2]) {
+    if (cleaners.length >= 2) break;
+    if (lineup[att][sl - 1] && sl !== tackledSlot && !cleaners.includes(sl)) cleaners.push(sl);
+  }
+  const jackal = slotOf(lineup[def], step.contest) ?? firstOf(lineup[def], [7, 6, 8, 2], []);
+  const nine = firstOf(lineup[att], [9, 10, 15], [tackledSlot, ...cleaners]);
+  const midA: (Vec | null)[] = lineup[att].map(() => null);
+  const midD: (Vec | null)[] = lineup[def].map(() => null);
+  const set = (list: (Vec | null)[], slot: number | undefined, p: Vec) => {
+    if (slot && lineup[list === a || list === midA ? att : def][slot - 1]) list[slot - 1] = p;
+  };
+  // Tackled player on the ground, ball placed behind him.
+  set(a, tackledSlot, v(b.x + d * 0.8, b.y + 0.15));
+  set(midA, tackledSlot, v(b.x + d * 0.8, b.y + 0.15));
+  // Cleaners: arriving at the moment the jackal is on the ball, then driving over it.
+  const [c1, c2] = cleaners;
+  set(midA, c1, v(b.x - d * 0.7, b.y - 0.35));
+  set(midA, c2, v(b.x - d * 1.6, b.y + 0.55));
+  set(a, c1, v(b.x + d * (won ? 0.85 : 0.05), b.y - 0.3));
+  set(a, c2, v(b.x + d * (won ? 0.45 : -0.35), b.y + 0.5));
+  // Jackal: over the ball on his own side, then driven off (or he wins it).
+  set(midD, jackal, v(b.x + d * 0.4, b.y));
+  set(df, jackal, won ? v(b.x + d * 2.2, b.y + 0.9 * o) : v(b.x + d * 0.35, b.y + 0.1));
+  // Tackler: on the ground beside the ball, rolling away, then back on his side.
+  const tacklerSlot = slotOf(lineup[def], step.tackler);
+  if (tacklerSlot && tacklerSlot !== jackal) {
+    // He rolls clear to the side of the ruck before getting back on his feet.
+    set(midD, tacklerSlot, v(b.x + d * 0.9, b.y - 1.9 * o));
+    set(df, tacklerSlot, v(b.x + d * 2.4, b.y - 3 * o));
+  }
+  // Scrum-half: on his way, then at the base of the ruck.
+  set(midA, nine, v(b.x - d * 3.5, b.y + 2 * o));
+  set(a, nine, v(b.x - d * 0.9, b.y + 0.35 * o));
+  // No other defender inside the ruck: the line stands behind the offside line.
+  const offside = b.x + d * 1.4;
+  df.forEach((p, i) => {
+    if (!p || i + 1 === jackal || i + 1 === tacklerSlot) return;
+    if ((p.x - offside) * d < 0) df[i] = v(offside + d * (0.4 + Math.abs(jackitter(seed, i))), p.y);
+  });
+  const roles: BreakdownRoles = { cleaners: cleaners.slice(0, 2).map((slot) => ({ side: att, slot })) };
+  if (tackledSlot) roles.tackled = { side: att, slot: tackledSlot };
+  if (jackal) roles.jackal = { side: def, slot: jackal };
+  if (tacklerSlot && tacklerSlot !== jackal) roles.tackler = { side: def, slot: tacklerSlot };
+  if (nine) roles.scrumHalf = { side: att, slot: nine };
+  if (step.detail) roles.outcome = step.detail;
+  return {
+    end: { players: both(att, a, df), ball: b },
+    mid: { at: 0.4, players: both(att, midA, midD) },
+    ball: { from, to: b, height: 0 },
+    inAir: false,
+    roles,
+  };
+}
+
+const jackitter = (seed: number, i: number) => jitter(seed, i + 1, 21) * 0.6;
 
 /** Lineup after a step (steps carry the lineup only when it changes). */
 export function lineupAfter(previous: Lineup, step: PlayStep): Lineup {

@@ -174,6 +174,8 @@ export class MatchSimulation {
    * in big matches adds to it.
    */
   private teamForm: [number, number] = [0, 0];
+  /** Tackler of the last carry (shown getting up from the next ruck in the live view). */
+  private lastTackler: string | undefined;
 
   constructor(setup: MatchSetup, options: MatchOptions = {}) {
     this.setup = setup;
@@ -432,7 +434,7 @@ export class MatchSimulation {
   }
 
   /** Adds information to the current action (outcome known later). */
-  private annotate(patch: Partial<Pick<PlayStep, "playerId" | "detail" | "side">>): void {
+  private annotate(patch: Partial<Pick<PlayStep, "playerId" | "detail" | "side" | "tackler" | "support" | "contest">>): void {
     if (this.cur) Object.assign(this.cur.step, patch);
   }
 
@@ -1295,6 +1297,8 @@ export class MatchSimulation {
       carryAt ? (fp) => (fp.p.id === carryAt ? 5 : 1) : undefined,
     );
     if (!tackler) return;
+    this.annotate({ tackler: tackler.p.id });
+    this.lastTackler = tackler.p.id;
     const tps = this.pstat(tackler);
     const atk =
       mode === "close"
@@ -1574,6 +1578,10 @@ export class MatchSimulation {
     const threat = jackaler ? this.attr(jackaler, "jackal") * 0.6 + this.attr(jackaler, "strength") * 0.2 + this.attr(jackaler, "anticipation") * 0.2 : 6;
     for (const s of supporters) this.exert(s, 0.45);
     this.exert(jackaler, contestF * 0.4);
+    // Who is in the ruck, for the live view (no random number drawn).
+    const inRuck = supporters.filter((fp): fp is FieldPlayer => !!fp).map((fp) => fp.p.id);
+    this.annotate({ support: inRuck, ...(jackaler ? { contest: jackaler.p.id } : {}), ...(this.lastTackler && this.lastTackler !== jackaler?.p.id ? { tackler: this.lastTackler } : {}) });
+    this.lastTackler = undefined;
 
     const pTurn = clamp(0.042 * contestF * Math.exp((threat - support) * 0.065) * (ctx.dominant ? 1.9 : 1) * (ctx.isolated ? 1.7 : 1) * (0.75 + ref.breakdownStrictness * 0.5), 0.004, 0.35);
     const defDisc = jackaler ? this.attr(jackaler, "discipline") : 10;
@@ -1587,6 +1595,7 @@ export class MatchSimulation {
       const jps = this.pstat(jackaler);
       if (jps) jps.turnoversWon += 1;
       this.tick(this.rng.range(2, 4), true, att);
+      this.annotate({ detail: "turnover" });
       if (this.rng.chance(0.55)) {
         this.emit("ruckTurnover", { side: dside, playerId: jackaler?.p.id, importance: 1, detail: { penalty: true } });
         this.awardPenalty(dside, carrier, "Ballon non lâché");
@@ -1599,6 +1608,7 @@ export class MatchSimulation {
       return;
     }
     if (r < pTurn + pAttPen) {
+      this.annotate({ detail: "penalty" });
       this.tick(this.rng.range(2, 4), true, att);
       const professional = this.adv(att) > 78 && this.rng.chance(0.5);
       this.awardPenalty(att, jackaler, this.rng.pick(["Mains au sol dans le ruck", "Hors-jeu au ruck", "Joueur pas sur ses appuis", "Entrée sur le côté"]), { professional });
@@ -1606,6 +1616,7 @@ export class MatchSimulation {
     }
     // Attacking-side infringement at the ruck (sealing off, not releasing...).
     if (this.rng.chance(0.014 * (0.6 + ref.breakdownStrictness * 0.8) * (att === 1 ? 1.12 : 0.9))) {
+      this.annotate({ detail: "penalty" });
       this.tick(this.rng.range(2, 4), true, att);
       const off = supporters[0] ?? carrier;
       this.awardPenalty(dside, off, this.rng.pick(["Plongeon sur le ruck", "Ballon non libéré", "Obstruction"]));
@@ -1625,6 +1636,7 @@ export class MatchSimulation {
     ats.stats.ruckSpeedTotal += speed;
     if (speed < 3) ats.stats.fastRucks += 1;
     const quality: RuckQuality = speed < 3 ? "fast" : speed > 5 ? "slow" : "normal";
+    this.annotate({ detail: quality });
     if (quality === "fast") this.defOrg = Math.max(0.18, this.defOrg - (contestMode === "commit" ? 0.24 : 0.17));
     else if (quality === "normal") this.defOrg = Math.min(1, this.defOrg * 0.92 + 0.08);
     else this.defOrg = Math.min(1, this.defOrg + 0.28);

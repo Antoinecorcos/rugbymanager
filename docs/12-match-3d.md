@@ -12,6 +12,7 @@ Captures : `docs/captures/6*.png`.
 | `63-direct-3d-touche` | Plan serré d'une touche |
 | `64-direct-3d-maul` | Maul porté vers l'en-but |
 | `65-direct-3d-essai` | Célébration après l'essai |
+| `66-direct-3d-ruck` | Ruck : plaqué au sol, nettoyeurs qui poussent, demi de mêlée à la base, défense en ligne |
 
 ## Ce que voit le manager
 - **Vue 3D par défaut.** Le bouton « Vue 2D » / « Vue 3D » du bandeau bascule entre les deux, et le choix est mémorisé. Sans WebGL, le jeu passe tout seul en 2D et le signale.
@@ -58,11 +59,30 @@ Captures : `docs/captures/6*.png`.
   Les angles des articulations glissent d'un geste à l'autre, sans saut brusque.
 - **Le ballon** est un ovale qui tourne en spirale en vol, avec son ombre au sol. Il est tenu contre la poitrine par le porteur.
 
+## Rucks et fluidité
+Les rucks étaient la phase la plus saccadée : un ruck de 2 à 5 secondes était montré en moins d'une demi-seconde, et chaque action démarrait et s'arrêtait net.
+
+**Le ruck, d'après la règle 15 de World Rugby et la façon dont les équipes l'abordent :**
+1. Le plaqué va au sol et place le ballon en arrière, vers son camp.
+2. Le plaqueur lâche, roule hors du ruck, puis se relève sur le côté.
+3. Le premier défenseur sur ses appuis se place au-dessus du ballon, mains dessus : c'est le gratteur.
+4. Les deux premiers attaquants arrivent bas et le déblaient en poussant au-delà du ballon. Si le gratteur gagne le ballon (ballon volé, ballon non lâché), il reste dessus.
+5. Le demi de mêlée arrive à la base, se baisse, sort le ballon et passe vers le côté ouvert.
+6. Les autres défenseurs se placent derrière la ligne de hors-jeu (le point le plus en arrière du ruck), dans une posture « prêt » : genoux fléchis, mains devant.
+
+**Comment c'est rendu :**
+- **Le moteur dit qui fait quoi.** La trace donne le plaqueur, les deux soutiens, le gratteur et l'issue du ruck (rapide, normal, lent, ballon perdu, pénalité). Aucun tirage aléatoire de plus : le match est identique, ce que vérifie le test « never changes the match ».
+- **La couche spatiale place chaque rôle**, avec une étape intermédiaire. Le gratteur arrive sur le ballon pendant que les soutiens arrivent derrière, puis il est repoussé (ou reste s'il gagne). Le demi de mêlée rejoint la base. Un plaqueur battu reste en arrière.
+- **De nouveaux gestes** : gratteur, poussée des nettoyeurs (petits appuis rapides), gratteur repoussé (en arrière, bras écartés), plaqué qui place le ballon, demi de mêlée qui creuse, posture « prêt ». Le ballon passe dans les mains du demi de mêlée avant la passe.
+- **Le mouvement est lissé** : chaque joueur suit sa position par un ressort amorti (`live3d/motion.ts`). Il garde son élan d'une action à l'autre au lieu de s'arrêter, ne dépasse jamais sa cible, et ne saute que si la cible est loin (temps forts qui sautent des actions, remplacement). Le porteur du ballon suit de plus près, pour garder le ballon en main.
+- **Le temps d'un ruck** : il est montré 1,7 à 3,2 s à ×1 (au lieu de 0,4 s) et la caméra principale resserre un peu le cadre. Un match complet dure environ 15 minutes à ×1.
+
 ## Architecture
 ```
 apps/game/src/live/renderer.ts     Frame (positions, ballon, action en cours) et interface LiveView
 apps/game/src/live/player.ts       la lecture fournit aussi l'action en cours (type, phase, progression)
-apps/game/src/live3d/gestures.ts   PUR : geste et orientation de chaque joueur à partir de l'image affichée
+apps/game/src/live3d/gestures.ts   PUR : geste et orientation de chaque joueur à partir de l'image affichée (rôles du ruck)
+apps/game/src/live3d/motion.ts     PUR : suivi des positions par ressort amorti (pas d'arrêt entre deux actions)
 apps/game/src/live3d/director.ts   PUR : réalisation TV (plan, position, cible, focale)
 apps/game/src/live3d/athlete.ts    joueur articulé (Three.js) et poses par geste
 apps/game/src/live3d/stadium.ts    pelouse, poteaux, panneaux, tribunes, public, pylônes

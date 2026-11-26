@@ -113,10 +113,10 @@ describe("live playback timeline", () => {
     const ext = steps.filter((s) => isHighlight(s, ev, "extended")).length;
     expect(key).toBeLessThan(ext);
     expect(ext).toBeLessThan(steps.length / 2);
-    // A whole match at ×1 lasts about 6 to 14 minutes of real time.
+    // A whole match at ×1 lasts about 8 to 18 minutes of real time (rucks shown in full since M8).
     const ms = steps.reduce((t, s) => t + stepTiming(s, 1).setup + stepTiming(s, 1).action, 0);
-    expect(ms / 60000).toBeGreaterThan(6);
-    expect(ms / 60000).toBeLessThan(14);
+    expect(ms / 60000).toBeGreaterThan(8);
+    expect(ms / 60000).toBeLessThan(18);
     live.finish(w);
   });
 });

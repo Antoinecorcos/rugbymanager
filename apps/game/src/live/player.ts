@@ -177,7 +177,8 @@ export class LivePlayer {
     } else {
       const from = poses.setup?.players ?? c.start;
       const s = smooth(t);
-      const players = lerpPlayers(from, poses.end.players, s);
+      // Players with an intermediate position (ruck: jackal, cleaners, scrum-half) move in two legs.
+      const players = poses.mid ? viaMid(from, poses.mid, poses.end.players, t) : lerpPlayers(from, poses.end.players, s);
       const b = poses.ball;
       let ball: Vec;
       if (b.via) ball = t < 0.35 ? lerpVec(b.from, b.via, smooth(t / 0.35)) : lerpVec(b.via, b.to, smooth((t - 0.35) / 0.65));
@@ -237,8 +238,21 @@ export class LivePlayer {
   }
 }
 
+function viaMid(from: Players, mid: NonNullable<StepPoses["mid"]>, end: Players, t: number): Players {
+  return [0, 1].map((side) =>
+    end[side as 0 | 1].map((e, i) => {
+      const a = from[side as 0 | 1][i];
+      const m = mid.players[side as 0 | 1][i];
+      if (!e || !a) return e;
+      if (!m) return lerpVec(a, e, smooth(t));
+      return t < mid.at ? lerpVec(a, m, smooth(t / mid.at)) : lerpVec(m, e, smooth((t - mid.at) / (1 - mid.at)));
+    }),
+  ) as Players;
+}
+
 function actionOf(step: PlayStep, poses: StepPoses, phase: FrameAction["phase"], t: number): FrameAction {
   const a: FrameAction = { kind: step.kind, side: step.side, phase, t, from: poses.ball.from, to: poses.ball.to, inAir: poses.inAir, apex: poses.ball.height };
   if (step.detail) a.detail = step.detail;
+  if (poses.roles) a.roles = poses.roles;
   return a;
 }

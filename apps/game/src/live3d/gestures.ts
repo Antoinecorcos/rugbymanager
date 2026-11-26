@@ -25,7 +25,15 @@ export type GestureKind =
   | "pass"
   | "catch"
   | "dive"
-  | "celebrate";
+  | "celebrate"
+  // Breakdown (M8): the jackal over the ball, the clean-out drive, the jackal driven off,
+  // the tackled player placing the ball back, the scrum-half digging it out, the defensive stance.
+  | "jackal"
+  | "cleanout"
+  | "cleanedOut"
+  | "place"
+  | "dig"
+  | "ready";
 
 export interface Gesture {
   kind: GestureKind;
@@ -56,6 +64,9 @@ function nearest(players: (Vec | null)[], p: Vec, filter: (slot: number) => bool
   });
   return best;
 }
+
+/** Actions during which the ball is in open play (ready stance of the players waiting). */
+const OPEN_PLAY = new Set(["carry", "ruck", "maul", "receive", "contest", "tap", "interception"]);
 
 /** Gestures of every player for a frame. `velocities` in metres per second (null = unknown). */
 export function playerGestures(frame: Frame, velocities: Velocities): Gestures {
@@ -89,6 +100,17 @@ export function playerGestures(frame: Frame, velocities: Velocities): Gestures {
   const def: 0 | 1 = att === 0 ? 1 : 0;
   const live = a.phase === "action";
   const t = a.phase === "setup" ? 0 : a.phase === "done" ? 1 : a.t;
+
+  // Ball in open play: players standing near it wait in a ready stance (defenders lower).
+  if (OPEN_PLAY.has(a.kind)) {
+    for (const side of [0, 1] as const)
+      frame.players[side].forEach((p, i) => {
+        const g = out[side][i];
+        if (p && g?.kind === "idle" && dist(p, ball) < 28) out[side][i] = { kind: "ready", amount: side === def ? 1 : 0.55, face: g.face };
+      });
+  }
+  const roles = a.roles;
+  const role = (r: { side: 0 | 1; slot: number } | undefined, kind: GestureKind, amount: number, face?: number) => r && set(r.side, r.slot, kind, amount, face);
 
   switch (a.kind) {
     case "scrum": {
@@ -128,12 +150,27 @@ export function playerGestures(frame: Frame, velocities: Velocities): Gestures {
       break;
     }
     case "ruck": {
-      for (const side of [0, 1] as const)
-        frame.players[side].forEach((p, i) => {
-          if (p && dist(p, ball) < 2 && i + 1 !== 9) set(side, i + 1, "ruck", live ? Math.min(1, t * 3) : 1, dist(p, ball) > 0.2 ? angleTo(p, ball) : attackAngle(side));
-        });
-      const nine = pos(att, 9);
-      if (nine && live && t > 0.72 && dist(nine, ball) < 3.5) set(att, 9, "pass", (t - 0.72) / 0.28, attackAngle(att));
+      if (!roles) break;
+      const won = roles.outcome !== "turnover" && roles.outcome !== "penalty";
+      // Tackled player: on the ground, ball placed back towards his team.
+      role(roles.tackled, "place", 1, attackAngle(att));
+      // Tackler: still down beside the ball, then back on his feet.
+      if (t < 0.35) role(roles.tackler, "grounded", 0.8);
+      // Jackal: on his feet over the ball, hands on it, until the clean-out hits (or he wins it).
+      if (roles.jackal) {
+        if (t < 0.42 || !won) role(roles.jackal, "jackal", won ? Math.min(1, t * 3.5) : 1, attackAngle(def));
+        else role(roles.jackal, "cleanedOut", 1 - (t - 0.42) / 0.58, attackAngle(def));
+      }
+      // Cleaners: arrive low, then drive over the ball.
+      roles.cleaners.forEach((c, k) => {
+        if (t >= 0.3 + k * 0.12) role(c, "cleanout", Math.min(1, (t - 0.3 - k * 0.12) * 4), attackAngle(att));
+      });
+      // Scrum-half: at the base, digs the ball out, then passes to the open side.
+      if (roles.scrumHalf && won) {
+        const open = ball.y < 35 ? Math.PI / 2 : -Math.PI / 2;
+        if (t > 0.86) role(roles.scrumHalf, "pass", (t - 0.86) / 0.14, attackAngle(att) + (open - attackAngle(att)) * 0.5);
+        else if (t > 0.62) role(roles.scrumHalf, "dig", Math.min(1, (t - 0.62) * 5), attackAngle(att));
+      }
       break;
     }
     case "maul": {
@@ -145,13 +182,23 @@ export function playerGestures(frame: Frame, velocities: Velocities): Gestures {
     }
     case "carry":
     case "interception": {
-      if (!c || !live || t < 0.78) break;
-      const cp = pos(c.side, c.slot);
-      const tackler = cp && nearest(frame.players[c.side === 0 ? 1 : 0], cp);
-      if (tackler && tackler.d < 2.6) {
-        const k = (t - 0.78) / 0.22;
-        set(c.side, c.slot, "tackled", k);
-        set(c.side === 0 ? 1 : 0, tackler.slot, "tackle", k, angleTo(pos(c.side === 0 ? 1 : 0, tackler.slot)!, cp!));
+      if (!live) break;
+      // Tackle at the end of the carry; a beaten tackler dives and misses.
+      const tackler = roles?.tackler;
+      const cp = c ? pos(c.side, c.slot) : undefined;
+      if (tackler && roles?.missedTackle) {
+        if (t > 0.35) role(tackler, "tackle", Math.min(1, (t - 0.35) * 3));
+      } else if (tackler && cp && t > 0.74) {
+        const k = (t - 0.74) / 0.26;
+        role(tackler, "tackle", k, angleTo(pos(tackler.side, tackler.slot)!, cp));
+        if (c) set(c.side, c.slot, "tackled", k);
+      } else if (!tackler && c && cp && t > 0.78) {
+        const near = nearest(frame.players[c.side === 0 ? 1 : 0], cp);
+        if (near && near.d < 2.6) {
+          const k = (t - 0.78) / 0.22;
+          set(c.side, c.slot, "tackled", k);
+          set(c.side === 0 ? 1 : 0, near.slot, "tackle", k, angleTo(pos(c.side === 0 ? 1 : 0, near.slot)!, cp));
+        }
       }
       break;
     }

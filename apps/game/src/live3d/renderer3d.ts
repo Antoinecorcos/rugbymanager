@@ -8,7 +8,8 @@ import * as THREE from "three";
 import type { Frame, LiveView, TeamColours } from "../live/renderer";
 import { Athlete, type Kit } from "./athlete";
 import { CUT_SHOTS, shotFor, toWorld, type CameraMode, type Shot } from "./director";
-import { attackAngle, playerGestures, velocitiesBetween, type Gesture } from "./gestures";
+import { attackAngle, playerGestures, type Gesture, type Velocities } from "./gestures";
+import { follow, newFollower, type Follower } from "./motion";
 import { buildStadium } from "./stadium";
 
 export interface Match3DOptions {
@@ -58,8 +59,6 @@ export class Match3DRenderer implements LiveView {
   private names: [(string | null)[], (string | null)[]] = [[], []];
   private numbers: [(number | null)[], (number | null)[]] = [[], []];
   private frame: Frame | null = null;
-  private prev: Frame | undefined;
-  private prevTime = 0;
   private ticks: ((ms: number) => void)[] = [];
   private raf = 0;
   private last = 0;
@@ -228,7 +227,7 @@ export class Match3DRenderer implements LiveView {
     this.time += dt;
     const f = this.frame;
     // Nothing moves (pause, penalty decision, half-time): redraw about five times a second only.
-    const still = !!f && f === this.drawnFrame && this.camera.position.distanceTo(this.camGoal) < 0.05;
+    const still = !!f && f === this.drawnFrame && !this.moving && this.camera.position.distanceTo(this.camGoal) < 0.05;
     this.stillFor = still ? this.stillFor + dt : 0;
     if (this.stillFor > 0.4 && this.time - this.lastDraw < 0.2) return;
     if (f) this.update(f, dt);
@@ -244,20 +243,29 @@ export class Match3DRenderer implements LiveView {
   private camGoal = new THREE.Vector3();
 
   private update(f: Frame, dt: number): void {
-    const now = this.time * 1000;
-    // Velocities from the previous frame (the playback may hand the same frame twice).
-    if (!this.prev || f !== this.prev) {
-      const vel = velocitiesBetween(this.prev, f, Math.max(1, now - this.prevTime));
-      this.gestures = playerGestures(f, vel);
-      this.prev = f;
-      this.prevTime = now;
-    } else if (now - this.prevTime > 150) {
-      // Paused or waiting: nobody is moving.
-      this.gestures = playerGestures(f, velocitiesBetween(f, f, 1));
-      this.prevTime = now;
-    }
+    // Each player follows his target position with momentum (no stop at the end of each action).
+    const vel: Velocities = [[], []];
+    let moving = false;
     for (const side of [0, 1] as const) {
       f.players[side].forEach((p, i) => {
+        const m = (this.motion[side][i] ??= newFollower());
+        if (!p) {
+          m.placed = false;
+          vel[side][i] = null;
+          return;
+        }
+        // The ball carrier keeps close to the ball; the others take a quarter of a second to settle.
+        const carrier = f.carrier?.side === side && f.carrier.slot === i + 1;
+        follow(m, p.x, p.y, carrier ? 0.06 : 0.24, dt);
+        vel[side][i] = { x: m.vx, y: m.vy };
+        if (Math.abs(m.vx) + Math.abs(m.vy) > 0.05) moving = true;
+      });
+    }
+    const smoothed: Frame = { ...f, players: [0, 1].map((side) => f.players[side as 0 | 1].map((p, i) => (p ? { x: this.motion[side]![i]!.x, y: this.motion[side]![i]!.y } : null))) as Frame["players"] };
+    this.moving = moving;
+    this.gestures = playerGestures(smoothed, vel);
+    for (const side of [0, 1] as const) {
+      smoothed.players[side].forEach((p, i) => {
         const a = this.athletes[side][i]!;
         a.root.visible = !!p;
         if (!p) return;
@@ -273,6 +281,8 @@ export class Match3DRenderer implements LiveView {
   }
 
   private gestures: ReturnType<typeof playerGestures> | null = null;
+  private motion: [Follower[], Follower[]] = [[], []];
+  private moving = false;
 
   /** The referee keeps a few metres from the ball, on the defending side of play. */
   private updateReferee(f: Frame, dt: number): void {
@@ -296,7 +306,10 @@ export class Match3DRenderer implements LiveView {
   private tmp = new THREE.Vector3();
 
   private updateBall(f: Frame, dt: number): void {
-    const carrier = f.carrier && f.height < 0.6 ? this.athletes[f.carrier.side][f.carrier.slot - 1] : undefined;
+    // End of a ruck: the scrum-half has the ball in his hands before passing it.
+    const nine = f.action?.kind === "ruck" && f.action.phase === "action" && f.action.t > 0.84 ? f.action.roles?.scrumHalf : undefined;
+    const holder = f.carrier && f.height < 0.6 ? f.carrier : nine;
+    const carrier = holder ? this.athletes[holder.side][holder.slot - 1] : undefined;
     const [bx, , bz] = toWorld(f.ball.x, f.ball.y);
     if (carrier && carrier.root.visible) {
       carrier.chestPoint(this.tmp);

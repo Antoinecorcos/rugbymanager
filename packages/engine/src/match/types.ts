@@ -232,8 +232,14 @@ export interface PlayStep {
   to: [number, number];
   /** Ball carrier, kicker, thrower, scorer… */
   playerId?: string;
-  /** Carry: close or wide; kick: kick type; scrum/lineout: result; penaltyKick: choice. */
+  /** Carry: close or wide; kick: kick type; scrum/lineout: result; penaltyKick: choice; ruck: fast, normal, slow, turnover or penalty. */
   detail?: string;
+  /** Carry: the defender who made the tackle; ruck: that tackler, getting up. */
+  tackler?: string;
+  /** Ruck: the attackers who cleaned out over the ball. */
+  support?: string[];
+  /** Ruck: the defender who contested the ball (jackal). */
+  contest?: string;
   /** Defensive organisation (0..1) when the action starts. */
   defOrg: number;
   /** Events produced during the action: indexes [start, end) in the events array. */

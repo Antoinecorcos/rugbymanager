@@ -4,7 +4,7 @@
  * x along the pitch (home try line at 0, in-goals to -10 / 110), y across (0..70).
  */
 import { Application, Container, Graphics, Text } from "pixi.js";
-import type { PlayKind, Vec } from "@ovalie/engine";
+import type { BreakdownRoles, PlayKind, Vec } from "@ovalie/engine";
 
 export interface TeamColours {
   fill: string;
@@ -28,6 +28,8 @@ export interface FrameAction {
   inAir: boolean;
   /** Apex height of a kick (metres). */
   apex: number;
+  /** Tackle and ruck roles (who is tackled, who cleans out, the jackal, the scrum-half). */
+  roles?: BreakdownRoles;
 }
 
 export interface Frame {

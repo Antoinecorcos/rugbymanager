@@ -43,8 +43,9 @@ export interface StepTiming {
 }
 
 const BASE: Record<PlayStep["kind"], [number, number]> = {
-  carry: [0, 950],
-  ruck: [0, 420],
+  carry: [0, 1150],
+  // A ruck is shown long enough to read it: tackle, jackal, clean-out, scrum-half at the base (M8).
+  ruck: [0, 1700],
   maul: [0, 1500],
   kick: [0, 1500],
   dropGoal: [0, 1300],
@@ -68,7 +69,7 @@ export function stepTiming(step: PlayStep, speed: number): StepTiming {
   // Long carries (line breaks) and slow rucks take a little longer to show.
   let a = action;
   if (step.kind === "carry") a += Math.min(1400, Math.abs(step.to[0] - step.from[0]) * 45 + Math.abs(step.to[1] - step.from[1]) * 12);
-  if (step.kind === "ruck") a += Math.max(0, step.live - 3) * 120;
+  if (step.kind === "ruck") a += Math.min(1500, Math.max(0, step.live - 2.5) * 350);
   return { setup: setup / speed, action: a / speed };
 }
 

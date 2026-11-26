@@ -17,7 +17,7 @@ Captures : `docs/captures/direct-*.png`.
 | Consignes | Passage au plan A ou B, les 9 consignes tactiques, les consignes ciblées, les règles de pénalité |
 
 ### Modes d'affichage
-- **Match complet** : toutes les actions, environ 10 minutes à ×1 et moins de 3 minutes à ×4.
+- **Match complet** : toutes les actions, environ 15 minutes à ×1 et moins de 4 minutes à ×4. Les rucks sont montrés en entier depuis la refonte de la 3D (voir `docs/12-match-3d.md`).
 - **Temps forts** : les actions qui mènent à un fait de jeu (pénalité, turnover, maul, mêlée gagnée, essai…), avec les 4 actions qui précèdent.
 - **Moments clés** : essais, franchissements, cartons, points au pied, 50:22, désobéissance du capitaine.
 - **Sans images** : le match défile sans animation. **Les décisions sur pénalité restent au manager.**

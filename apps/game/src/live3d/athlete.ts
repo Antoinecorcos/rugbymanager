@@ -220,7 +220,9 @@ export class Athlete {
     this.root.rotation.y = this.yaw;
 
     const target = poseFor(g, this.phase, time + (this.number % 7) * 0.37);
-    const k = 1 - Math.exp(-dt * (g.kind === "run" || g.kind === "carry" ? 16 : 9));
+    // Fast gestures (running, driving in a ruck) follow their target closely; the others blend in.
+    const fast = g.kind === "run" || g.kind === "carry" || g.kind === "cleanout" || g.kind === "cleanedOut" || g.kind === "pass";
+    const k = 1 - Math.exp(-dt * (fast ? 16 : 8));
     const a = this.angles as unknown as Record<string, number>;
     const t = target as unknown as Record<string, number>;
     for (const key of Object.keys(REST)) a[key] = a[key]! + (t[key]! - a[key]!) * k;
@@ -395,6 +397,86 @@ export function poseFor(g: Gesture, phase: number, time: number): Angles {
       p.shL = p.shR = -2.9;
       p.elL = p.elR = -0.2;
       p.hipL = p.hipR = 0.2;
+      break;
+    case "ready":
+      // Knees bent, weight forward, hands up: waiting for the next phase (defenders lower).
+      p.crouch = 0.1 * amt + 0.02;
+      p.lean = 0.12 + 0.22 * amt;
+      p.kneeL = p.kneeR = 0.25 + 0.3 * amt;
+      p.hipL = p.hipR = -0.12 * amt;
+      p.shL = p.shR = -0.35 - 0.25 * amt;
+      p.shLz = 0.22;
+      p.shRz = -0.22;
+      p.elL = p.elR = -0.9;
+      p.twist = Math.sin(time * 1.7) * 0.06;
+      p.head = -0.1;
+      break;
+    case "jackal":
+      // On his feet over the ball, hips high, legs wide, hands on the ball, head up.
+      p.lean = 0.35 + 0.95 * amt;
+      p.crouch = 0.18 * amt;
+      p.hipL = -0.25 * amt;
+      p.hipR = 0.35 * amt;
+      p.kneeL = p.kneeR = 0.45 * amt + 0.1;
+      p.shL = p.shR = -0.25 - 1.0 * amt;
+      p.shLz = 0.12;
+      p.shRz = -0.12;
+      p.elL = p.elR = -0.1;
+      p.head = -0.5 * amt + Math.sin(time * 6) * 0.03;
+      break;
+    case "cleanout": {
+      // Low drive over the ball: shoulders below the hips, short powerful steps, arms binding.
+      const drive = Math.sin(time * 9);
+      p.lean = 0.5 + 0.75 * amt;
+      p.crouch = 0.3 * amt;
+      p.hipL = 0.15 + drive * 0.38 * amt;
+      p.hipR = 0.15 - drive * 0.38 * amt;
+      p.kneeL = 0.65 + Math.max(0, -drive) * 0.5;
+      p.kneeR = 0.65 + Math.max(0, drive) * 0.5;
+      p.shL = p.shR = -1.35;
+      p.shLz = 0.55;
+      p.shRz = -0.55;
+      p.elL = p.elR = -0.85;
+      p.head = -0.55 * amt;
+      break;
+    }
+    case "cleanedOut":
+      // Driven off the ball: upright, leaning back, arms out for balance, stepping backwards.
+      p.lean = -0.35 * amt + 0.25;
+      p.crouch = 0.08;
+      p.hipL = 0.35 * Math.sin(time * 7) * amt;
+      p.hipR = -0.35 * Math.sin(time * 7) * amt;
+      p.kneeL = p.kneeR = 0.35;
+      p.shL = p.shR = -0.9;
+      p.shLz = 0.95 * amt;
+      p.shRz = -0.95 * amt;
+      p.elL = p.elR = -0.5;
+      break;
+    case "place":
+      // On the ground after the tackle, on his front, arms reaching back to place the ball.
+      p.tilt = 1.48;
+      p.shL = 0.9 + Math.sin(time * 2) * 0.05;
+      p.shR = 0.6;
+      p.shLz = 0.2;
+      p.shRz = -0.35;
+      p.elL = p.elR = -0.2;
+      p.hipL = 0.1;
+      p.hipR = -0.25;
+      p.kneeL = 0.3;
+      p.kneeR = 0.6;
+      p.head = -0.6;
+      break;
+    case "dig":
+      // Scrum-half at the base: low, feet either side, hands on the ball, eyes up on the defence.
+      p.lean = 0.55 + 0.6 * amt;
+      p.crouch = 0.42 * amt;
+      p.kneeL = 0.9 * amt + 0.2;
+      p.kneeR = 1.15 * amt + 0.2;
+      p.hipL = -0.55 * amt;
+      p.hipR = -0.25 * amt;
+      p.shL = p.shR = -1.05 * amt;
+      p.elL = p.elR = -0.25;
+      p.head = -0.7 * amt;
       break;
     case "celebrate":
       p.lift = 0.12 * Math.abs(Math.sin(time * 5));
