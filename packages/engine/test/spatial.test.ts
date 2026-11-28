@@ -109,8 +109,9 @@ describe("spatial layer", () => {
         if (step.made) made++;
         else {
           missed++;
-          // A miss is clearly wide of an upright, or comes down before the line.
-          if (reaches) expect(Math.abs(y - 35) > POSTS_HALF_WIDTH + 0.5).toBe(true);
+          // A miss is clearly wide of an upright (seen from the kicker), even when it comes down short.
+          const aimY = ball.from.y + (ball.to.y - ball.from.y) * ((line - ball.from.x) / (ball.to.x - ball.from.x));
+          expect(Math.abs(aimY - 35)).toBeGreaterThan(POSTS_HALF_WIDTH + 0.5);
         }
       });
     }

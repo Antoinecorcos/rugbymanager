@@ -124,8 +124,9 @@ export function goalKickFlight(att: Side, tee: Vec, made: boolean | undefined, s
   const line = att === 0 ? 100 : 0;
   const dist = Math.max(1, Math.abs(line - tee.x));
   if (made === false && dist > 38 && jitter(seed, 31, 1) > 0.2) {
-    // Not enough distance: the ball comes down in front of the posts.
-    const crossY = 35 + jitter(seed, 31, 2) * 2;
+    // Not enough distance: the ball comes down before the line, drifting wide of an upright
+    // (seen from behind the kicker, it must never look like it went between the posts).
+    const crossY = 35 + (jitter(seed, 31, 2) >= 0 ? 1 : -1) * (POSTS_HALF_WIDTH + 1 + Math.abs(jitter(seed, 31, 7)) * 3);
     const k = (dist - 2 - Math.abs(jitter(seed, 31, 3)) * 5) / dist;
     return { to: v(tee.x + (line - tee.x) * k, tee.y + (crossY - tee.y) * k), height: apex * 0.8, crossY, short: true };
   }
