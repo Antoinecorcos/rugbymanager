@@ -221,7 +221,7 @@ export function MatchReportScreen({ fixtureId }: { fixtureId: string }) {
               {others.length ? (
                 <ul className="list">
                   {others.map((o) => (
-                    <li key={o.id} className="other-result">
+                    <li key={o.id} className="other-result other-result--short">
                       <ClubLink w={w} id={o.home} />
                       <b className="num">
                         {o.result!.score[0]}-{o.result!.score[1]}

@@ -58,6 +58,7 @@ Captures : `docs/captures/6*.png`.
 
   Les angles des articulations glissent d'un geste à l'autre, sans saut brusque.
 - **Le ballon** est un ovale qui tourne en spirale en vol, avec son ombre au sol. Il est tenu contre la poitrine par le porteur.
+- **Les tirs au but** (transformations, pénalités, drops) suivent leur résultat. Un tir réussi passe entre les poteaux (5,60 m d'écart), au-dessus de la barre (3 m), même depuis la touche ou de 50 m. Un tir manqué passe nettement à côté d'un poteau, à gauche ou à droite. De loin (plus de 38 m), il peut aussi retomber avant la ligne. Le moteur inscrit le résultat dans la trace (`made`), sans tirage de plus : la couche spatiale (`goalKickFlight`) en déduit la trajectoire.
 
 ## Rucks et fluidité
 Les rucks étaient la phase la plus saccadée : un ruck de 2 à 5 secondes était montré en moins d'une demi-seconde, et chaque action démarrait et s'arrêtait net.

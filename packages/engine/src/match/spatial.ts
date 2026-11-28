@@ -108,6 +108,41 @@ const KICK_HEIGHT: Record<string, number> = {
 
 type Slots = (Vec | null)[];
 
+/** Half the gap between the uprights (5.6 m apart) and the height of the crossbar (metres). */
+export const POSTS_HALF_WIDTH = 2.8;
+export const CROSSBAR_HEIGHT = 3;
+
+/**
+ * Flight of a kick at goal, aimed from the outcome the engine recorded: through the middle of
+ * the posts and over the bar when it went over; wide of an upright when it missed, or short of
+ * the line from far out. Deterministic (hash of the step index), it never draws a number.
+ * The ball flies in a straight line in the pitch plane: `to` is set beyond the line so that it
+ * crosses the line at the aimed point, high enough to clear the bar.
+ */
+export function goalKickFlight(att: Side, tee: Vec, made: boolean | undefined, seed: number, apex: number): { to: Vec; height: number; crossY: number; short: boolean } {
+  const d = dirOf(att);
+  const line = att === 0 ? 100 : 0;
+  const dist = Math.max(1, Math.abs(line - tee.x));
+  if (made === false && dist > 38 && jitter(seed, 31, 1) > 0.2) {
+    // Not enough distance: the ball comes down in front of the posts.
+    const crossY = 35 + jitter(seed, 31, 2) * 2;
+    const k = (dist - 2 - Math.abs(jitter(seed, 31, 3)) * 5) / dist;
+    return { to: v(tee.x + (line - tee.x) * k, tee.y + (crossY - tee.y) * k), height: apex * 0.8, crossY, short: true };
+  }
+  const crossY =
+    made === false
+      ? 35 + (jitter(seed, 31, 4) >= 0 ? 1 : -1) * (POSTS_HALF_WIDTH + 0.8 + Math.abs(jitter(seed, 31, 5)) * 3)
+      : 35 + (made ? jitter(seed, 31, 6) * (POSTS_HALF_WIDTH - 1.2) : 0);
+  // The ball carries on about 9 m beyond the line before coming down.
+  const len = Math.hypot(line - tee.x, crossY - tee.y);
+  const k = (len + 9) / len;
+  // Height when crossing the line: at least 4.5 m, above the bar.
+  const at = 1 / k;
+  const height = Math.max(apex, 4.5 / (4 * at * (1 - at)));
+  return { to: v(tee.x + (line - tee.x) * k, tee.y + (crossY - tee.y) * k), height, crossY, short: false };
+}
+
+
 /** Puts each shirt slot (1..15) at a position, hiding the empty slots of the lineup. */
 function place(lineup: (string | null)[], at: (shirt: number) => Vec): Slots {
   const out: Slots = [];
@@ -362,11 +397,18 @@ export function stepPoses(step: PlayStep, lineup: Lineup, index: number): StepPo
     }
     case "kick":
     case "dropGoal": {
-      const type = step.kind === "dropGoal" ? "dropGoal" : (step.detail ?? "long");
-      const target = step.kind === "dropGoal" ? v(att === 0 ? 105 : -5, 35) : to;
-      const a = chaseShape(att, target, seed, lineup[att], type === "grubber" || type === "chip" ? 2 : 7);
-      const df = receiveShape(def, target, seed, lineup[def]);
-      return withCarrier({ end: { players: both(att, a, df), ball: target }, ball: { from, to: target, height: KICK_HEIGHT[type] ?? 12 }, inAir: true });
+      if (step.kind === "dropGoal") {
+        const flight = goalKickFlight(att, from, step.made, seed, KICK_HEIGHT.dropGoal!);
+        // Players follow up towards the posts (the in-field end of the flight).
+        const toward = v(Math.max(1, Math.min(99, flight.to.x)), Math.max(2, Math.min(68, flight.to.y)));
+        const a = chaseShape(att, toward, seed, lineup[att], 7);
+        const df = receiveShape(def, toward, seed, lineup[def]);
+        return withCarrier({ end: { players: both(att, a, df), ball: flight.to }, ball: { from, to: flight.to, height: flight.height }, inAir: true });
+      }
+      const type = step.detail ?? "long";
+      const a = chaseShape(att, to, seed, lineup[att], type === "grubber" || type === "chip" ? 2 : 7);
+      const df = receiveShape(def, to, seed, lineup[def]);
+      return withCarrier({ end: { players: both(att, a, df), ball: to }, ball: { from, to, height: KICK_HEIGHT[type] ?? 12 }, inAir: true });
     }
     case "kickoff":
     case "dropout": {
@@ -403,8 +445,8 @@ export function stepPoses(step: PlayStep, lineup: Lineup, index: number): StepPo
     case "penaltyKick": {
       if (step.detail === "goal") {
         const setup = goalKickSetup(att, from, carrierSlot, lineup, false);
-        const posts = v(att === 0 ? 104 : -4, 35);
-        return withCarrier({ setup, end: { players: setup.players, ball: posts }, ball: { from, to: posts, height: KICK_HEIGHT.goal! }, inAir: true });
+        const flight = goalKickFlight(att, from, step.made, seed, KICK_HEIGHT.goal!);
+        return withCarrier({ setup, end: { players: setup.players, ball: flight.to }, ball: { from, to: flight.to, height: flight.height }, inAir: true });
       }
       const setup = penaltyShape(att, from, seed, lineup);
       return withCarrier({ setup, end: { players: setup.players, ball: to }, ball: { from, to, height: KICK_HEIGHT.touch! }, inAir: true });
@@ -414,8 +456,8 @@ export function stepPoses(step: PlayStep, lineup: Lineup, index: number): StepPo
       const angle = Math.abs(from.y - 35) / 35;
       const tee = v(line - d * (12 + angle * 14), from.y);
       const setup = goalKickSetup(att, tee, carrierSlot, lineup, true);
-      const posts = v(line + d * 4, 35);
-      return withCarrier({ setup, end: { players: setup.players, ball: posts }, ball: { from: tee, to: posts, height: KICK_HEIGHT.goal! }, inAir: true });
+      const flight = goalKickFlight(att, tee, step.made, seed, KICK_HEIGHT.goal!);
+      return withCarrier({ setup, end: { players: setup.players, ball: flight.to }, ball: { from: tee, to: flight.to, height: flight.height }, inAir: true });
     }
     case "try": {
       const spot = v(att === 0 ? 101.5 : -1.5, to.y);

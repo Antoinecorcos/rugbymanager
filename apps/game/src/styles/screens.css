@@ -361,6 +361,13 @@
 .other-result > a:nth-of-type(1) {
   justify-self: end;
 }
+/* Home, score, away only (match report). */
+.other-result--short {
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+}
+.other-result--short > a:nth-of-type(1) {
+  text-align: right;
+}
 .other-result.is-mine {
   background: var(--accent-soft);
 }

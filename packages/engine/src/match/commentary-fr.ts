@@ -106,8 +106,12 @@ export function commentaryFr(e: MatchEvent, ctx: CommentaryContext): string | nu
       return `${p} est tenu au-dessus de l'en-but ! Renvoi depuis l'en-but pour la défense.`;
     case "conversion":
       return d.made ? `Transformation réussie par ${p}.` : `${p} manque la transformation.`;
-    case "yellowCard":
-      return `CARTON JAUNE pour ${p} (${team}) ! 10 minutes d'exclusion.`;
+    case "teamWarning":
+      return `L'arbitre appelle le capitaine de ${team} : trop de fautes répétées, la prochaine sera sanctionnée d'un carton.`;
+    case "yellowCard": {
+      const why = d.reason === "cumul" ? " pour cumul de fautes" : d.reason === "repeat" ? " pour fautes répétées" : d.reason === "professional" ? " pour faute volontaire" : "";
+      return `CARTON JAUNE pour ${p} (${team})${why} ! 10 minutes d'exclusion.`;
+    }
     case "redCard":
       return d.twentyMinutes ? `CARTON ROUGE (20 minutes) pour ${p} (${team}) !` : `CARTON ROUGE définitif pour ${p} (${team}) !`;
     case "cardReturn":

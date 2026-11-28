@@ -14,7 +14,7 @@ export const VIEW_MODES: readonly { value: ViewMode; label: string; title: strin
 ];
 
 /** Events that make an action worth showing, by mode. */
-const KEY_EVENTS = new Set<EventType>(["try", "tryDisallowed", "lineBreak", "interception", "yellowCard", "redCard", "penaltyGoal", "dropGoal", "fiftyTwentyTwo", "captainOverride", "heldUp", "kickCompetition"]);
+const KEY_EVENTS = new Set<EventType>(["try", "tryDisallowed", "lineBreak", "interception", "yellowCard", "redCard", "penaltyGoal", "dropGoal", "fiftyTwentyTwo", "captainOverride", "teamWarning", "heldUp", "kickCompetition"]);
 const EXTENDED_EVENTS = new Set<EventType>([...KEY_EVENTS, "penalty", "ruckTurnover", "maul", "scrum", "lineout", "injury", "hia", "kickRegathered", "offload", "knockOn", "conversion"]);
 
 /** Number of actions shown before a highlight (the build-up). */

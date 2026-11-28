@@ -31,6 +31,7 @@ export type EventType =
   | "tryDisallowed"
   | "heldUp"
   | "conversion"
+  | "teamWarning"
   | "yellowCard"
   | "redCard"
   | "cardReturn"
@@ -240,6 +241,8 @@ export interface PlayStep {
   support?: string[];
   /** Ruck: the defender who contested the ball (jackal). */
   contest?: string;
+  /** Kick at goal (conversion, penalty goal, drop goal): whether it went over. */
+  made?: boolean;
   /** Defensive organisation (0..1) when the action starts. */
   defOrg: number;
   /** Events produced during the action: indexes [start, end) in the events array. */

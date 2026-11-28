@@ -25,6 +25,14 @@ faute → pénalité → décision (points / touche / mêlée / jouer vite) → 
 - `controller: "human"` : à chaque pénalité, `step()` s'arrête et expose `pendingDecision` (options, recommandation du staff, probabilité de réussite au pied). On répond avec `submitPenaltyDecision(choix)`.
 - **Désobéissance du capitaine** : probabilité nulle si la confiance est ≥ 0,5. En dessous, elle monte au maximum à 6 %, modulée par le tempérament, le leadership et la fin de match. Elle produit un événement `captainOverride`.
 
+## Discipline et cartons
+Comme un arbitre de Top 14, le moteur sanctionne les fautes répétées, pas seulement les fautes graves.
+- **Pénalités** : environ 19 à 20 par match pour les deux équipes. En Top 14, une équipe qui en concède 20 à elle seule passe pour indisciplinée.
+- **Avertissement collectif** : quand une équipe enchaîne 3 pénalités en 6 minutes, ou 2 dans ses 22 mètres, l'arbitre appelle le capitaine (événement `teamWarning`, « L'arbitre appelle le capitaine… »). L'avertissement vaut 10 minutes et s'efface à la mi-temps.
+- **Carton pour cumul** : la faute suivante de l'équipe avertie a de fortes chances de valoir un carton jaune « pour cumul de fautes ». Les autres cartons viennent du jeu déloyal, des fautes volontaires (« anti-jeu ») et des pénalités répétées d'un même joueur.
+- **Sévérité de l'arbitre** : elle module toutes ces probabilités.
+- **Résultat** (1 500 matchs) : 1,55 carton jaune et 0,10 rouge par match. Le Top 14 réel est entre 1,4 et 1,9 jaune par match selon les saisons. Avant, le moteur ne donnait que 0,64 jaune par match : la cible du calibrage passe de 0,45-1,2 à 1,1-2.
+
 ## Calibrage
 `pnpm calibrate 1000` lance 1000 matchs entre 14 équipes de niveau Top 14 et compare 29 indicateurs à des fourchettes réalistes. Les mêmes contrôles tournent dans les tests (CI).
 Résultat actuel : **29/29** (voir `docs/exemples/calibrage.txt`).

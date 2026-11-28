@@ -32,7 +32,9 @@ export const TARGETS = {
   offloads: { label: "Offloads", min: 10, max: 26 },
   turnovers: { label: "Turnovers gagnés", min: 9, max: 20 },
   kicksInPlay: { label: "Coups de pied dans le jeu", min: 38, max: 66 },
-  yellowCards: { label: "Cartons jaunes", min: 0.45, max: 1.2 },
+  // Real Top 14: 259 yellow cards in 2023-24 (182 matches, 1.42 per match), 168 in the first half
+  // of 2024-25 (91 matches, 1.85). Cards for repeated infringements (team warning) since M8.
+  yellowCards: { label: "Cartons jaunes", min: 1.1, max: 2 },
   redCards: { label: "Cartons rouges", min: 0.02, max: 0.15 },
   ballInPlayMin: { label: "Temps de jeu effectif (min)", min: 31, max: 40 },
   durationMin: { label: "Durée totale (min)", min: 80, max: 86 },

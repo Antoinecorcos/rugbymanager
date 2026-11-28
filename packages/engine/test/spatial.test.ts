@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_REFEREE, generateMatchTeam, lineupAfter, MatchSimulation, Rng, stepPoses, type Lineup } from "../src/index.js";
+import { CROSSBAR_HEIGHT, DEFAULT_REFEREE, generateMatchTeam, goalKickFlight, lineupAfter, MatchSimulation, POSTS_HALF_WIDTH, Rng, stepPoses, type Lineup } from "../src/index.js";
 
 function tracedMatch(seed: string) {
   const rng = new Rng(seed);
@@ -84,6 +84,45 @@ describe("spatial layer", () => {
     });
     expect(kicks).toBeGreaterThan(10);
     expect(carries).toBeGreaterThan(50);
+  });
+
+  it("sends the ball between the posts when a kick at goal goes over, and wide or short when it misses", () => {
+    let made = 0;
+    let missed = 0;
+    for (const seed of ["spatial", "goal-1", "goal-2", "goal-3"]) {
+      const steps = seed === "spatial" ? trace : tracedMatch(seed);
+      let lineup: Lineup = [[], []];
+      steps.forEach((step, i) => {
+        lineup = lineupAfter(lineup, step);
+        const isGoal = step.kind === "conversion" || step.kind === "dropGoal" || (step.kind === "penaltyKick" && step.detail === "goal");
+        if (!isGoal) return;
+        expect(typeof step.made).toBe("boolean");
+        const { ball } = stepPoses(step, lineup, i);
+        const line = step.side === 0 ? 100 : 0;
+        // Where (and how high) the ball is when it reaches the goal line, if it does.
+        const t = (line - ball.from.x) / (ball.to.x - ball.from.x);
+        const reaches = t > 0 && t <= 1;
+        const y = ball.from.y + (ball.to.y - ball.from.y) * t;
+        const h = 4 * ball.height * t * (1 - t);
+        const between = reaches && Math.abs(y - 35) < POSTS_HALF_WIDTH - 0.3 && h > CROSSBAR_HEIGHT + 0.5;
+        expect(between).toBe(step.made);
+        if (step.made) made++;
+        else {
+          missed++;
+          // A miss is clearly wide of an upright, or comes down before the line.
+          if (reaches) expect(Math.abs(y - 35) > POSTS_HALF_WIDTH + 0.5).toBe(true);
+        }
+      });
+    }
+    expect(made).toBeGreaterThan(20);
+    expect(missed).toBeGreaterThan(5);
+    // From the touchline and from 50 m, a successful kick still clears the bar.
+    for (const tee of [{ x: 74, y: 5 }, { x: 50, y: 20 }]) {
+      const f = goalKickFlight(0, tee, true, 3, 11);
+      const t = (100 - tee.x) / (f.to.x - tee.x);
+      expect(4 * f.height * t * (1 - t)).toBeGreaterThan(4);
+      expect(Math.abs(tee.y + (f.to.y - tee.y) * t - 35)).toBeLessThan(POSTS_HALF_WIDTH);
+    }
   });
 
   it("stages each ruck like law 15: tackled player down, jackal on the ball then cleaned out, scrum-half at the base", () => {

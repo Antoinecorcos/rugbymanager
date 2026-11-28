@@ -65,6 +65,10 @@ interface TeamState {
   ps: Map<string, PlayerMatchStats>;
   /** Times of penalties conceded inside own 22 (repeated infringement → card). */
   pens22: number[];
+  /** Times of the penalties conceded recently, anywhere (repeated infringement → team warning). */
+  pensRecent: number[];
+  /** The referee has warned the captain: the next offender is carded (until this clock time). */
+  warnedUntil: number;
   /** Planned substitution minute per bench player id. */
   subPlan: Map<string, number>;
   /** Bench player ids who already went off (cannot return, except front row/HIA rules). */
@@ -229,6 +233,8 @@ export class MatchSimulation {
       stats: emptyTeamStats(),
       ps,
       pens22: [],
+      pensRecent: [],
+      warnedUntil: 0,
       subPlan: new Map(),
       replacedIds: new Set(),
     };
@@ -434,7 +440,7 @@ export class MatchSimulation {
   }
 
   /** Adds information to the current action (outcome known later). */
-  private annotate(patch: Partial<Pick<PlayStep, "playerId" | "detail" | "side" | "tackler" | "support" | "contest">>): void {
+  private annotate(patch: Partial<Pick<PlayStep, "playerId" | "detail" | "side" | "tackler" | "support" | "contest" | "made">>): void {
     if (this.cur) Object.assign(this.cur.step, patch);
   }
 
@@ -489,6 +495,11 @@ export class MatchSimulation {
     const [h, a] = this.score;
     if (this.period === 1 || this.period === 3) {
       this.emit(this.period === 1 ? "halfTime" : "extraTime", { importance: 2 });
+      // A new half: the referee's warning about repeated infringements no longer applies.
+      for (const ts of this.teams) {
+        ts.warnedUntil = 0;
+        ts.pensRecent = [];
+      }
       this.begin("break", 0);
       this.period += 1;
       this.clock = Math.max(this.clock, this.periodEnd);
@@ -858,27 +869,51 @@ export class MatchSimulation {
     this.y = clamp(this.y + this.rng.normal(0, 6), 5, 65);
     this.emit("penalty", { side: to, playerId: offender?.p.id, importance: 1, detail: { reason } });
 
-    // Cards
+    // Cards. Referees card foul play and deliberate infringements, and repeated infringements
+    // (World Rugby law 9.28): after a series of penalties, especially near the line, the captain is
+    // warned and the next offender of his team goes to the bin; a player who keeps offending too.
     const advOff = this.adv(offSide);
     if (advOff < 25) ots.pens22.push(this.clock);
     ots.pens22 = ots.pens22.filter((t) => this.clock - t < 900);
+    ots.pensRecent.push(this.clock);
+    ots.pensRecent = ots.pensRecent.filter((t) => this.clock - t < 360);
+    const strict = 0.55 + this.setup.referee.cardStrictness * 0.9;
+    const warned = ots.warnedUntil > this.clock;
     let pCard = 0;
-    if (opts.foulPlay) pCard += 0.42;
-    if (opts.professional) pCard += 0.3;
-    if (advOff < 25 && ots.pens22.length >= 3) pCard += 0.35;
-    pCard *= 0.55 + this.setup.referee.cardStrictness * 0.9;
+    let why: "foulPlay" | "professional" | "cumul" | "repeat" = "repeat";
+    if (opts.foulPlay) {
+      pCard += 0.42;
+      why = "foulPlay";
+    }
+    if (opts.professional) {
+      pCard += 0.3;
+      if (why !== "foulPlay") why = "professional";
+    }
+    if (advOff < 25 && ots.pens22.length >= 3) pCard += 0.45;
+    if (warned) {
+      pCard += 0.85;
+      if (why === "repeat") why = "cumul";
+    }
+    if (ps && ps.penaltiesConceded >= 3) pCard += 0.12 * (ps.penaltiesConceded - 2);
+    pCard *= strict;
     if (offender && this.rng.chance(pCard)) {
       const severe = opts.foulPlay && this.rng.chance(0.1);
       const permanent = opts.foulPlay && this.rng.chance(0.015);
       if (permanent) this.card(ots, offender, "red");
       else if (severe || offender.yellows >= 1) this.card(ots, offender, "red20");
-      else this.card(ots, offender, "yellow");
+      else this.card(ots, offender, "yellow", why);
       ots.pens22 = [];
+      ots.pensRecent = [];
+      ots.warnedUntil = 0;
+    } else if (!warned && (ots.pens22.length >= 2 || ots.pensRecent.length >= 3)) {
+      // Warning through the captain: valid for the next ten minutes.
+      ots.warnedUntil = this.clock + 600;
+      this.emit("teamWarning", { side: offSide, importance: 1 });
     }
     this.ballDead({ kind: "penalty", side: to, x: this.x, y: this.y }, "penalty");
   }
 
-  private card(ts: TeamState, fp: FieldPlayer, kind: "yellow" | "red20" | "red"): void {
+  private card(ts: TeamState, fp: FieldPlayer, kind: "yellow" | "red20" | "red", reason?: string): void {
     const slot = ts.slots.indexOf(fp);
     if (slot < 0) return;
     const ps = this.pstat(fp);
@@ -888,7 +923,7 @@ export class MatchSimulation {
       ts.stats.yellowCards += 1;
       if (ps) ps.yellowCards += 1;
       ts.binned.push({ fp, slot, returnAt: this.clock + 600, kind: "yellow" });
-      this.emit("yellowCard", { side: ts.side, playerId: fp.p.id, importance: 2 });
+      this.emit("yellowCard", { side: ts.side, playerId: fp.p.id, importance: 2, ...(reason ? { detail: { reason } } : {}) });
     } else {
       ts.stats.redCards += 1;
       if (ps) ps.redCards += 1;
@@ -1024,6 +1059,7 @@ export class MatchSimulation {
     const p = clamp(0.33 + (gk - 10) * 0.045 + (1 - angle) * 0.42 - wind - this.pressure(att, kicker), 0.12, 0.97);
     ts.stats.conversionsAttempted += 1;
     const made = this.rng.chance(p);
+    this.annotate({ made });
     const ps = this.pstat(kicker);
     if (made) {
       ts.stats.conversionsMade += 1;
@@ -1785,6 +1821,7 @@ export class MatchSimulation {
     this.begin("dropGoal", att, kicker.p.id);
     this.tick(3, true, att);
     const made = this.rng.chance(p);
+    this.annotate({ made });
     const ps = this.pstat(kicker);
     if (made) {
       ts.stats.dropGoalsMade += 1;
@@ -1898,6 +1935,7 @@ export class MatchSimulation {
         ts.stats.penaltyGoalsAttempted += 1;
         this.tick(this.rng.range(45, 70), false);
         const made = this.rng.chance(p);
+        this.annotate({ made });
         const ps = this.pstat(kicker);
         if (made) {
           ts.stats.penaltyGoalsMade += 1;

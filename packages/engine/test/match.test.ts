@@ -29,6 +29,28 @@ describe("match engine", () => {
     expect(r1.teamStats).toEqual(r2.teamStats);
   });
 
+  it("warns a team that keeps infringing, then cards the next offender for repeated fouls", () => {
+    let warnings = 0;
+    let cumul = 0;
+    let warnedThenCarded = 0;
+    for (let i = 0; i < 60; i++) {
+      const [h, a] = teams(`warn${i}`);
+      const r = simulateMatch(setup(h, a, `warn${i}`));
+      const ev = r.events;
+      ev.forEach((e, k) => {
+        if (e.type === "teamWarning") warnings++;
+        if (e.type === "yellowCard" && e.detail?.reason === "cumul") {
+          cumul++;
+          // A "cumul" card always follows a warning to the same team.
+          if (ev.slice(0, k).some((w) => w.type === "teamWarning" && w.side === e.side)) warnedThenCarded++;
+        }
+      });
+    }
+    expect(warnings).toBeGreaterThan(30);
+    expect(cumul).toBeGreaterThan(5);
+    expect(warnedThenCarded).toBe(cumul);
+  });
+
   it("keeps the scoreboard consistent with scoring stats", () => {
     const [h, a] = teams("consistency");
     for (let i = 0; i < 60; i++) {
